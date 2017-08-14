@@ -1,14 +1,7 @@
-
 #+COLUMNS: %40ITEM %25foldername %25filename
 * Introduction
-:PROPERTIES:
-:foldername:      introduction
-:END:
 
 ** Anti-Mythology
-:PROPERTIES:
-:FILENAME: anti-mythology
-:END:
 
 *As of August 2017, sc-hacks is being re-done from scratch.
 Both the library and its API will change in the near future.*
@@ -27,9 +20,6 @@ The purpose of the /sc-hacks/ library is to make experimentation and music makin
 /sc-hacks/ is in *permanent alpha*.  According to [[http://semver.org/][semantic versioning]], /"If you’re changing the API every day you should either still be in version 0.y.z or on a separate development branch working on the next major version."/.  This library will remain 0.n alpha for a long time, as changes in operator names and syntax are happening constantly.
 
 ** History
-:PROPERTIES:
-:filename: history
-:END:
 
 Initially, /sc-hacks/ was motivated by the need to improve some aspects [[http://doc.sccode.org/Overviews/JITLib.html][JITLib]], such as:
 
@@ -41,9 +31,6 @@ Fascinated by the => operator of [[http://chuck.cs.princeton.edu/doc/language/][
 The first results of these attempts are the libraries [[https://github.com/iani/tiny-sc][tiny-sc]] and [[https://github.com/iani/tiny-inc][tiny-inc]].  These have many shortcomings, which the present library is trying to fix.  At present, /sc-hacks/ is being redesigned once more, in order to implement two of the most attractive features of JITLib: sequential playing synth-functions and patterns in one =Ndef= and linking the output of an Ndef to the input of another Ndef.
 
 ** Roadmap
-:PROPERTIES:
-:filename: roadmap
-:END:
 
 *** Work in progress - August 2017
 
@@ -56,9 +43,6 @@ The first results of these attempts are the libraries [[https://github.com/iani/
 A particularly interesting case is when an Ndef reads and processes its own output.  An implementation of this feature, using [[http://doc.sccode.org/Classes/InFeedback.html][InFeedback]] is planned for the future.
 
 ** By way of demo
-:PROPERTIES:
-:filename-not: demo
-:END:
 
 INCOMPLETE
 
@@ -98,19 +82,10 @@ One can jump between
 
 
 ** Design
-:PROPERTIES:
-:filename-not: design
-:END:
 
 ** The trouble with operators
-:PROPERTIES:
-:filename-not: operators
-:END:
 
 ** A word (or 2) about EMACS
-:PROPERTIES:
-:filename-not: emacs
-:END:
 
 *** Startup files and buffers management with dired, bookmarks, projectile
 
@@ -209,15 +184,8 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 *END QUOTE*
 
 * Operators and Language Design
-:PROPERTIES:
-:foldername: main
-:END:
 
 ** Operator Overview
-:PROPERTIES:
-:filename: operator-overview
-:END:
-
 
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  The syntax of a binary operator in SuperCollider is: 
 
@@ -410,10 +378,6 @@ The code implementing these methods for =Symbol= in =Nevent.sc= is:
 #+END_SRC
 
 ** Mini-Language Overview
-:PROPERTIES:
-:filename: mini-language-overview
-:END:
-
 
 The classes, methods and operators provided by /sc-hacks/ extend SuperCollider to simplify the coding of GUI and of sound / musical structure / interaction.  They are designed in the sense of a very small language.  Here is a summary. 
 
@@ -500,9 +464,6 @@ string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?
 
 * Functions and Synth Playing
 ** Improving Function:eplay
-   :PROPERTIES:
-   :filename: improving_eplay
-   :END:
 
 Individual improvement steps for Function:eplay: Done and TODO.  Thesse notes are from an early stage in development.  Now the functionality of most done steps has been integrated in class =SynthPlayer=.  
 
@@ -570,9 +531,6 @@ In addition to listening for changes from the =currentEnvironment=, a second not
 See [[https://github.com/iani/sc-hacks/blob/master/LabCode/rebuildFunctionEplay.scd]] for draft used to build this functionality in =SynthPlayer=
 
 ** Play a function in the environment
-   :PROPERTIES:
-   :filename: function-eplay
-   :END:
 
 1. Provide arguments for playing a function from values found in an environment.
 2. connect all control names in the function's arguments to an environment for auto-update
@@ -636,9 +594,6 @@ See [[https://github.com/iani/sc-hacks/blob/master/LabCode/rebuildFunctionEplay.
 #+END_SRC
 
 * Patterns
-  :PROPERTIES:
-  :foldername: patterns
-  :END:
 
 ** Playing Events as Patterns
 :PROPERTIES:
@@ -908,13 +863,7 @@ one may write this:
 #+END_SRC
 
 * GUI
-  :PROPERTIES:
-  :foldername: gui
-  :END:
 ** Creating GUIs
-:PROPERTIES:
-:filename: creating-guis
-:END:
 
 This library provides utilities for creating GUI elements and connecting them to both patterns and synths.  Here are some examples.
 
@@ -925,9 +874,6 @@ This library provides utilities for creating GUI elements and connecting them to
 *** Buttons
 
 ** Building GUIs
-:PROPERTIES:
-:filename: building-guis
-:END:
 
 This notebook shows how to build GUIs starting from scratch, with minimal code and in small steps.
 
@@ -1140,14 +1086,14 @@ Window ("window name")
 		})
 	)
 ).front;
-END_SRC
+#+END_SRC
 
-*** How to add all available options for Slider and NumberBox, eg. floating point digits etc?
+- How to add all available options for Slider and NumberBox, eg. floating point digits etc?
 
 Instead of adding more arguments, move to the next step:
 Define a class and provide the options as defaults.
 
-*** Next steps
+- Next steps
 
 1. Control a routine from a GUI. 
    - Let the GUI elements set environment variables of an environment.
@@ -1158,13 +1104,8 @@ Define a class and provide the options as defaults.
 3. Do similar things as with 1, but with an EventPattern instead of a routine.
 
 * Playing buffers and grains
-  :PROPERTIES:
-  :foldername: buffers_and_grains
-  :END:
+
 ** Triggering Methods
-:PROPERTIES:
-:filename: triggering-methods
-:END:
 
 This section illustrates several different ways to trigger grains, envelopes or other gate-triggered UGens
 
@@ -1177,9 +1118,6 @@ This section illustrates several different ways to trigger grains, envelopes or 
 **** Demand UGens
 
 ** Triggering EnvGen and Line
-:PROPERTIES:
-:filename: triggering-envgen
-:END:
 
 Besides controlling the amplitude shape of a single sound-event or note in its entirety, envelopes can also be used to generate streams of sound events with the same synth.  The same technique can also be applied to Line or Xline to arbitrarily construct shapes controlling any parameter on the fly.  Here are some examples explaining how to do this using either just the default *SCClassLibrary* and the *sc-hacks* library.
 
@@ -1312,23 +1250,14 @@ In /sc-hacks/, the operator =+>= plays a function and stores its synth in the gl
 #+END_SRC
 
 ** Playing Grains
-:PROPERTIES:
-:filename: playing-grains
-:END:
-
 
 Here are some examples for playing grains of sound from a buffer with 
 
 To be provided ...
 
 * Server objects
-  :PROPERTIES:
-  :foldername: server_objects
-  :END:
+
 ** About Server Objects
-:PROPERTIES:
-:filename: about-server-objects
-:END:
 
 *** Server objects managed by Nevent
 
@@ -1342,9 +1271,7 @@ These are:
 *** Allocating Server Objects at Reboot
 
 ** Server and Nevent
-   :PROPERTIES:
-   :filename: server-and-nevent
-   :END:
+
 Each =Nevent= Environment has  only one Server instance.  Synths and Patterns play in that instance.
 
 Open issue: Where to store the server of an Environment.  Possibilities: 
@@ -1359,16 +1286,10 @@ Currently option 4 is used, to concentrate on finishing the other features of th
 
 
 ** Target Group
-   :PROPERTIES:
-   :filename: target-group
-   :END:
 
 *** Maintaining Target Group Order
 
 ** Busses
-   :PROPERTIES:
-   :filename: busses
-   :END:
 
 *** Bus Allocation
 
@@ -1376,18 +1297,11 @@ Currently option 4 is used, to concentrate on finishing the other features of th
 
 
 ** Buffers
-   :PROPERTIES:
-   :filename: buffers
-   :END:
 
 * Basic Classes
-  :PROPERTIES:
-  :foldername: basic_classes
-  :END:
+ 
 ** Registry: Hierarchical Namespaces
-:PROPERTIES:
-:filename: registry
-:END:
+
 
 This class uses the =Library= class to store and  retrieve objects using any array of objects as key.  This extends the way that =Pdef=, =Ndef=, =OSCdef= work, making it possible for any class to store its instances in an arbitrary hierarchical path, without subclassing.  To create this behavior one can then add a method to =Symbol= for accessing the kind of object needed.  For example: =\aSymbol.oscFunc= accesses =OSCFunc= instances. This also allows easier customization of how the object is created if not found. 
 
@@ -1426,9 +1340,7 @@ This is the code that makes it possible to create or modify an OSCFunc bound to 
 #+END_SRC
 
 ** Notification
-:PROPERTIES:
-:filename: notification
-:END:
+
 
 Notification: Register a function callback to a message and a pair of objects
 =Notification= is an improved version of the [[http://doc.sccode.org/Classes/NotificationCenter.html][NotificationCenter class]].  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message =changed= to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.
@@ -1481,25 +1393,8 @@ The =addNotifierOneShot= method executes the registered Function just once. This
 #+END_SRC
 
 Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.
-* Subsections
-
-Testing here.
-
-** Subsections
-
-Are also displayed Testing here.
-
-*** Subsubsections
-
-Are also displayed
-
-
-
-
 * Use examples
-  :PROPERTIES:
-  :foldername: use_examples
-  :END:
+
 ** Pattern and Synth play scenarios
 :PROPERTIES:
 :filename: pattern-synth-play
@@ -1516,9 +1411,7 @@ Are also displayed
 *** Playing several synths in the same environment
 
 * Playing with data
-  :PROPERTIES:
-  :foldername: data
-  :END:
+
 ** Playing With Data
 :PROPERTIES:
 :filename: playing-with-data
@@ -1537,49 +1430,7 @@ The data is a 2 dimensional array.  It is played as a =Pseq= along the first dim
 
 
 * Making this site
-:PROPERTIES:
-:foldername: making-this-site
-:END:
 
-This site was made with [[https://gohugo.io/][hugo]] and exported using this script: 
-
-#+BEGIN_SRC shell
-#!/bin/sh
-DIR=$(dirname "$0")
-
-cd $DIR/..
-
-if [[ $(git status -s) ]]
-then
-    echo "The working directory is dirty. Please commit any pending changes."
-    exit 1;
-fi
-
-echo "Deleting old publication"
-rm -rf public
-mkdir public
-git worktree prune
-rm -rf .git/worktrees/public/
-
-echo "Checking out gh-pages branch into public"
-git worktree add -B gh-pages public origin/gh-pages
-
-echo "Removing existing files"
-rm -rf public/*
-
-echo "Generating site"
-hugo
-
-echo "Updating gh-pages branch"
-cd public && git add --all && git commit -m "Publishing to gh-pages (publish.sh)"
-
-git push -v origin gh-pages\:refs/heads/gh-pages
-#+END_SRC
-
-The script was placed in the _scripts directory under the root directory of the site. =[root+]/_scripts/publish_to_ghpages.sh=
-
-
-
+This site was made with [[https://gohugo.io/][hugo]] usin the [[https://themes.gohugo.io/theme/docuapi/][docuapi]] theme.
 
 You can clone the source for this site from: [[https://github.com/iani/sc-hacks-doc]].
-
