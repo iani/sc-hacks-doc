@@ -524,10 +524,6 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h2 id="improving-function-eplay">Improving Function:eplay</h2>
 
-<p>:PROPERTIES:
-   :filename: improving_eplay
-   :END:</p>
-
 <p>Individual improvement steps for Function:eplay: Done and TODO.  Thesse notes are from an early stage in development.  Now the functionality of most done steps has been integrated in class <code>SynthPlayer</code>.</p>
 
 <h3 id="done-11-jun-2017-21-48">Done (11 Jun 2017 21:48)</h3>
@@ -603,10 +599,6 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h2 id="play-a-function-in-the-environment">Play a function in the environment</h2>
 
-<p>:PROPERTIES:
-   :filename: function-eplay
-   :END:</p>
-
 <ol>
 <li>Provide arguments for playing a function from values found in an environment.</li>
 <li>connect all control names in the function's arguments to an environment for auto-update</li>
@@ -665,10 +657,6 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 </code></pre></div>
 
 <h1 id="patterns">Patterns</h1>
-
-<p>:PROPERTIES:
-  :foldername: patterns
-  :END:</p>
 
 <h2 id="playing-events-as-patterns">Playing Events as Patterns</h2>
 
@@ -918,10 +906,6 @@ Prand ((0..20), inf) +&gt;.degree \e;
 
 <h2 id="creating-guis-1">Creating GUIs</h2>
 
-<p>:PROPERTIES:
-  :foldername: gui
-  :END:</p>
-
 <p>This library provides utilities for creating GUI elements and connecting them to both patterns and synths.  Here are some examples.</p>
 
 <h3 id="windows">Windows</h3>
@@ -1121,57 +1105,57 @@ Window (&quot;window name&quot;)
 		<span class="p">})</span>
 	<span class="p">)</span>
 <span class="p">).</span><span class="nx">front</span><span class="p">;</span>
-<span class="nx">END_SRC</span>
+</code></pre></div>
 
-<span class="o">***</span> <span class="nx">How</span> <span class="nx">to</span> <span class="nx">add</span> <span class="nx">all</span> <span class="nx">available</span> <span class="nx">options</span> <span class="k">for</span> <span class="nx">Slider</span> <span class="nx">and</span> <span class="nx">NumberBox</span><span class="p">,</span> <span class="nx">eg</span><span class="p">.</span> <span class="nx">floating</span> <span class="nx">point</span> <span class="nx">digits</span> <span class="nx">etc</span><span class="o">?</span>
+<ul>
+<li>How to add all available options for Slider and NumberBox, eg. floating point digits etc?</li>
+</ul>
 
-<span class="nx">Instead</span> <span class="k">of</span> <span class="nx">adding</span> <span class="nx">more</span> <span class="nx">arguments</span><span class="p">,</span> <span class="nx">move</span> <span class="nx">to</span> <span class="nx">the</span> <span class="nx">next</span> <span class="nx">step</span><span class="o">:</span>
-<span class="nx">Define</span> <span class="nx">a</span> <span class="kr">class</span> <span class="nx">and</span> <span class="nx">provide</span> <span class="nx">the</span> <span class="nx">options</span> <span class="nx">as</span> <span class="nx">defaults</span><span class="p">.</span>
+<p>Instead of adding more arguments, move to the next step:
+Define a class and provide the options as defaults.</p>
 
-<span class="o">***</span> <span class="nx">Next</span> <span class="nx">steps</span>
+<ul>
+<li>Next steps</li>
+</ul>
 
-<span class="mi">1</span><span class="p">.</span> <span class="nx">Control</span> <span class="nx">a</span> <span class="nx">routine</span> <span class="nx">from</span> <span class="nx">a</span> <span class="nx">GUI</span><span class="p">.</span> 
-   <span class="o">-</span> <span class="nx">Let</span> <span class="nx">the</span> <span class="nx">GUI</span> <span class="nx">elements</span> <span class="nx">set</span> <span class="nx">environment</span> <span class="nx">variables</span> <span class="k">of</span> <span class="nx">an</span> <span class="nx">environment</span><span class="p">.</span>
-   <span class="o">-</span> <span class="nx">Let</span> <span class="nx">the</span> <span class="nx">routine</span> <span class="nx">run</span> <span class="nx">within</span> <span class="k">this</span> <span class="nx">environment</span> <span class="nx">to</span> <span class="nx">have</span> <span class="nx">access</span> <span class="nx">to</span> <span class="nx">its</span> <span class="nx">variables</span><span class="p">.</span>
-   <span class="o">-</span> <span class="nx">Save</span> <span class="nx">the</span> <span class="nx">current</span> <span class="nx">settings</span> <span class="nx">on</span> <span class="nx">file</span><span class="p">.</span>
-   <span class="o">-</span> <span class="nx">Reload</span> <span class="nx">settings</span> <span class="nx">from</span> <span class="nx">file</span><span class="p">.</span>
-<span class="mi">2</span><span class="p">.</span> <span class="nx">Do</span> <span class="nx">similar</span> <span class="nx">things</span> <span class="nx">as</span> <span class="kd">with</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">but</span> <span class="kd">with</span> <span class="nx">a</span> <span class="nx">synth</span> <span class="nx">instead</span> <span class="k">of</span> <span class="nx">a</span> <span class="nx">routine</span><span class="p">.</span>
-<span class="mi">3</span><span class="p">.</span> <span class="nx">Do</span> <span class="nx">similar</span> <span class="nx">things</span> <span class="nx">as</span> <span class="kd">with</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">but</span> <span class="kd">with</span> <span class="nx">an</span> <span class="nx">EventPattern</span> <span class="nx">instead</span> <span class="k">of</span> <span class="nx">a</span> <span class="nx">routine</span><span class="p">.</span>
+<ol>
+<li>Control a routine from a GUI. </li>
+<li>Let the GUI elements set environment variables of an environment.</li>
+<li>Let the routine run within this environment to have access to its variables.</li>
+<li>Save the current settings on file.</li>
+<li>Reload settings from file.</li>
+<li>Do similar things as with 1, but with a synth instead of a routine.</li>
+<li>Do similar things as with 1, but with an EventPattern instead of a routine.</li>
+</ol>
 
-<span class="o">*</span> <span class="nx">Playing</span> <span class="nx">buffers</span> <span class="nx">and</span> <span class="nx">grains</span>
-  <span class="o">:</span><span class="nx">PROPERTIES</span><span class="o">:</span>
-  <span class="o">:</span><span class="nx">foldername</span><span class="o">:</span> <span class="nx">buffers_and_grains</span>
-  <span class="o">:</span><span class="nx">END</span><span class="o">:</span>
-<span class="o">**</span> <span class="nx">Triggering</span> <span class="nx">Methods</span>
-<span class="o">:</span><span class="nx">filename</span><span class="o">:</span> <span class="nx">triggering</span><span class="o">-</span><span class="nx">methods</span>
-<span class="o">:</span><span class="nx">END</span><span class="o">:</span>
+<h1 id="playing-buffers-and-grains">Playing buffers and grains</h1>
 
-<span class="nx">This</span> <span class="nx">section</span> <span class="nx">illustrates</span> <span class="nx">several</span> <span class="nx">different</span> <span class="nx">ways</span> <span class="nx">to</span> <span class="nx">trigger</span> <span class="nx">grains</span><span class="p">,</span> <span class="nx">envelopes</span> <span class="nx">or</span> <span class="nx">other</span> <span class="nx">gate</span><span class="o">-</span><span class="nx">triggered</span> <span class="nx">UGens</span>
+<h2 id="triggering-methods">Triggering Methods</h2>
 
-<span class="o">***</span> <span class="nx">Triggering</span> <span class="nx">from</span> <span class="nx">lang</span> <span class="kd">with</span> <span class="nx">set</span>
+<p>This section illustrates several different ways to trigger grains, envelopes or other gate-triggered UGens</p>
 
-<span class="o">***</span> <span class="nx">Triggering</span> <span class="nx">internally</span> <span class="nx">UGens</span>
+<h3 id="triggering-from-lang-with-set">Triggering from lang with set</h3>
 
-<span class="o">****</span> <span class="nx">Impulse</span><span class="p">,</span> <span class="nx">Dust</span> <span class="nx">etc</span><span class="p">.</span>
+<h3 id="triggering-internally-ugens">Triggering internally UGens</h3>
 
-<span class="o">****</span> <span class="nx">Demand</span> <span class="nx">UGens</span>
+<h4 id="impulse-dust-etc">Impulse, Dust etc.</h4>
 
-<span class="o">**</span> <span class="nx">Triggering</span> <span class="nx">EnvGen</span> <span class="nx">and</span> <span class="nx">Line</span>
-<span class="o">:</span><span class="nx">filename</span><span class="o">:</span> <span class="nx">triggering</span><span class="o">-</span><span class="nx">envgen</span>
-<span class="o">:</span><span class="nx">END</span><span class="o">:</span>
+<h4 id="demand-ugens">Demand UGens</h4>
 
-<span class="nx">Besides</span> <span class="nx">controlling</span> <span class="nx">the</span> <span class="nx">amplitude</span> <span class="nx">shape</span> <span class="k">of</span> <span class="nx">a</span> <span class="nx">single</span> <span class="nx">sound</span><span class="o">-</span><span class="nx">event</span> <span class="nx">or</span> <span class="nx">note</span> <span class="k">in</span> <span class="nx">its</span> <span class="nx">entirety</span><span class="p">,</span> <span class="nx">envelopes</span> <span class="nx">can</span> <span class="nx">also</span> <span class="nx">be</span> <span class="nx">used</span> <span class="nx">to</span> <span class="nx">generate</span> <span class="nx">streams</span> <span class="k">of</span> <span class="nx">sound</span> <span class="nx">events</span> <span class="kd">with</span> <span class="nx">the</span> <span class="nx">same</span> <span class="nx">synth</span><span class="p">.</span>  <span class="nx">The</span> <span class="nx">same</span> <span class="nx">technique</span> <span class="nx">can</span> <span class="nx">also</span> <span class="nx">be</span> <span class="nx">applied</span> <span class="nx">to</span> <span class="nx">Line</span> <span class="nx">or</span> <span class="nx">Xline</span> <span class="nx">to</span> <span class="nx">arbitrarily</span> <span class="nx">construct</span> <span class="nx">shapes</span> <span class="nx">controlling</span> <span class="nx">any</span> <span class="nx">parameter</span> <span class="nx">on</span> <span class="nx">the</span> <span class="nx">fly</span><span class="p">.</span>  <span class="nx">Here</span> <span class="nx">are</span> <span class="nx">some</span> <span class="nx">examples</span> <span class="nx">explaining</span> <span class="nx">how</span> <span class="nx">to</span> <span class="k">do</span> <span class="k">this</span> <span class="nx">using</span> <span class="nx">either</span> <span class="nx">just</span> <span class="nx">the</span> <span class="k">default</span> <span class="o">*</span><span class="nx">SCClassLibrary</span><span class="o">*</span> <span class="nx">and</span> <span class="nx">the</span> <span class="o">*</span><span class="nx">sc</span><span class="o">-</span><span class="nx">hacks</span><span class="o">*</span> <span class="nx">library</span><span class="p">.</span>
+<h2 id="triggering-envgen-and-line">Triggering EnvGen and Line</h2>
 
-<span class="nx">Two</span> <span class="nx">items</span> <span class="nx">are</span> <span class="nx">necessary</span> <span class="nx">to</span> <span class="nx">re</span><span class="o">-</span><span class="nx">trigger</span> <span class="nx">envelope</span> <span class="nx">or</span> <span class="nx">line</span><span class="o">-</span><span class="nx">segment</span> <span class="nx">UGens</span> <span class="k">in</span> <span class="nx">a</span> <span class="nx">Synth</span><span class="o">:</span>
-<span class="mi">1</span><span class="p">.</span> <span class="nx">The</span> <span class="o">=</span><span class="nx">doneAction</span><span class="o">=</span> <span class="nx">argument</span> <span class="k">of</span> <span class="nx">the</span> <span class="nx">UGen</span> <span class="k">in</span> <span class="nx">question</span> <span class="nx">must</span> <span class="nx">have</span> <span class="nx">a</span> <span class="nx">value</span> <span class="k">of</span> <span class="mi">0</span> <span class="k">in</span> <span class="nx">order</span> <span class="nx">to</span> <span class="nx">keep</span> <span class="nx">the</span> <span class="nx">Synth</span> <span class="nx">alive</span> <span class="nx">afer</span> <span class="nx">the</span> <span class="nx">UGen</span> <span class="nx">has</span> <span class="nx">finished</span> <span class="nx">playing</span><span class="p">.</span>
-<span class="mi">2</span><span class="p">.</span> <span class="nx">The</span> <span class="nx">UGen</span> <span class="k">in</span> <span class="nx">question</span> <span class="nx">must</span> <span class="nx">use</span> <span class="nx">a</span> <span class="nx">control</span> <span class="k">in</span> <span class="nx">its</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">argument</span><span class="p">.</span> <span class="nx">The</span> <span class="nx">UGen</span> <span class="nx">restarts</span> <span class="nx">whenever</span> <span class="nx">the</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">the</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">control</span> <span class="nx">changes</span> <span class="nx">from</span> <span class="mi">0</span> <span class="nx">to</span> <span class="mi">1</span><span class="p">.</span>  <span class="nx">Furthermore</span><span class="p">,</span> <span class="k">if</span> <span class="nx">the</span> <span class="nx">Envelope</span> <span class="nx">contains</span> <span class="nx">a</span> <span class="nx">release</span> <span class="nx">part</span><span class="p">,</span> <span class="nx">then</span> <span class="nx">the</span> <span class="nx">release</span> <span class="nx">part</span> <span class="nx">will</span> <span class="nx">be</span> <span class="nx">triggered</span> <span class="nx">when</span> <span class="nx">the</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">control</span> <span class="nx">changes</span> <span class="nx">from</span> <span class="mi">1</span> <span class="nx">to</span> <span class="mi">0</span><span class="p">.</span>
+<p>Besides controlling the amplitude shape of a single sound-event or note in its entirety, envelopes can also be used to generate streams of sound events with the same synth.  The same technique can also be applied to Line or Xline to arbitrarily construct shapes controlling any parameter on the fly.  Here are some examples explaining how to do this using either just the default <strong>SCClassLibrary</strong> and the <strong>sc-hacks</strong> library.</p>
 
-<span class="o">***</span> <span class="nx">Caution</span><span class="o">:</span> <span class="nx">Use</span> <span class="nx">a</span> <span class="nx">name</span> <span class="nx">other</span> <span class="nx">than</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">as</span> <span class="nx">control</span> <span class="nx">name</span> <span class="k">for</span> <span class="nx">triggering</span>
+<ol>
+Two items are necessary to re-trigger envelope or line-segment UGens in a Synth:
+<li>The <code>doneAction</code> argument of the UGen in question must have a value of 0 in order to keep the Synth alive afer the UGen has finished playing.</li>
+<li>The UGen in question must use a control in its <code>gate</code> argument. The UGen restarts whenever the value of the <code>gate</code> control changes from 0 to 1.  Furthermore, if the Envelope contains a release part, then the release part will be triggered when the <code>gate</code> control changes from 1 to 0.</li>
+</ol>
 
-<span class="o">*</span><span class="nx">NOTE</span><span class="o">:</span> <span class="nx">The</span> <span class="nx">control</span> <span class="nx">used</span> <span class="nx">to</span> <span class="nx">trigger</span> <span class="nx">the</span> <span class="nx">EnvGen</span> <span class="o">/</span><span class="nx">must</span> <span class="nx">have</span> <span class="nx">a</span> <span class="nx">name</span> <span class="nx">different</span> <span class="nx">than</span><span class="o">/</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span><span class="p">,</span> <span class="nx">otherwise</span> <span class="nx">SC</span> <span class="nx">will</span> <span class="nx">be</span> <span class="nx">unable</span> <span class="nx">to</span> <span class="nx">release</span> <span class="nx">the</span> <span class="nx">synth</span> <span class="nx">because</span> <span class="nx">it</span> <span class="nx">creates</span> <span class="nx">a</span> <span class="nx">second</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">control</span> <span class="nx">by</span> <span class="k">default</span> <span class="nx">when</span> <span class="nx">creating</span> <span class="nx">synthdefs</span> <span class="nx">from</span> <span class="nx">functions</span><span class="p">.</span>  <span class="nx">For</span> <span class="nx">example</span><span class="o">:</span> 
+<h3 id="caution-use-a-name-other-than-gate-as-control-name-for-triggering">Caution: Use a name other than <code>gate</code> as control name for triggering</h3>
 
-<span class="err">#</span><span class="o">+</span><span class="nx">BEGIN_SRC</span> <span class="nx">javascript</span>
-  <span class="c1">//: This is wrong:</span>
+<p>*NOTE: The control used to trigger the EnvGen <em>must have a name different than</em> <code>gate</code>, otherwise SC will be unable to release the synth because it creates a second <code>gate</code> control by default when creating synthdefs from functions.  For example:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">//: This is wrong:</span>
   <span class="nx">a</span> <span class="o">=</span>  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">gate</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
 	  <span class="kd">var</span> <span class="nx">env</span><span class="p">;</span>
 	  <span class="nx">env</span> <span class="o">=</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">adsr</span> <span class="p">();</span>
@@ -1296,10 +1280,6 @@ Window (&quot;window name&quot;)
 
 <h2 id="about-server-objects">About Server Objects</h2>
 
-<p>:PROPERTIES:
-  :foldername: server_objects
-  :END:</p>
-
 <h3 id="server-objects-managed-by-nevent">Server objects managed by Nevent</h3>
 
 <p>These are:</p>
@@ -1314,10 +1294,7 @@ Window (&quot;window name&quot;)
 
 <h2 id="server-and-nevent">Server and Nevent</h2>
 
-<p>:PROPERTIES:
-   :filename: server-and-nevent
-   :END:
-Each <code>Nevent</code> Environment has  only one Server instance.  Synths and Patterns play in that instance.</p>
+<p>Each <code>Nevent</code> Environment has  only one Server instance.  Synths and Patterns play in that instance.</p>
 
 <p>Open issue: Where to store the server of an Environment.  Possibilities:</p>
 
@@ -1332,17 +1309,9 @@ Each <code>Nevent</code> Environment has  only one Server instance.  Synths and 
 
 <h2 id="target-group">Target Group</h2>
 
-<p>:PROPERTIES:
-   :filename: target-group
-   :END:</p>
-
 <h3 id="maintaining-target-group-order">Maintaining Target Group Order</h3>
 
 <h2 id="busses">Busses</h2>
-
-<p>:PROPERTIES:
-   :filename: busses
-   :END:</p>
 
 <h3 id="bus-allocation">Bus Allocation</h3>
 
@@ -1350,17 +1319,9 @@ Each <code>Nevent</code> Environment has  only one Server instance.  Synths and 
 
 <h2 id="buffers">Buffers</h2>
 
-<p>:PROPERTIES:
-   :filename: buffers
-   :END:</p>
-
 <h1 id="basic-classes">Basic Classes</h1>
 
 <h2 id="registry-hierarchical-namespaces">Registry: Hierarchical Namespaces</h2>
-
-<p>:PROPERTIES:
-  :foldername: basic_classes
-  :END:</p>
 
 <p>This class uses the <code>Library</code> class to store and  retrieve objects using any array of objects as key.  This extends the way that <code>Pdef</code>, <code>Ndef</code>, <code>OSCdef</code> work, making it possible for any class to store its instances in an arbitrary hierarchical path, without subclassing.  To create this behavior one can then add a method to <code>Symbol</code> for accessing the kind of object needed.  For example: <code>\aSymbol.oscFunc</code> accesses <code>OSCFunc</code> instances. This also allows easier customization of how the object is created if not found.</p>
 
@@ -1448,27 +1409,11 @@ Each <code>Nevent</code> Environment has  only one Server instance.  Synths and 
 <span class="p">}</span>
 </code></pre></div>
 
-<h1 id="subsections">Subsections</h1>
+<h1 id="use-examples">Use examples</h1>
 
 <p>Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.</p>
 
-<p>Testing here.</p>
-
-<h2 id="subsections-1">Subsections</h2>
-
-<p>Are also displayed Testing here.</p>
-
-<h3 id="subsubsections">Subsubsections</h3>
-
-<p>Are also displayed</p>
-
-<h1 id="use-examples">Use examples</h1>
-
 <h2 id="pattern-and-synth-play-scenarios">Pattern and Synth play scenarios</h2>
-
-<p>:PROPERTIES:
-  :foldername: use_examples
-  :END:</p>
 
 <p><code>Event:eplay</code> and <code>SynthPlayer</code> can play with several instances in parallel on the same environment, and also provide several additional features.  This section gives some examples that explore these features and show how they work and notes some questions regarding future features.</p>
 
@@ -1481,10 +1426,6 @@ Each <code>Nevent</code> Environment has  only one Server instance.  Synths and 
 <h1 id="playing-with-data">Playing with data</h1>
 
 <h2 id="playing-with-data-1">Playing With Data</h2>
-
-<p>:PROPERTIES:
-  :foldername: data
-  :END:</p>
 
 <p>This section discusses problems and approaches for sonifying data using EventPlayer and SynthPlayer.</p>
 
@@ -1500,40 +1441,7 @@ Each <code>Nevent</code> Environment has  only one Server instance.  Synths and 
 
 <h1 id="making-this-site">Making this site</h1>
 
-<p>This site was made with <a href="https://gohugo.io/" title="hugo" target="_blank">hugo</a> and exported using this script:</p>
-<div class="highlight"><pre><code class="language-shell" data-lang="shell"><span></span><span class="ch">#!/bin/sh</span>
-<span class="nv">DIR</span><span class="o">=</span><span class="k">$(</span>dirname <span class="s2">&quot;</span><span class="nv">$0</span><span class="s2">&quot;</span><span class="k">)</span>
-
-<span class="nb">cd</span> <span class="nv">$DIR</span>/..
-
-<span class="k">if</span> <span class="o">[[</span> <span class="k">$(</span>git status -s<span class="k">)</span> <span class="o">]]</span>
-<span class="k">then</span>
-    <span class="nb">echo</span> <span class="s2">&quot;The working directory is dirty. Please commit any pending changes.&quot;</span>
-    <span class="nb">exit</span> 1<span class="p">;</span>
-<span class="k">fi</span>
-
-<span class="nb">echo</span> <span class="s2">&quot;Deleting old publication&quot;</span>
-rm -rf public
-mkdir public
-git worktree prune
-rm -rf .git/worktrees/public/
-
-<span class="nb">echo</span> <span class="s2">&quot;Checking out gh-pages branch into public&quot;</span>
-git worktree add -B gh-pages public origin/gh-pages
-
-<span class="nb">echo</span> <span class="s2">&quot;Removing existing files&quot;</span>
-rm -rf public/*
-
-<span class="nb">echo</span> <span class="s2">&quot;Generating site&quot;</span>
-hugo
-
-<span class="nb">echo</span> <span class="s2">&quot;Updating gh-pages branch&quot;</span>
-<span class="nb">cd</span> public <span class="o">&amp;&amp;</span> git add --all <span class="o">&amp;&amp;</span> git commit -m <span class="s2">&quot;Publishing to gh-pages (publish.sh)&quot;</span>
-
-git push -v origin gh-pages<span class="se">\:</span>refs/heads/gh-pages
-</code></pre></div>
-
-<p>The script was placed in the _scripts directory under the root directory of the site. <code>[root+]/_scripts/publish_to_ghpages.sh</code></p>
+<p>This site was made with <a href="https://gohugo.io/" title="hugo" target="_blank">hugo</a> usin the <a href="https://themes.gohugo.io/theme/docuapi/" title="docuapi" target="_blank">docuapi</a> theme.</p>
 
 <p>You can clone the source for this site from: <a href="https://github.com/iani/sc-hacks-doc" title="https://github.com/iani/sc-hacks-doc" target="_blank">https://github.com/iani/sc-hacks-doc</a>.</p>
 
