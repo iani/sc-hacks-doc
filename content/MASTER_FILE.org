@@ -114,6 +114,13 @@ SuperCollider (Github) has a decent IDE these days. But perhaps you’d like to 
 **** Getting the source
 You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel. 
 
+#+BEGIN_SRC shell
+git clone https://github.com/supercollider/supercollider.git
+cd supercollider/editors/scel
+#+END_SRC
+
+
+
 **** Making sc->emacs available to SuperCollider
 
 The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating this in the SuperCollider interpreter:
@@ -124,11 +131,9 @@ Platform.userAppSupportDir;
 
 On OSX that will be ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist.
 
-Clone the source to a directory of your choice.  Then copy the supercollider->emacs part in SuperCollider extensions.
+Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.
 
 #+BEGIN_SRC shell
-git clone https://github.com/supercollider/supercollider.git
-cd supercollider/editors/scel
 sudo mkdir ~/Library/Application\ Support/SuperCollider/Extensions
 sudo cp -r sc ~/Library/Application\ Support/SuperCollider/Extensions
 git clone https://github.com/supercollider/supercollider.git
