@@ -1,0 +1,1559 @@
+<!doctype html>
+<html>
+<head>
+	<meta name="generator" content="Hugo 0.25" />
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>sc-hacks library documentation</title>
+    <link href='/sc-hacks-doc/slate/stylesheets/monokai.css' rel="stylesheet" media="screen" />
+<link href='/sc-hacks-doc/slate/stylesheets/screen.css' rel="stylesheet" media="screen" />
+<link href='/sc-hacks-doc/slate/stylesheets/print.css' rel="stylesheet" media="print" />
+
+    
+<script src='/sc-hacks-doc/slate/javascripts/all.js'></script>
+
+    
+</head>
+<body class="index" data-languages="[ &#34;javascript&#34; ,  &#34;shell&#34; ,  &#34;emacs-lisp&#34; ]">
+    <a href="#" id="nav-button">
+        <span>
+        NAV
+        <img src='/sc-hacks-doc/slate/images/navbar.png'/>
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+        
+         <img src='/sc-hacks-doc/images/logo.png' />
+        
+        <div class="lang-selector">
+            
+            <a href="#" data-language-name="javascript">SuperCollider</a>
+            
+            <a href="#" data-language-name="shell">Shell</a>
+            
+            <a href="#" data-language-name="emacs-lisp">emacs-lisp</a>
+            
+        </div>
+         
+        
+        <div class="search">
+            <input type="text" class="search" id="input-search" placeholder='Search'>
+        </div>
+        <ul class="search-results"></ul>
+        
+        <div id="toc">
+        </div>
+         
+        
+        <ul class="toc-footer">
+            
+            <li><a href="https://github.com/iani/sc-hacks">SC-HACKS SOURCE AT GITHUB</a></li>
+            
+            <li>Documentation Powered by <a href="https://github.com/bep/docuapi" target="_blank">DocuAPI</a></li>
+            
+            <li>Hugo Theme by <a href="https://github.com/bep" target="_blank">bep</a></li>
+            
+        </ul>
+        
+        
+    </div>
+    <div class="page-wrapper">
+        <div class="dark-box"></div>
+        <div class="content">
+            
+    
+        <h1 id="introduction">Introduction</h1>
+
+<h2 id="anti-mythology">Anti-Mythology</h2>
+
+<p><strong>As of August 2017, sc-hacks is being re-done from scratch.
+Both the library and its API will change in the near future.</strong></p>
+
+<p>The purpose of the <em>sc-hacks</em> library is to make experimentation and music making in <a href="http://supercollider.github.io/" title="SuperCollider" target="_blank">SuperCollider</a> easier, by offering simpler and shorter coding options for tasks that usually require complex and careful coding. Such are:</p>
+
+<ul>
+<li>Replace one synth with another seamlessly while playing</li>
+<li>Freely change the contents of patterns while playing</li>
+<li>Set the parameters of synths either by setting environment variables or through a gui</li>
+<li>Link outputs and inputs of synths and place them in the right order to filter the output of a synth with another synth</li>
+<li>Manage sets of code files to be loaded at startup, and of audio files to be loaded when the server boots</li>
+<li>Map the control signal of synth functions or envelopes to the parameters of a synth.</li>
+</ul>
+
+<h3 id="caveat">Caveat</h3>
+
+<p><em>sc-hacks</em> is in <strong>permanent alpha</strong>.  According to <a href="http://semver.org/" title="semantic versioning" target="_blank">semantic versioning</a>, <em>"If you’re changing the API every day you should either still be in version 0.y.z or on a separate development branch working on the next major version."</em>.  This library will remain 0.n alpha for a long time, as changes in operator names and syntax are happening constantly.</p>
+
+<h2 id="history">History</h2>
+
+<p>Initially, <em>sc-hacks</em> was motivated by the need to improve some aspects <a href="http://doc.sccode.org/Overviews/JITLib.html" title="JITLib" target="_blank">JITLib</a>, such as:</p>
+
+<ul>
+<li>The use of signal-copying synths to audio busses for linking i/o between synths.</li>
+<li>The modification of patterns while they are being played with Pbind.</li>
+</ul>
+
+<p>Fascinated by the => operator of <a href="http://chuck.cs.princeton.edu/doc/language/" title="ChucK" target="_blank">ChucK</a>, and by the idea of <a href="http://doc.sccode.org/Reference/Adverbs.html" title="adverbs for binary operators" target="_blank">adverbs for binary operators</a> in SuperCollider, I wanted to explore binary operators as a way to write commonly used expressions in a shorter way.</p>
+
+<p>The first results of these attempts are the libraries <a href="https://github.com/iani/tiny-sc" title="tiny-sc" target="_blank">tiny-sc</a> and <a href="https://github.com/iani/tiny-inc" title="tiny-inc" target="_blank">tiny-inc</a>.  These have many shortcomings, which the present library is trying to fix.  At present, <em>sc-hacks</em> is being redesigned once more, in order to implement two of the most attractive features of JITLib: sequential playing synth-functions and patterns in one <code>Ndef</code> and linking the output of an Ndef to the input of another Ndef.</p>
+
+<h2 id="roadmap">Roadmap</h2>
+
+<h3 id="work-in-progress-august-2017">Work in progress - August 2017</h3>
+
+<ul>
+<li>Dispatch class for use in Nevent</li>
+<li>Rework of Group allocation scheme</li>
+<li>New class: Player for playing Synths and Patterns in the same instance.</li>
+</ul>
+
+<h3 id="future-plans-audio-feedback-between-synths">Future plans: Audio Feedback between synths</h3>
+
+<p>A particularly interesting case is when an Ndef reads and processes its own output.  An implementation of this feature, using <a href="http://doc.sccode.org/Classes/InFeedback.html" title="InFeedback" target="_blank">InFeedback</a> is planned for the future.</p>
+
+<h2 id="by-way-of-demo">By way of demo</h2>
+
+<p>INCOMPLETE</p>
+
+<h3 id="synths">Synths</h3>
+
+<p>Start a synth</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">example1</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Control the parameters of the synth from the enviroment</p>
+
+<p>Replace the synth with a different synth</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">{</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">440</span><span class="p">,</span> <span class="p">)[])</span> <span class="p">}</span>
+</code></pre></div>
+
+<p>Notice that the new synth reads the current values for each parameter from the environment.</p>
+
+<p>Use a simple gui to control synth parameters</p>
+
+<p>Start a second synth in a new environment</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>
+</code></pre></div>
+
+<p>Notice that the synth in the new environment</p>
+
+<p>One can jump between</p>
+
+<h2 id="design">Design</h2>
+
+<h2 id="the-trouble-with-operators">The trouble with operators</h2>
+
+<h2 id="a-word-or-2-about-emacs">A word (or 2) about EMACS</h2>
+
+<h3 id="startup-files-and-buffers-management-with-dired-bookmarks-projectile">Startup files and buffers management with dired, bookmarks, projectile</h3>
+
+<p><a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html" title="bookmarks" target="_blank">bookmarks</a>, <a href="https://www.emacswiki.org/emacs/BookmarkPlus" title="bookmark+" target="_blank">bookmark+</a></p>
+
+<h3 id="obtaining-emacs">Obtaining emacs</h3>
+
+<p><a href="http://www.emacsformacosx.com" title="http://www.emacsformacosx.com" target="_blank">http://www.emacsformacosx.com</a></p>
+
+<h3 id="configuring-emacs-for-supercollider">Configuring emacs for SuperCollider</h3>
+
+<p>There is a very good guide here: <a href="http://www.rockhoppertech.com/blog/supercollider-with-emacs-on-osx/" title="http://www.rockhoppertech.com/blog/supercollider-with-emacs-on-osx/" target="_blank">http://www.rockhoppertech.com/blog/supercollider-with-emacs-on-osx/</a></p>
+
+<p>I quote from the guide below:</p>
+
+<p><strong>BEGIN QUOTE</strong></p>
+
+<p>SuperCollider with Emacs on OSX</p>
+
+<p>By GENE DE LISA | Published: MAY 16, 2013</p>
+
+<p>SuperCollider (Github) has a decent IDE these days. But perhaps you’d like to use an actual editor like Emacs.</p>
+
+<p>[...]</p>
+
+<h4 id="getting-the-source">Getting the source</h4>
+
+<p>You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel.</p>
+
+<h4 id="making-sc-emacs-available-to-supercollider">Making sc->emacs available to SuperCollider</h4>
+
+<p>The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating this in the SuperCollider interpreter:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">Platform</span><span class="p">.</span><span class="nx">userAppSupportDir</span><span class="p">;</span>
+</code></pre></div>
+
+<p>On OSX that will be ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist.</p>
+
+<p>Clone the source to a directory of your choice.  Then copy the supercollider->emacs part in SuperCollider extensions.</p>
+<div class="highlight"><pre><code class="language-shell" data-lang="shell"><span></span>git clone https://github.com/supercollider/supercollider.git
+<span class="nb">cd</span> supercollider/editors/scel
+sudo mkdir ~/Library/Application<span class="se">\ </span>Support/SuperCollider/Extensions
+sudo cp -r sc ~/Library/Application<span class="se">\ </span>Support/SuperCollider/Extensions
+git clone https://github.com/supercollider/supercollider.git
+</code></pre></div>
+
+<h4 id="making-emacs-sc-available-to-emacs">Making emacs->sc available to emacs</h4>
+
+<p>You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to ~/.emacs.d/vendor/scel/el directory.</p>
+
+<p>Add this to your init file:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">(</span><span class="nx">add</span><span class="o">-</span><span class="nx">to</span><span class="o">-</span><span class="nx">list</span> <span class="s1">&#39;load-path &quot;~/.emacs.d/vendor/scel/el&quot;)</span>
+<span class="s1">(require &#39;</span><span class="nx">sclang</span><span class="p">)</span>
+<span class="p">(</span><span class="nx">add</span><span class="o">-</span><span class="nx">to</span><span class="o">-</span><span class="nx">list</span> <span class="s1">&#39;load-path &quot;~/.emacs.d/vendor/scel/el&quot;)</span>
+<span class="s1">(require &#39;</span><span class="nx">sclang</span><span class="p">)</span>
+</code></pre></div>
+
+<p>You need to set your path within Emacs also. The sclang program is located in <code>/Applications/SuperCollider/SuperCollider.app/Contents/Resources</code>, 
+so that needs to be in your path.</p>
+
+<p>(For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).</p>
+<div class="highlight"><pre><code class="language-emacs-lisp" data-lang="emacs-lisp"><span></span><span class="p">(</span><span class="nv">setenv</span> <span class="s">&quot;PATH&quot;</span> <span class="p">(</span><span class="nf">concat</span> <span class="p">(</span><span class="nv">getenv</span> <span class="s">&quot;PATH&quot;</span><span class="p">)</span> <span class="s">&quot;:/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span><span class="p">))</span>
+<span class="p">(</span><span class="k">setq</span> <span class="nv">exec-path</span> <span class="p">(</span><span class="nf">append</span> <span class="nv">exec-path</span> <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;/Applications/SuperCollider&quot;</span>  <span class="s">&quot;/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span> <span class="p">)))</span>
+<span class="p">(</span><span class="nv">setenv</span> <span class="s">&quot;PATH&quot;</span> <span class="p">(</span><span class="nf">concat</span> <span class="p">(</span><span class="nv">getenv</span> <span class="s">&quot;PATH&quot;</span><span class="p">)</span> <span class="s">&quot;:/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span><span class="p">))</span>
+<span class="p">(</span><span class="k">setq</span> <span class="nv">exec-path</span> <span class="p">(</span><span class="nf">append</span> <span class="nv">exec-path</span> <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;/Applications/SuperCollider&quot;</span>  <span class="s">&quot;/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span> <span class="p">)))</span>
+</code></pre></div>
+
+<p>Launch Emacs. When the dust settles, type</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">M</span><span class="o">-</span><span class="nx">x</span> <span class="nx">sclang</span><span class="o">-</span><span class="nx">start</span>
+</code></pre></div>
+
+<p>The interpreter will start in a buffer named SCLang:PostBuffer and you will be presented with a new buffer named SCLang:Workspace.</p>
+
+<p>There will be a SCLang menu and you can execute commands from there. You’ll see the C-x C-f will evaluate the entire document. (Or type C-c C-p b to boot. Of course you can type C-h m to get the help for sclang mode).</p>
+
+<p>[...]</p>
+
+<p>Awesome, thank you! I wasn’t doing two things exactly right and this post was the missing link among all the various bits of emacs-supercollider info out there.</p>
+
+<p>Two notes that may be helpful to others, or may simply be the result of mistakes on my part:</p>
+
+<ol>
+<li>In my scel/el directory, there was a file with a .in ending (specifically “sclang-vars.el.in”) that was causing a problem.</li>
+It has something to do with cmake, I’ve inferred, but I simply just changed to the file ending to “.el” and I stopped getting the error.
+</ol>
+
+<ol>
+<li>Apparently, there were/are two “Document.sc” files (one in Supercollider/extensions directory and one buried in the SCClassLibrary/Common/GUI directory); that caused an error. I simply removed the one from the Supercollider/extensions (they appeared to hold the same contents) and, voilá/voilà!</li>
+</ol>
+
+<p>Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!</p>
+
+<p><strong>END QUOTE</strong></p>
+
+<h1 id="operators-and-language-design">Operators and Language Design</h1>
+
+<h2 id="operator-overview">Operator Overview</h2>
+
+<p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  The syntax of a binary operator in SuperCollider is:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="nx">operator</span><span class="p">[</span><span class="nx">optional</span><span class="o">:</span> <span class="p">.</span><span class="nx">adverb</span><span class="p">]</span> <span class="nx">argument</span>
+</code></pre></div>
+
+<p>For example:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// receiver      operator adverb   argument</span>
+<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span> <span class="err">\</span><span class="nx">mysynth</span>
+</code></pre></div>
+
+<p>Here is a list of operators introduced in <em>sc-hacks</em>.</p>
+
+<h3 id="list-of-operators">List of Operators</h3>
+
+<p>Planned are 4 operators taking functions as argument, 4 operators taking event as argument, and 5 operators taking a symbol as argument. Currently (26 Jun 2017 08:57) the 8 first operators have been tested.</p>
+
+<ol>
+<li><code>{ function } +&gt; synthname </code> play as synth</li>
+<li><code>{ function } *&gt; synthname</code> play as routine (fork)</li>
+<li><code>{ function } **&gt; synthname</code> wrap in loop and play as routine (fork)</li>
+<li><code>{ function } &lt;* key</code> evaluate function whenever value of key is set in envir</li>
+<li><code>( event ) @&gt; patternname</code> play</li>
+<li><code>( event ) @&gt;+ patternname</code> addEvent</li>
+<li><code>( event ) @&gt;! patternname</code> setEvent</li>
+<li><code>( event ) &lt;@ key</code> play next event from EventStream created from event, whenever value of key is set in envir.</li>
+<li><code>receiver &amp;&gt; argument</code> set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)</li>
+<li><code>receiver &lt;&amp; argument</code> set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)</li>
+<li><code>receiver &amp;&gt;! argument</code> set the output bus of the receiver to the input bus of the argument, - on a new private bus (both receiver and argument change)</li>
+<li><code>receiver &amp;/&gt; argument</code> Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth. (neither receiver nor argument changes).</li>
+<li><code>receiver &lt;/&gt; argument</code> Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths (neither receiver nor argument changes).</li>
+</ol>
+
+<h3 id="examples">Examples</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// ================================================================</span>
+<span class="c1">// ================ Routines</span>
+<span class="c1">//: Start a routine </span>
+<span class="p">{</span>
+	<span class="nx">loop</span> <span class="p">{</span>
+		<span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">500</span> <span class="nx">rrand</span><span class="o">:</span> <span class="mi">4000</span><span class="p">;</span>
+		<span class="mi">1</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">rout1</span>
+<span class="c1">//: replace this with a different routine</span>
+<span class="p">{</span>
+	<span class="nx">loop</span> <span class="p">{</span>
+		<span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">100</span> <span class="nx">rrand</span><span class="o">:</span> <span class="mi">400</span><span class="p">;</span>
+		<span class="mf">0.2</span><span class="p">.</span><span class="nx">exprand</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">).</span><span class="nx">wait</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">rout1</span>
+<span class="c1">//: Shortcut for loop {}</span>
+<span class="p">{</span>
+	<span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">50</span> <span class="nx">exprand</span><span class="o">:</span> <span class="mi">400</span><span class="p">;</span>
+	<span class="mf">0.1</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+<span class="p">}</span> <span class="o">**&gt;</span> <span class="err">\</span><span class="nx">rout1</span><span class="p">;</span>
+<span class="c1">//: stop the routine</span>
+<span class="err">\</span><span class="nx">rout1</span><span class="p">.</span><span class="nx">routine</span><span class="p">.</span><span class="nx">stop</span><span class="p">;</span>
+
+<span class="c1">// ================================================================</span>
+<span class="c1">// ================ Patterns</span>
+<span class="c1">//: start a new pattern</span>
+<span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pseq</span> <span class="p">((</span><span class="mi">0</span><span class="p">..</span><span class="mi">7</span><span class="p">),</span> <span class="nx">inf</span><span class="p">))</span> <span class="err">@</span><span class="o">&gt;</span> <span class="err">\</span><span class="nx">pat1</span><span class="p">;</span>
+<span class="c1">//: replace the pattern running at \pat1 with a new one</span>
+<span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pwhite</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="nx">inf</span><span class="p">))</span> <span class="err">@</span><span class="o">&gt;</span> <span class="err">\</span><span class="nx">pat1</span><span class="p">;</span>
+<span class="c1">//: add event&#39;s contents to the playing event</span>
+<span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="nx">inf</span><span class="p">))</span> <span class="err">@</span><span class="o">&gt;+</span> <span class="err">\</span><span class="nx">pat1</span><span class="p">;</span>
+<span class="c1">//: testing function in event key</span>
+<span class="c1">// Defer runs the function after the event has played all parameters</span>
+<span class="p">(</span><span class="nx">func1</span><span class="o">:</span> <span class="p">{{</span> <span class="nx">postf</span><span class="p">(</span><span class="s2">&quot;freq param is: %\n&quot;</span><span class="p">,</span> <span class="o">~</span><span class="nx">freq</span> <span class="p">)}.</span><span class="nx">defer</span> <span class="p">})</span> <span class="err">@</span><span class="o">&gt;+</span> <span class="err">\</span><span class="nx">pat1</span><span class="p">;</span>
+
+<span class="c1">//: ================================================================</span>
+<span class="c1">//: ================ More function operators</span>
+<span class="c1">//: Testing function in envir</span>
+<span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">|</span> <span class="p">{</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">EnvGen</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="nx">Env</span><span class="p">.</span><span class="nx">perc</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)))}.</span><span class="nx">play</span> <span class="p">}</span> <span class="o">&lt;*</span> <span class="err">\</span><span class="nx">freq</span><span class="p">;</span>
+
+<span class="c1">//: ========== Polyphony: EventStreams triggered by a pattern playing in currentEnvironment</span>
+<span class="p">()</span> <span class="err">@</span><span class="o">&gt;</span> <span class="err">\</span><span class="nx">pat1</span><span class="p">;</span>
+<span class="c1">// { ~freq.postln; } &lt;* \freq; // just as a test;</span>
+<span class="p">(</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">((</span><span class="mi">0</span><span class="p">..</span><span class="mi">7</span><span class="p">),</span> <span class="nx">inf</span><span class="p">))</span> <span class="o">&lt;</span><span class="err">@</span> <span class="err">\</span><span class="nx">freq</span><span class="p">;</span>
+<span class="c1">//: add another stream on a different label</span>
+<span class="p">(</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">((</span><span class="mi">0</span><span class="p">..</span><span class="mi">7</span><span class="p">).</span><span class="nx">scramble</span><span class="p">,</span> <span class="nx">inf</span><span class="p">))</span> <span class="o">&lt;</span><span class="err">@</span><span class="p">.</span><span class="nx">label2</span> <span class="err">\</span><span class="nx">freq</span><span class="p">;</span>
+<span class="c1">//: add another stream on a different label yet</span>
+<span class="p">(</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">((</span><span class="mi">0</span><span class="p">..</span><span class="mi">7</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">&lt;</span><span class="err">@</span><span class="p">.</span><span class="nx">label3</span> <span class="err">\</span><span class="nx">freq</span><span class="p">;</span>
+<span class="c1">//:</span>
+</code></pre></div>
+
+<h3 id="additional-possible-operators">Additional possible operators</h3>
+
+<p>Draft:</p>
+
+<h4 id="within-the-currentenvironment-nevent">Within the currentEnvironment Nevent</h4>
+
+<p>When one (or any) parameter in the currentEnvironment changes:</p>
+
+<ol>
+<li>Play an event (from an EventPattern / EventStream) <code>&lt;@</code></li>
+<li>Play a synth from a SynthPlayer <code>&lt;+</code></li>
+</ol>
+
+<h4 id="within-an-eventstreamplayer-playing-within-an-nevent-with-event">Within an EventStreamPlayer playing within an Nevent (with Event @>)</h4>
+
+<ul>
+<li>Play an event (from an EventPattern / EventStream)</li>
+<li>Evaluate a function</li>
+</ul>
+
+<h3 id="general-principle-4-types-of-objects-stored-under-names-in-environments">General principle: 4 types of objects stored under names in environments.</h3>
+
+<h3 id="function-play-envir-playername">Function:play: <code>{} +&gt;.envir \playerName</code></h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">// Start a synth and store it in \synth1</span>
+  <span class="p">{</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="err">\</span><span class="nx">amp</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">synth1</span><span class="p">;</span>
+  <span class="c1">//: Start a routine modifying the freq parameter</span>
+  <span class="p">{</span>
+	  <span class="nx">loop</span> <span class="p">{</span>
+		  <span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">50</span> <span class="nx">rrand</span><span class="o">:</span> <span class="mi">100</span><span class="p">;</span>
+		  <span class="mf">5.1</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">}</span>
+  <span class="p">}</span> <span class="nx">rout</span><span class="o">:</span> <span class="err">\</span><span class="nx">envir</span><span class="p">;</span>
+  <span class="c1">//: Replace the function playing in \synth1</span>
+  <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="err">\</span><span class="nx">amp</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">)),</span> <span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">synth1</span><span class="p">;</span>
+  <span class="c1">//: Start a synth in a different environment</span>
+  <span class="p">{</span> <span class="nx">LFSaw</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="err">\</span><span class="nx">amp</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">envir2</span> <span class="err">\</span><span class="nx">synth1</span><span class="p">;</span>
+  <span class="c1">//: Start a routine modifying the freq parameter in the second environment</span>
+  <span class="p">{</span>
+	  <span class="nx">loop</span> <span class="p">{</span>
+		  <span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span> <span class="nx">rrand</span><span class="o">:</span> <span class="mi">4000</span><span class="p">;</span>
+		  <span class="mf">0.1</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">}</span>
+  <span class="p">}</span> <span class="nx">rout</span><span class="o">:</span> <span class="err">\</span><span class="nx">envir2</span><span class="p">;</span>
+  <span class="c1">//: Test the contents of the library</span>
+  <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">dictionary</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="accessing-synthplayers-eventpatterns-eventstreamplayers-routines-and-windows">Accessing SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows</h3>
+
+<p>The following messages are used to access a SynthPlayer, EventStreamPlayer, Routine or Window stored under a name in an environment.  If no enviroment is specified, then the currentEnvironment is used.</p>
+
+<ul>
+<li><code>symbol.synth(optional: envir)</code></li>
+<li><code>symbol.pattern(optional: envir)</code></li>
+<li><code>symbol.routine(optional: envir)</code></li>
+<li><code>symbol.window(optional: envir)</code></li>
+</ul>
+
+<p>Additionally, the following introspection methods are provided:</p>
+
+<ul>
+<li><code>Nevent:envirs</code> : Dictionary with all Nenvirs stored in Library under <code>\environments</code></li>
+<li><code>Registry;envirs</code> : Synonym of <code>Nevent:envirs</code></li>
+<li><code>\envirName.synths</code> : All synth players of Nenvir named <code>\envirName</code>.</li>
+<li><code>\envirName.patterns</code> : All EventStreamPlayers of Nenvir named <code>\envirName</code>.</li>
+<li><code>\envirName.routines</code> : All Routines of Nenvir named <code>\envirName</code>.</li>
+<li><code>\envirName.windows</code> : All windows of Nenvir named <code>\envirName</code>.</li>
+</ul>
+
+<h4 id="method-implementation-code">Method implementation code</h4>
+
+<p>The code implementing these methods for <code>Symbol</code> in <code>Nevent.sc</code> is:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span> <span class="c1">// Return nil if no element found.</span>
+  <span class="c1">// Also, do not push the environment if created.</span>
+  <span class="nx">synth</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">|</span>
+	  <span class="o">^</span><span class="nx">Registry</span><span class="p">.</span><span class="nx">at</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span> <span class="p">(</span><span class="kc">false</span><span class="p">),</span> <span class="err">\</span><span class="nx">synths</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">pattern</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">|</span>
+	  <span class="o">^</span><span class="nx">Registry</span><span class="p">.</span><span class="nx">at</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span> <span class="p">(</span><span class="kc">false</span><span class="p">),</span> <span class="err">\</span><span class="nx">patterns</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">routine</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">|</span>
+	  <span class="o">^</span><span class="nx">Registry</span><span class="p">.</span><span class="nx">at</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span> <span class="p">(</span><span class="kc">false</span><span class="p">),</span> <span class="err">\</span><span class="nx">routines</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nb">window</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span><span class="p">,</span> <span class="nx">rect</span> <span class="o">|</span>
+	  <span class="c1">// always construct new window, and push the environment</span>
+	  <span class="o">^</span><span class="nx">Registry</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span><span class="p">,</span> <span class="err">\</span><span class="nx">windows</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span>
+		  <span class="nx">Window</span> <span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">rect</span><span class="p">)</span>
+		  <span class="p">.</span><span class="nx">onClose_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span> <span class="nx">me</span><span class="p">.</span><span class="nx">objectClosed</span><span class="p">;</span> <span class="p">});</span>
+	  <span class="p">})</span>
+  <span class="p">}</span>
+</code></pre></div>
+
+<h4 id="tests">Tests</h4>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: explicitly push \envir as currentEnvironment (only for clarity).</span>
+<span class="err">\</span><span class="nx">envir</span><span class="p">.</span><span class="nx">push</span><span class="p">;</span>
+<span class="c1">//: Initially, no synth is available:</span>
+<span class="err">\</span><span class="nx">envir</span><span class="p">.</span><span class="nx">synths</span><span class="p">;</span>
+<span class="c1">//: Also no synth is available in </span>
+<span class="c1">//: Play a function in envir: </span>
+<span class="p">{</span> <span class="nx">PinkNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">envir</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
+</code></pre></div>
+
+<h2 id="mini-language-overview">Mini-Language Overview</h2>
+
+<p>The classes, methods and operators provided by <em>sc-hacks</em> extend SuperCollider to simplify the coding of GUI and of sound / musical structure / interaction.  They are designed in the sense of a very small language.  Here is a summary.</p>
+
+<h3 id="items-connected-to-currentenvironment-gui-synths-patterns-routines">Items connected to currentEnvironment: GUI, Synths, Patterns, Routines</h3>
+
+<h3 id="operator-and-message-overview">Operator and message overview</h3>
+
+<p><strong>This is a draft: Implementation of the following operators has just started.</strong> <em>The purpose of the overview is to guide coding by keeping the different versions discrete and consistent.</em></p>
+
+<h4 id="operators-on-functions">Operators on Functions</h4>
+
+<p>These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:</p>
+
+<ol>
+<li>Play a synth (<code>Function:play</code> : operator <code>+&gt;</code>)</li>
+<li>Play a routine (<code>Function:fork</code> : operator <code>*&gt;</code>)</li>
+</ol>
+
+<p>+> play as synth</p>
+
+<p>*> play as routine (fork)</p>
+
+<h4 id="operators-on-events">Operators on Events</h4>
+
+<p>These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.</p>
+
+<p>@> play</p>
+
+<p>@>+ addEvent</p>
+
+<p>@>! setEvent</p>
+
+<p>@>@ addKey</p>
+
+<h4 id="operators-on-symbols">Operators on Symbols</h4>
+
+<p>These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the <code>out</code> and <code>in</code> environment variables in Nenvir instances to a common bus.</p>
+
+<dl>
+<dt><code>&amp;&gt;</code></dt>
+<dd>set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)</dd>
+<dt><code>&lt;&amp;</code></dt>
+<dd>set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)</dd>
+</dl>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="o">&amp;&gt;!</span> <span class="nx">argument</span>
+</code></pre></div>
+
+<dl>
+<dt><code>&amp;&gt;!</code></dt>
+<dd>set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)</dd>
+</dl>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="o">&amp;</span><span class="err">/&gt; argument</span>
+</code></pre></div>
+
+<dl>
+<dt><code>&amp;/&gt;</code></dt>
+<dd>Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.</dd>
+</dl>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="o">&lt;</span><span class="err">/&gt; argument</span>
+</code></pre></div>
+
+<dl>
+<dt><code>&lt;/&gt;</code></dt>
+<dd>Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.</dd>
+</dl>
+
+<h4 id="messages-to-symbols">Messages to symbols</h4>
+
+<p>splay</p>
+
+<p>eplay</p>
+
+<p>rplay</p>
+
+<h4 id="operators-on-strings">Operators on strings (!?)</h4>
+
+<p>string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?</p>
+
+<h3 id="playing-synths">Playing Synths</h3>
+
+<h3 id="playing-routines">Playing Routines</h3>
+
+<h3 id="playing-patterns-with-default-note-events">Playing patterns with default note events</h3>
+
+<h3 id="playing-patterns-in-currentenvironment">Playing patterns in currentEnvironment</h3>
+
+<h3 id="creating-guis">Creating GUIs</h3>
+
+<h1 id="functions-and-synth-playing">Functions and Synth Playing</h1>
+
+<h2 id="improving-function-eplay">Improving Function:eplay</h2>
+
+<p>:PROPERTIES:
+   :filename: improving_eplay
+   :END:</p>
+
+<p>Individual improvement steps for Function:eplay: Done and TODO.  Thesse notes are from an early stage in development.  Now the functionality of most done steps has been integrated in class <code>SynthPlayer</code>.</p>
+
+<h3 id="done-11-jun-2017-21-48">Done (11 Jun 2017 21:48)</h3>
+
+<ul>
+<li>Store the resulting synth in envir under <code>[\synths, synthName]</code> (default for <code>synthName=: =synth</code>).</li>
+<li>If previous synth exists under <code>[\synths, synthName]</code> path, then free/release it.</li>
+<li>When a synth ends, remove it from its path in envir.</li>
+<li>Make sure that when a synth <code>previousSynth</code> is released by replacing it through a new synth created through <code>Function:eplay</code>, the <code>previousSynth</code> ending does not remove the new synth that has already been stored in the same path.</li>
+<li>Notification actions for updates from enviroment variable changes are added when the Synth starts (not when the <code>Function:play</code> message is sent). This way, there are no more errors "Node not found" when changing the environment before the synth has started.</li>
+</ul>
+
+<h3 id="done-19-jun-2017-10-52">Done (19 Jun 2017 10:52):</h3>
+
+<h4 id="synth-start-stop-release-and-set-control-from-event-eplay-eventpatterns">Synth start-stop (release) and set control from Event:eplay (EventPatterns)</h4>
+
+<p>The following will add some complexity to the current scheme and may therefore be added later on only.</p>
+
+<ul>
+<li>Define <code>SynthPlayer</code> to add synth start-stop capabilities to <code>Function:eplay</code></li>
+<li>Add synths instance variable to Nevent for faster access to SynthPlayers</li>
+</ul>
+
+<p>In addition to listening for changes from the <code>currentEnvironment</code>, a second notification mechanism should be added to Function:eplay, to enable creating new synths, releasing or freeing this synth when playing EventPatterns with an <code>EventStreamPlayer</code>.  A simple way to do this is by a stream which generates the commands to be played.  The stream is stored in a key with the same name as the synth to be controlled.  Function:eplay or SynthPlayer:play adds the environment as notifier to the synth with the synth's name as message and a switch statement which choses the action to be performed depending on the value that was sent in addition to the key (message) by the changed message. A draft for this code has been added now to Function:eplay:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="nx">synth</span><span class="p">.</span><span class="nx">onStart</span> <span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">{</span><span class="o">|</span> <span class="nx">myself</span> <span class="o">|</span>
+	  <span class="c1">// &quot;Synth started, so I add notifiers for updates&quot;.postln;</span>
+	  <span class="nx">argNames</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">param</span> <span class="o">|</span>
+		  <span class="nx">synth</span><span class="p">.</span><span class="nx">addNotifier</span> <span class="p">(</span><span class="nx">envir</span><span class="p">,</span> <span class="nx">param</span><span class="p">,</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">val</span> <span class="o">|</span>
+			  <span class="nx">synth</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="nx">param</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+		  <span class="p">});</span>
+		  <span class="c1">// Experimental: </span>
+		  <span class="nx">synth</span><span class="p">.</span><span class="nx">addNotifier</span> <span class="p">(</span><span class="nx">envir</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">command</span> <span class="o">|</span>
+			  <span class="c1">//	command.postln;</span>
+			  <span class="k">switch</span> <span class="p">(</span><span class="nx">command</span><span class="p">,</span>
+				  <span class="err">\</span><span class="nx">stop</span><span class="p">,</span> <span class="p">{</span>
+					  <span class="nx">synth</span><span class="p">.</span><span class="nx">objectClosed</span><span class="p">;</span>
+					  <span class="nx">synth</span><span class="p">.</span><span class="nx">release</span> <span class="p">(</span><span class="nx">envir</span> <span class="p">[</span><span class="err">\</span><span class="nx">releaseTime</span><span class="p">]</span> <span class="o">?</span> <span class="mf">0.02</span><span class="p">);</span>
+				  <span class="p">},</span>
+				  <span class="p">{</span> <span class="nx">postf</span> <span class="p">(</span><span class="s2">&quot;the command was: %\n&quot;</span><span class="p">,</span> <span class="nx">command</span><span class="p">)}</span>
+			  <span class="p">)</span>
+		  <span class="p">})</span>
+	  <span class="p">};</span>
+  <span class="p">});</span>
+</code></pre></div>
+
+<h3 id="still-todo-19-jun-2017-10-52">Still TODO (19 Jun 2017 10:52)</h3>
+
+<h4 id="synth-start-stop-notifications-for-gui-and-other-listeners">Synth start-stop notifications for GUI and other listeners</h4>
+
+<ul>
+<li>When a new synth starts or when an old synth is removed, it should emit notifications so that GUIS that depend on it update their status.  Such guis may be:</li>
+<li>Start-stop buttons</li>
+<li>Guis with widgets for controlling the synths parameters.  When a new synth starts, then the old gui should be replaced with a new one with widgets corresponding to the new synth's control parameters.</li>
+  Note: Possibly the notification should be emitted from the =\synthName= under which the synth is stored.  The messages may be:
+<li><code>\started</code></li>
+<li><code>\stopped</code></li>
+<li><code>\replaced</code></li>
+    The above is subject to testing. 
+</ul>
+
+<h3 id="notes">Notes</h3>
+
+<ul>
+<li>When this is done, it should be possible to create multiple gui windows for multiple synths running in the same environment. However, parameters under the same name will control the parameters under that name for all synths in that environment.</li>
+<li>To develop the right code for this, do it with a plain function, adding the functionalities one-by-one.</li>
+</ul>
+
+<h3 id="current-function-eplay-method-code">Current <code>Function:eplay</code> method code</h3>
+
+<h3 id="drafts">Drafts</h3>
+
+<p>See <a href="https://github.com/iani/sc-hacks/blob/master/LabCode/rebuildFunctionEplay.scd" title="https://github.com/iani/sc-hacks/blob/master/LabCode/rebuildFunctionEplay.scd" target="_blank">https://github.com/iani/sc-hacks/blob/master/LabCode/rebuildFunctionEplay.scd</a> for draft used to build this functionality in <code>SynthPlayer</code></p>
+
+<h2 id="play-a-function-in-the-environment">Play a function in the environment</h2>
+
+<p>:PROPERTIES:
+   :filename: function-eplay
+   :END:</p>
+
+<ol>
+<li>Provide arguments for playing a function from values found in an environment.</li>
+<li>connect all control names in the function's arguments to an environment for auto-update</li>
+<li>Free all notifications from the synth when it stops playing.</li>
+</ol>
+
+<h3 id="method-code">Method code</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">+</span> <span class="nb">Function</span> <span class="p">{</span>
+	<span class="nx">eplay</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">=</span> <span class="err">\</span><span class="nx">envir</span> <span class="o">|</span>
+		<span class="kd">var</span> <span class="nx">synth</span><span class="p">;</span>
+		<span class="nx">envir</span> <span class="o">=</span> <span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span><span class="p">;</span>
+		<span class="nx">envir</span> <span class="nx">use</span><span class="o">:</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">argNames</span><span class="p">,</span> <span class="nx">args</span><span class="p">;</span>
+			<span class="nx">argNames</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">def</span><span class="p">.</span><span class="nx">argNames</span><span class="p">;</span>
+			<span class="nx">args</span> <span class="o">=</span> <span class="nx">argNames</span><span class="p">.</span><span class="nx">collect</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">name</span> <span class="o">|</span>
+				<span class="p">[</span><span class="nx">name</span><span class="p">,</span> <span class="nx">currentEnvironment</span> <span class="p">[</span><span class="nx">name</span><span class="p">]]</span>
+			<span class="p">}).</span><span class="nx">select</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">pair</span> <span class="o">|</span>
+				<span class="nx">pair</span> <span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">notNil</span><span class="p">;</span>
+			<span class="p">}).</span><span class="nx">flat</span><span class="p">;</span>
+			<span class="c1">//  arg target, outbus = 0, fadeTime = 0.02, addAction=\addToHead, args;</span>
+			<span class="nx">synth</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">play</span>  <span class="p">(</span>
+				<span class="o">~</span><span class="nx">target</span><span class="p">.</span><span class="nx">asTarget</span><span class="p">,</span> <span class="o">~</span><span class="nx">outbus</span> <span class="o">?</span> <span class="mi">0</span><span class="p">,</span> <span class="o">~</span><span class="nx">fadeTime</span> <span class="o">?</span> <span class="mf">0.02</span><span class="p">,</span>
+				<span class="o">~</span><span class="nx">addAction</span> <span class="o">?</span> <span class="err">\</span><span class="nx">addToHead</span><span class="p">,</span> <span class="nx">args</span>
+			<span class="p">);</span>
+			<span class="nx">argNames</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">param</span> <span class="o">|</span>
+				<span class="nx">synth</span><span class="p">.</span><span class="nx">addNotifier</span> <span class="p">(</span><span class="nx">envir</span><span class="p">,</span> <span class="nx">param</span><span class="p">,</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">val</span> <span class="o">|</span>
+					<span class="nx">synth</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="nx">param</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+				<span class="p">});</span>
+			<span class="p">};</span>
+		<span class="p">};</span>
+		<span class="c1">// This is done by addNotifier anyway:</span>
+		<span class="c1">//		synth.onEnd (this, { synth.objectClosed });</span>
+		<span class="o">^</span><span class="nx">synth</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="example">Example</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nb">window</span><span class="p">.</span><span class="nx">vlayout</span> <span class="p">(</span>
+	<span class="nx">HLayout</span> <span class="p">(</span>
+		<span class="nx">StaticText</span> <span class="p">().</span><span class="nx">string_</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">),</span>
+		<span class="nx">Slider</span><span class="p">.</span><span class="nx">horizontal</span><span class="p">.</span><span class="nx">connectEnvir</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">),</span>
+		<span class="nx">NumberBox</span> <span class="p">().</span><span class="nx">connectEnvir</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+<span class="c1">//:</span>
+<span class="p">{</span>
+	<span class="nx">loop</span> <span class="p">{</span>
+		<span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span> <span class="o">+</span> <span class="mi">400</span><span class="p">.</span><span class="nx">rand</span><span class="p">;</span>
+	   <span class="mi">1</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}.</span><span class="nx">fork</span><span class="p">;</span>
+<span class="c1">//:</span>
+<span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">440</span> <span class="o">|</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}.</span><span class="nx">eplay</span><span class="p">;</span>
+<span class="c1">//:</span>
+</code></pre></div>
+
+<h1 id="patterns">Patterns</h1>
+
+<p>:PROPERTIES:
+  :foldername: patterns
+  :END:</p>
+
+<h2 id="playing-events-as-patterns">Playing Events as Patterns</h2>
+
+<ol>
+/sc-hacks/ *sc-hacks* /sh-hacks/ provides two ways to play Events as patterns: 
+<li><code>\name pplay: (event ...)</code> Play event as EventPattern, using default <code>play</code> key settings, i.e. playing notes unless something else is specified.</li>
+<li><code>(event ...) eplay: \name</code> Play event as EventPattern using a custom partial event type <code>\envEvent</code>. This does not produce any sounds per default, but only writes the results of playing all streams in the event, including the default translations of <code>\degree</code>, <code>\ctranspose</code> and related keys, to <code>currentEnvironment</code>. These changes are broadcast to the system using the <code>changed</code> mechanism and can be used to drive both GUI and synths.</li>
+</ol>
+
+<p>Both <code>pplay</code> and <code>eplay</code> use <code>EventPattern</code>, <code>EventStream</code> and <code>EventStreamPlayer</code>.  This means, it is easy to modify the event and thus change the behaviour of the player, while it is playing.</p>
+
+<h3 id="symbol-pplay">Symbol pplay</h3>
+
+<p>Here the pattern is modified with <code>addKey</code>, <code>addEvent</code> and <code>setEvent</code> while playing:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">pplay</span><span class="p">;</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">pplay</span> <span class="p">((</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">));</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">pplay</span> <span class="p">((</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)));</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">addKey</span> <span class="p">(</span><span class="err">\</span><span class="nx">dur</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">);</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span> <span class="nx">addEvent</span><span class="o">:</span> <span class="p">(</span><span class="nx">ctranspose</span><span class="o">:</span> <span class="nx">Pstutter</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)),</span> <span class="nx">legato</span><span class="o">:</span> <span class="nx">Pseq</span> <span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="nx">inf</span><span class="p">));</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span> <span class="nx">setEvent</span><span class="o">:</span> <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="nx">Pseq</span> <span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">legato</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="event-eplay">Event eplay</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">20000</span><span class="p">,</span> <span class="nx">inf</span><span class="p">).</span><span class="nx">sqrt</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="err">\</span><span class="nb">window</span><span class="p">.</span><span class="nx">vlayout</span> <span class="p">(</span><span class="nx">CSlider</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">)).</span><span class="nx">front</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="err">\</span><span class="nx">test</span> <span class="nx">splay</span><span class="o">:</span> <span class="p">{</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">};</span>
+  <span class="c1">//:</span>
+  <span class="p">(</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//: Play different functions in parallel, with crossfade: </span>
+  <span class="o">~</span><span class="nx">fadeTime</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">{</span>
+	  <span class="kd">var</span> <span class="nx">players</span><span class="p">;</span>
+	  <span class="nx">players</span> <span class="o">=</span> <span class="nx">Pseq</span> <span class="p">([</span>
+		  <span class="p">{</span> <span class="nx">LFPulse</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">)</span> <span class="o">/</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">},</span>
+		  <span class="cm">/*</span>
+<span class="cm">		    { Blip.ar (\freq.kr (400 * [1, 1.2]),</span>
+<span class="cm">		    LFNoise0.kr (5).range (5, 250),</span>
+<span class="cm">		    0.3)</span>
+<span class="cm">		    },</span>
+<span class="cm">		  ,*/</span>
+		  <span class="p">{</span>
+			  <span class="nx">LPF</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span>
+				  <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">PinkNoise</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">),</span>
+				  <span class="nx">LFNoise2</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">range</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+			  <span class="p">)</span>
+		  <span class="p">}</span>
+	  <span class="p">],</span> <span class="nx">inf</span><span class="p">).</span><span class="nx">asStream</span><span class="p">;</span>
+	  <span class="nx">loop</span> <span class="p">{</span>
+		  <span class="err">\</span><span class="nx">test</span> <span class="nx">splay</span><span class="o">:</span> <span class="nx">players</span><span class="p">.</span><span class="nx">next</span><span class="p">;</span>
+		  <span class="mf">2.5</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">}</span>
+  <span class="p">}.</span><span class="nx">fork</span><span class="p">;</span>
+
+  <span class="c1">//: NOTE: other keys are overwritten in the source event of the other</span>
+</code></pre></div>
+
+<h2 id="playing-events-as-patterns-1">Playing Events as Patterns</h2>
+
+<p>:PROPERTIES:
+   :filename: events-as-patterns
+   :END:</p>
+
+<ol>
+sc-hacks provides two ways to play Events as patterns: 
+<li><code>\name pplay: (event ...)</code> Play event as EventPattern, using default <code>play</code> key settings, i.e. playing notes unless something else is specified.</li>
+<li><code>(event ...) eplay: \name</code> Play event as EventPattern using a custom partial event type <code>\envEvent</code>. This does not produce any sounds per default, but only writes the results of playing all streams in the event, including the default translations of <code>\degree</code>, <code>\ctranspose</code> and related keys, to <code>currentEnvironment</code>. These changes are broadcast to the system using the <code>changed</code> mechanism and can be used to drive both GUI and synths.</li>
+</ol>
+
+<p>Both <code>pplay</code> and <code>eplay</code> use <code>EventPattern</code>, <code>EventStream</code> and <code>EventStreamPlayer</code>.  This means, it is easy to modify the event and thus change the behaviour of the player, while it is playing.</p>
+
+<h3 id="symbol-pplay-1">Symbol pplay</h3>
+
+<p>Here the pattern is modified with <code>addKey</code>, <code>addEvent</code> and <code>setEvent</code> while playing:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">pplay</span><span class="p">;</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">pplay</span> <span class="p">((</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">));</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">pplay</span> <span class="p">((</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)));</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span><span class="p">.</span><span class="nx">addKey</span> <span class="p">(</span><span class="err">\</span><span class="nx">dur</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">);</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span> <span class="nx">addEvent</span><span class="o">:</span> <span class="p">(</span><span class="nx">ctranspose</span><span class="o">:</span> <span class="nx">Pstutter</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)),</span> <span class="nx">legato</span><span class="o">:</span> <span class="nx">Pseq</span> <span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="nx">inf</span><span class="p">));</span>
+<span class="c1">//:</span>
+<span class="err">\</span><span class="nx">p</span> <span class="nx">setEvent</span><span class="o">:</span> <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="nx">Pseq</span> <span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">legato</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="event-eplay-1">Event eplay</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">20000</span><span class="p">,</span> <span class="nx">inf</span><span class="p">).</span><span class="nx">sqrt</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="err">\</span><span class="nb">window</span><span class="p">.</span><span class="nx">vlayout</span> <span class="p">(</span><span class="nx">CSlider</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">)).</span><span class="nx">front</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="err">\</span><span class="nx">test</span> <span class="nx">splay</span><span class="o">:</span> <span class="p">{</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">};</span>
+  <span class="c1">//:</span>
+  <span class="p">(</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//: Play different functions in parallel, with crossfade: </span>
+  <span class="o">~</span><span class="nx">fadeTime</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">{</span>
+	  <span class="kd">var</span> <span class="nx">players</span><span class="p">;</span>
+	  <span class="nx">players</span> <span class="o">=</span> <span class="nx">Pseq</span> <span class="p">([</span>
+		  <span class="p">{</span> <span class="nx">LFPulse</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">)</span> <span class="o">/</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">},</span>
+		  <span class="cm">/*</span>
+<span class="cm">		    { Blip.ar (\freq.kr (400 * [1, 1.2]),</span>
+<span class="cm">		    LFNoise0.kr (5).range (5, 250),</span>
+<span class="cm">		    0.3)</span>
+<span class="cm">		    },</span>
+<span class="cm">		  ,*/</span>
+		  <span class="p">{</span>
+			  <span class="nx">LPF</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span>
+				  <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">PinkNoise</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">400</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">),</span>
+				  <span class="nx">LFNoise2</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">range</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+			  <span class="p">)</span>
+		  <span class="p">}</span>
+	  <span class="p">],</span> <span class="nx">inf</span><span class="p">).</span><span class="nx">asStream</span><span class="p">;</span>
+	  <span class="nx">loop</span> <span class="p">{</span>
+		  <span class="err">\</span><span class="nx">test</span> <span class="nx">splay</span><span class="o">:</span> <span class="nx">players</span><span class="p">.</span><span class="nx">next</span><span class="p">;</span>
+		  <span class="mf">2.5</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">}</span>
+  <span class="p">}.</span><span class="nx">fork</span><span class="p">;</span>
+
+  <span class="c1">//: NOTE: other keys are overwritten in the source event of the other</span>
+</code></pre></div>
+
+<h2 id="modify-patterns-while-playing">Modify Patterns while playing</h2>
+
+<p>:PROPERTIES:
+   :filename: event-stream
+   :END:</p>
+
+<p>An EventStream makes it easy to modify patterns while playing them.</p>
+
+<h3 id="how-it-works">How it works</h3>
+
+<p>An <code>EventPattern</code> creates <code>EventStreams</code> which are played by <code>EventStreamPlayer</code>.  <code>EventStream</code> stores an event whose values are streams and uses this to produce a new event which is played by EventStreamPlayer.  It is thus possible to modify the event stored in the EventStream while the EventStreamPlayer is playing it.  This makes it easy to modify a playing pattern (which is difficult when using Pbind).</p>
+
+<h3 id="example-1">Example</h3>
+
+<pre><code>
+() +&gt; \e;
+0.1 +&gt;.dur \e;
+Pseq ((0..20), inf) +&gt;.degree \e;
+Prand ((0..20), inf) +&gt;.degree \e;
+(freq: Pfunc ({ 300 rrand: 1000 }), dur: Prand ([0.1, 0.2], inf)) +&gt; \e;
+(freq: Pfunc ({ 30.rrand(80).midicps }), dur: Pfunc ({ 0.1 exprand: 1 }), legato: Prand ([0.1, 2], inf)) +&gt; \e;
+(degree: Pseq ((0..20), inf), dur: 0.1) +!&gt;.degree \e;
+</code></pre>
+
+<p><strong>Note:</strong></p>
+
+<ul>
+<li><code>+&gt;</code> adds all key-value pairs of an event to the event being played.</li>
+<li><code>+!&gt;</code> replaces the contents of the event being played by the contents of the new event.</li>
+</ul>
+
+<h2 id="patterns-updating-current-environment">Patterns updating current environment</h2>
+
+<p>:PROPERTIES:
+   :filename: event-eplay
+   :END:</p>
+
+<p><code>anEnvironment.eplay(envir)</code></p>
+
+<p>Play an event as EventPattern, updating the values in envir from each event.  Use custom event type: envEvent.  This only updates the values in the environment.  The sound must be generated by <code>Function:eplay</code>.  See examples below.</p>
+
+<p>Play the receiver Event in the environment given in argument <code>envir</code> using a custom event type to just set the values of corresponding variables at each event.  For example, playing <code>()</code> set <code>~freq</code>  to <code>60.midicps</code> every 1 second.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">().</span><span class="nx">eplay</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">()</span> <span class="nx">eplay</span><span class="o">:</span> <span class="err">\</span><span class="nx">newEnvir</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="example-1-single-synth-pattern-gui-update">Example 1: Single synth, pattern, gui update</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">(</span><span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span> <span class="o">|</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">)}.</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="err">\</span><span class="nb">window</span><span class="p">.</span><span class="nx">vlayout</span> <span class="p">(</span><span class="nx">CSlider</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">)).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="example-2-envelope-gate-on-off">Example 2: Envelope gate on-off</h3>
+
+<p>To test triggering of envelopes, instead of writing this:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">gate</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+	  <span class="kd">var</span> <span class="nx">env</span><span class="p">;</span>
+	  <span class="nx">env</span> <span class="o">=</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">adsr</span> <span class="p">();</span>
+	  <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+	  <span class="p">,</span><span class="o">*</span> <span class="nx">EnvGen</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">gate</span><span class="p">,</span> <span class="nx">doneAction</span><span class="o">:</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">}.</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="p">{</span>
+	  <span class="nx">inf</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+		  <span class="o">~</span><span class="nx">gate</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+          <span class="mf">0.1</span><span class="p">.</span><span class="nx">rrand</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">).</span><span class="nx">wait</span>
+	  <span class="p">}</span>
+  <span class="p">}.</span><span class="nx">rout</span><span class="p">;</span>
+</code></pre></div>
+
+<p>one may write this:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">gate</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+	  <span class="kd">var</span> <span class="nx">env</span><span class="p">;</span>
+	  <span class="nx">env</span> <span class="o">=</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">adsr</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">);</span>
+	  <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+	  <span class="p">,</span><span class="o">*</span> <span class="nx">EnvGen</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">gate</span><span class="p">,</span> <span class="nx">doneAction</span><span class="o">:</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">}.</span><span class="nx">eplay</span><span class="p">;</span>
+
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="nx">inf</span><span class="p">)).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//: Note the overlap with the still playing note in the freq change:</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pstutter</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">inf</span><span class="p">))).</span><span class="nx">eplay</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="example-3-many-patterns-many-synths-in-same-environment">Example 3: Many patterns + many synths in same environment</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span> <span class="o">|</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}.</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//: Start the next synth later:</span>
+  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span> <span class="o">|</span>
+	  <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">PinkNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">,</span> <span class="nx">freq</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">)</span>
+  <span class="p">}.</span><span class="nx">eplay</span> <span class="p">(</span><span class="err">\</span><span class="nx">synth2</span><span class="p">);</span>
+  <span class="c1">//: Test fade out when releasing synth to replace with new one:</span>
+  <span class="o">~</span><span class="nx">fadeTime</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">ringTime</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">|</span>
+	  <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">PinkNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">,</span> <span class="nx">freq</span> <span class="o">*</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">],</span> <span class="nx">ringTime</span><span class="p">)</span>
+  <span class="p">}.</span><span class="nx">eplay</span> <span class="p">(</span><span class="err">\</span><span class="nx">synth2</span><span class="p">);</span>
+  <span class="c1">//:</span>
+  <span class="o">~</span><span class="nx">ringTime</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="o">~</span><span class="nx">ringTime</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="c1">//: Start a new pattern in place of the old one:</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">),</span> <span class="nx">ringTime</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//: remove the ringTime from the next version of the pattern:</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)).</span><span class="nx">eplay</span><span class="p">;</span>
+  <span class="c1">//: add a new pattern on the same environment, playing ringTime:</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="nx">ringTime</span><span class="o">:</span> <span class="nx">Pbrown</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)).</span><span class="nx">eplay</span> <span class="p">(</span><span class="err">\</span><span class="nx">ringTime</span><span class="p">);</span><span class="sb">``</span>
+  <span class="c1">//: add a new pattern on the same environment, playing ringTime:</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">ringTime</span><span class="o">:</span> <span class="nx">Pwhite</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">inf</span><span class="p">)).</span><span class="nx">eplay</span> <span class="p">(</span><span class="err">\</span><span class="nx">ringTime</span><span class="p">);</span>
+  <span class="c1">//:</span>
+</code></pre></div>
+
+<h1 id="gui">GUI</h1>
+
+<h2 id="creating-guis-1">Creating GUIs</h2>
+
+<p>:PROPERTIES:
+  :foldername: gui
+  :END:</p>
+
+<p>This library provides utilities for creating GUI elements and connecting them to both patterns and synths.  Here are some examples.</p>
+
+<h3 id="windows">Windows</h3>
+
+<h3 id="sliders">Sliders</h3>
+
+<h3 id="buttons">Buttons</h3>
+
+<h2 id="building-guis">Building GUIs</h2>
+
+<p>This notebook shows how to build GUIs starting from scratch, with minimal code and in small steps.</p>
+
+<h3 id="just-a-window">Just a window</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: 1 Just a window</span>
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="add-a-slider-and-resize">Add a slider and resize.</h3>
+
+<p>Use VLayout for automatic resizing.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="nx">Slider</span> <span class="p">()</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+<span class="c1">//: Make the slider horizontal.</span>
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="nx">Slider</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">orientation_</span> <span class="p">(</span><span class="err">\</span><span class="nx">horizontal</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="add-more-sliders">Add more sliders</h3>
+
+<p>Use a function to avoid repeating spec code!
+Make the orientation an argument to enable customization.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">makeSlider</span><span class="p">;</span>
+
+<span class="nx">makeSlider</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">orientation</span> <span class="o">=</span> <span class="err">\</span><span class="nx">horizontal</span> <span class="o">|</span>
+	<span class="nx">Slider</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">orientation_</span> <span class="p">(</span><span class="nx">orientation</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="o">*</span><span class="p">({</span><span class="nx">makeSlider</span><span class="p">.([</span><span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span> <span class="err">\</span><span class="nx">vertical</span><span class="p">].</span><span class="nx">choose</span><span class="p">)}</span> <span class="o">!</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="add-more-arguments-for-controlspec-label-and-action">Add more arguments for controlSpec, label, and action</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">makeSlider</span><span class="p">;</span>
+
+<span class="nx">makeSlider</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">label</span> <span class="o">=</span> <span class="s2">&quot;slider&quot;</span><span class="p">,</span> <span class="nx">min</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="k">default</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nx">orientation</span> <span class="o">=</span> <span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span>
+	<span class="nx">action</span> <span class="o">|</span>
+	<span class="kd">var</span> <span class="nx">controlSpec</span><span class="p">;</span>
+	<span class="nx">controlSpec</span> <span class="o">=</span> <span class="p">[</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">,</span> <span class="err">\</span><span class="nx">lin</span><span class="p">,</span> <span class="nx">step</span><span class="p">,</span> <span class="k">default</span><span class="p">].</span><span class="nx">asSpec</span><span class="p">;</span>
+	<span class="c1">// provide default action if needed:</span>
+	<span class="nx">action</span> <span class="o">??</span> <span class="p">{</span>
+		<span class="nx">action</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">value</span> <span class="o">|</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="nx">map</span> <span class="p">(</span><span class="nx">value</span><span class="p">).</span><span class="nx">postln</span> <span class="p">}</span>
+	<span class="p">};</span>
+	<span class="nx">HLayout</span> <span class="p">(</span>
+		<span class="nx">StaticText</span> <span class="p">().</span><span class="nx">string_</span> <span class="p">(</span><span class="nx">label</span><span class="p">),</span>
+		<span class="nx">Slider</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">action_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span> <span class="nx">action</span><span class="p">.(</span><span class="nx">me</span><span class="p">.</span><span class="nx">value</span><span class="p">)})</span>
+		<span class="p">.</span><span class="nx">orientation_</span> <span class="p">(</span><span class="nx">orientation</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">};</span>
+
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="o">*</span><span class="p">({</span><span class="nx">makeSlider</span><span class="p">.([</span><span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span> <span class="err">\</span><span class="nx">vertical</span><span class="p">].</span><span class="nx">choose</span><span class="p">)}</span> <span class="o">!</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="add-number-box-after-the-slider">Add number box, after the slider.</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">makeSlider</span><span class="p">;</span>
+
+<span class="nx">makeSlider</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">label</span> <span class="o">=</span> <span class="s2">&quot;slider&quot;</span><span class="p">,</span> <span class="nx">min</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="k">default</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nx">orientation</span> <span class="o">=</span> <span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span>
+	<span class="nx">action</span> <span class="o">|</span>
+	<span class="kd">var</span> <span class="nx">controlSpec</span><span class="p">;</span>
+	<span class="nx">controlSpec</span> <span class="o">=</span> <span class="p">[</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">,</span> <span class="err">\</span><span class="nx">lin</span><span class="p">,</span> <span class="nx">step</span><span class="p">,</span> <span class="k">default</span><span class="p">].</span><span class="nx">asSpec</span><span class="p">;</span>
+	<span class="c1">// provide default action if needed:</span>
+	<span class="nx">action</span> <span class="o">??</span> <span class="p">{</span>
+		<span class="nx">action</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">value</span> <span class="o">|</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="nx">map</span> <span class="p">(</span><span class="nx">value</span><span class="p">).</span><span class="nx">postln</span> <span class="p">}</span>
+	<span class="p">};</span>
+	<span class="nx">HLayout</span> <span class="p">(</span>
+		<span class="nx">StaticText</span> <span class="p">().</span><span class="nx">string_</span> <span class="p">(</span><span class="nx">label</span><span class="p">),</span>
+		<span class="nx">Slider</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">action_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span> <span class="nx">action</span><span class="p">.(</span><span class="nx">me</span><span class="p">.</span><span class="nx">value</span><span class="p">)})</span>
+		<span class="p">.</span><span class="nx">orientation_</span> <span class="p">(</span><span class="nx">orientation</span><span class="p">),</span>
+		<span class="nx">NumberBox</span> <span class="p">())</span>
+<span class="p">};</span>
+
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="o">*</span><span class="p">({</span><span class="nx">makeSlider</span><span class="p">.(</span>
+			<span class="nx">max</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">.</span><span class="nx">rrand</span> <span class="p">(</span><span class="mf">20.0</span><span class="p">),</span>
+			<span class="nx">orientation</span><span class="o">:</span> <span class="p">[</span><span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span> <span class="err">\</span><span class="nx">vertical</span><span class="p">].</span><span class="nx">choose</span><span class="p">)}</span> <span class="o">!</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="add-value-update-for-number-box-and-slider">Add value update for number box and slider</h3>
+
+<pre><code>
+
+var makeSlider;
+
+makeSlider = { | label = &quot;slider&quot;, min = 0, max = 10, step = 0, default = 0.5, orientation = \horizontal,
+	action |
+	var controlSpec, mappedVal, slider, numberBox;
+	controlSpec = [min, max, \lin, step, default].asSpec;
+	// provide default action if needed:
+	action ?? {
+		action = { | value | value.postln }
+	};
+	HLayout (
+		StaticText ().string_ (label),
+		slider = Slider ()
+		.action_ ({ | me |
+			mappedVal = controlSpec.map (me.value);
+			numberBox.value = mappedVal;
+			action.(mappedVal)})
+		.orientation_ (orientation),
+		numberBox = NumberBox ()
+		.action_ ({ | me |
+			mappedVal = me.value;
+			slider.value = controlSpec.unmap (mappedVal);
+			action.(mappedVal)
+		})
+	)
+};
+
+Window (&quot;window name&quot;)
+.view.layout_ (
+	VLayout (
+		*({ | i |
+			makeSlider.(format (&quot;slider %&quot;, i),
+				max: 0.0.rrand (20.0),
+				orientation: [\horizontal, \vertical].choose)
+		} ! 10)
+	)
+).front;
+
+
+</code></pre>
+
+<h3 id="group-the-controlspec-arguments-to-make-them-more-compact">Group the controlSpec arguments to make them more compact</h3>
+
+<p>Also initialize the values of gui elements</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">makeSlider</span><span class="p">;</span>
+
+<span class="nx">makeSlider</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">label</span> <span class="o">=</span> <span class="s2">&quot;slider&quot;</span><span class="p">,</span> <span class="nx">controlSpec</span><span class="p">,</span> <span class="nx">orientation</span> <span class="o">=</span> <span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+	<span class="kd">var</span> <span class="nx">mappedVal</span><span class="p">,</span> <span class="nx">slider</span><span class="p">,</span> <span class="nx">numberBox</span><span class="p">;</span>
+
+	<span class="c1">// convert controlSpec arg into ControlSpec</span>
+	<span class="nx">controlSpec</span> <span class="o">=</span> <span class="p">(</span><span class="nx">controlSpec</span> <span class="o">?</span> <span class="p">[]).</span><span class="nx">asSpec</span><span class="p">;</span>
+	<span class="c1">// provide default action if needed:</span>
+	<span class="nx">action</span> <span class="o">??</span> <span class="p">{</span>
+		<span class="nx">action</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">value</span> <span class="o">|</span> <span class="nx">value</span><span class="p">.</span><span class="nx">postln</span> <span class="p">}</span>
+	<span class="p">};</span>
+	<span class="nx">HLayout</span> <span class="p">(</span>
+		<span class="nx">StaticText</span> <span class="p">().</span><span class="nx">string_</span> <span class="p">(</span><span class="nx">label</span><span class="p">),</span>
+		<span class="nx">slider</span> <span class="o">=</span> <span class="nx">Slider</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">action_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span>
+			<span class="nx">mappedVal</span> <span class="o">=</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="nx">map</span> <span class="p">(</span><span class="nx">me</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+			<span class="nx">numberBox</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">mappedVal</span><span class="p">;</span>
+			<span class="nx">action</span><span class="p">.(</span><span class="nx">mappedVal</span><span class="p">)})</span>
+		<span class="p">.</span><span class="nx">orientation_</span> <span class="p">(</span><span class="nx">orientation</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">value_</span> <span class="p">(</span><span class="nx">controlSpec</span> <span class="nx">unmap</span><span class="o">:</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="k">default</span><span class="p">),</span>
+		<span class="nx">numberBox</span> <span class="o">=</span> <span class="nx">NumberBox</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">action_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span>
+			<span class="nx">mappedVal</span> <span class="o">=</span> <span class="nx">me</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+			<span class="nx">slider</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="nx">unmap</span> <span class="p">(</span><span class="nx">mappedVal</span><span class="p">);</span>
+			<span class="nx">action</span><span class="p">.(</span><span class="nx">mappedVal</span><span class="p">)</span>
+		<span class="p">})</span>
+		<span class="p">.</span><span class="nx">value_</span> <span class="p">(</span><span class="nx">controlSpec</span><span class="p">.</span><span class="k">default</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">};</span>
+
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="o">*</span><span class="p">([</span><span class="err">\</span><span class="nx">freq</span><span class="p">,</span> <span class="err">\</span><span class="nx">amp</span><span class="p">]</span> <span class="nx">collect</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">name</span> <span class="o">|</span>
+			<span class="nx">makeSlider</span><span class="p">.(</span><span class="nx">format</span> <span class="p">(</span><span class="s2">&quot; %&quot;</span><span class="p">,</span> <span class="nx">name</span><span class="p">),</span>
+				<span class="nx">controlSpec</span><span class="o">:</span> <span class="nx">name</span><span class="p">,</span>
+				<span class="nx">orientation</span><span class="o">:</span> <span class="err">\</span><span class="nx">horizontal</span> <span class="cm">/* [\horizontal, \vertical].choose */</span> <span class="p">)</span>
+		<span class="p">})</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+<span class="nx">END_SRC</span>
+
+<span class="o">***</span> <span class="nx">How</span> <span class="nx">to</span> <span class="nx">add</span> <span class="nx">all</span> <span class="nx">available</span> <span class="nx">options</span> <span class="k">for</span> <span class="nx">Slider</span> <span class="nx">and</span> <span class="nx">NumberBox</span><span class="p">,</span> <span class="nx">eg</span><span class="p">.</span> <span class="nx">floating</span> <span class="nx">point</span> <span class="nx">digits</span> <span class="nx">etc</span><span class="o">?</span>
+
+<span class="nx">Instead</span> <span class="k">of</span> <span class="nx">adding</span> <span class="nx">more</span> <span class="nx">arguments</span><span class="p">,</span> <span class="nx">move</span> <span class="nx">to</span> <span class="nx">the</span> <span class="nx">next</span> <span class="nx">step</span><span class="o">:</span>
+<span class="nx">Define</span> <span class="nx">a</span> <span class="kr">class</span> <span class="nx">and</span> <span class="nx">provide</span> <span class="nx">the</span> <span class="nx">options</span> <span class="nx">as</span> <span class="nx">defaults</span><span class="p">.</span>
+
+<span class="o">***</span> <span class="nx">Next</span> <span class="nx">steps</span>
+
+<span class="mi">1</span><span class="p">.</span> <span class="nx">Control</span> <span class="nx">a</span> <span class="nx">routine</span> <span class="nx">from</span> <span class="nx">a</span> <span class="nx">GUI</span><span class="p">.</span> 
+   <span class="o">-</span> <span class="nx">Let</span> <span class="nx">the</span> <span class="nx">GUI</span> <span class="nx">elements</span> <span class="nx">set</span> <span class="nx">environment</span> <span class="nx">variables</span> <span class="k">of</span> <span class="nx">an</span> <span class="nx">environment</span><span class="p">.</span>
+   <span class="o">-</span> <span class="nx">Let</span> <span class="nx">the</span> <span class="nx">routine</span> <span class="nx">run</span> <span class="nx">within</span> <span class="k">this</span> <span class="nx">environment</span> <span class="nx">to</span> <span class="nx">have</span> <span class="nx">access</span> <span class="nx">to</span> <span class="nx">its</span> <span class="nx">variables</span><span class="p">.</span>
+   <span class="o">-</span> <span class="nx">Save</span> <span class="nx">the</span> <span class="nx">current</span> <span class="nx">settings</span> <span class="nx">on</span> <span class="nx">file</span><span class="p">.</span>
+   <span class="o">-</span> <span class="nx">Reload</span> <span class="nx">settings</span> <span class="nx">from</span> <span class="nx">file</span><span class="p">.</span>
+<span class="mi">2</span><span class="p">.</span> <span class="nx">Do</span> <span class="nx">similar</span> <span class="nx">things</span> <span class="nx">as</span> <span class="kd">with</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">but</span> <span class="kd">with</span> <span class="nx">a</span> <span class="nx">synth</span> <span class="nx">instead</span> <span class="k">of</span> <span class="nx">a</span> <span class="nx">routine</span><span class="p">.</span>
+<span class="mi">3</span><span class="p">.</span> <span class="nx">Do</span> <span class="nx">similar</span> <span class="nx">things</span> <span class="nx">as</span> <span class="kd">with</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">but</span> <span class="kd">with</span> <span class="nx">an</span> <span class="nx">EventPattern</span> <span class="nx">instead</span> <span class="k">of</span> <span class="nx">a</span> <span class="nx">routine</span><span class="p">.</span>
+
+<span class="o">*</span> <span class="nx">Playing</span> <span class="nx">buffers</span> <span class="nx">and</span> <span class="nx">grains</span>
+  <span class="o">:</span><span class="nx">PROPERTIES</span><span class="o">:</span>
+  <span class="o">:</span><span class="nx">foldername</span><span class="o">:</span> <span class="nx">buffers_and_grains</span>
+  <span class="o">:</span><span class="nx">END</span><span class="o">:</span>
+<span class="o">**</span> <span class="nx">Triggering</span> <span class="nx">Methods</span>
+<span class="o">:</span><span class="nx">filename</span><span class="o">:</span> <span class="nx">triggering</span><span class="o">-</span><span class="nx">methods</span>
+<span class="o">:</span><span class="nx">END</span><span class="o">:</span>
+
+<span class="nx">This</span> <span class="nx">section</span> <span class="nx">illustrates</span> <span class="nx">several</span> <span class="nx">different</span> <span class="nx">ways</span> <span class="nx">to</span> <span class="nx">trigger</span> <span class="nx">grains</span><span class="p">,</span> <span class="nx">envelopes</span> <span class="nx">or</span> <span class="nx">other</span> <span class="nx">gate</span><span class="o">-</span><span class="nx">triggered</span> <span class="nx">UGens</span>
+
+<span class="o">***</span> <span class="nx">Triggering</span> <span class="nx">from</span> <span class="nx">lang</span> <span class="kd">with</span> <span class="nx">set</span>
+
+<span class="o">***</span> <span class="nx">Triggering</span> <span class="nx">internally</span> <span class="nx">UGens</span>
+
+<span class="o">****</span> <span class="nx">Impulse</span><span class="p">,</span> <span class="nx">Dust</span> <span class="nx">etc</span><span class="p">.</span>
+
+<span class="o">****</span> <span class="nx">Demand</span> <span class="nx">UGens</span>
+
+<span class="o">**</span> <span class="nx">Triggering</span> <span class="nx">EnvGen</span> <span class="nx">and</span> <span class="nx">Line</span>
+<span class="o">:</span><span class="nx">filename</span><span class="o">:</span> <span class="nx">triggering</span><span class="o">-</span><span class="nx">envgen</span>
+<span class="o">:</span><span class="nx">END</span><span class="o">:</span>
+
+<span class="nx">Besides</span> <span class="nx">controlling</span> <span class="nx">the</span> <span class="nx">amplitude</span> <span class="nx">shape</span> <span class="k">of</span> <span class="nx">a</span> <span class="nx">single</span> <span class="nx">sound</span><span class="o">-</span><span class="nx">event</span> <span class="nx">or</span> <span class="nx">note</span> <span class="k">in</span> <span class="nx">its</span> <span class="nx">entirety</span><span class="p">,</span> <span class="nx">envelopes</span> <span class="nx">can</span> <span class="nx">also</span> <span class="nx">be</span> <span class="nx">used</span> <span class="nx">to</span> <span class="nx">generate</span> <span class="nx">streams</span> <span class="k">of</span> <span class="nx">sound</span> <span class="nx">events</span> <span class="kd">with</span> <span class="nx">the</span> <span class="nx">same</span> <span class="nx">synth</span><span class="p">.</span>  <span class="nx">The</span> <span class="nx">same</span> <span class="nx">technique</span> <span class="nx">can</span> <span class="nx">also</span> <span class="nx">be</span> <span class="nx">applied</span> <span class="nx">to</span> <span class="nx">Line</span> <span class="nx">or</span> <span class="nx">Xline</span> <span class="nx">to</span> <span class="nx">arbitrarily</span> <span class="nx">construct</span> <span class="nx">shapes</span> <span class="nx">controlling</span> <span class="nx">any</span> <span class="nx">parameter</span> <span class="nx">on</span> <span class="nx">the</span> <span class="nx">fly</span><span class="p">.</span>  <span class="nx">Here</span> <span class="nx">are</span> <span class="nx">some</span> <span class="nx">examples</span> <span class="nx">explaining</span> <span class="nx">how</span> <span class="nx">to</span> <span class="k">do</span> <span class="k">this</span> <span class="nx">using</span> <span class="nx">either</span> <span class="nx">just</span> <span class="nx">the</span> <span class="k">default</span> <span class="o">*</span><span class="nx">SCClassLibrary</span><span class="o">*</span> <span class="nx">and</span> <span class="nx">the</span> <span class="o">*</span><span class="nx">sc</span><span class="o">-</span><span class="nx">hacks</span><span class="o">*</span> <span class="nx">library</span><span class="p">.</span>
+
+<span class="nx">Two</span> <span class="nx">items</span> <span class="nx">are</span> <span class="nx">necessary</span> <span class="nx">to</span> <span class="nx">re</span><span class="o">-</span><span class="nx">trigger</span> <span class="nx">envelope</span> <span class="nx">or</span> <span class="nx">line</span><span class="o">-</span><span class="nx">segment</span> <span class="nx">UGens</span> <span class="k">in</span> <span class="nx">a</span> <span class="nx">Synth</span><span class="o">:</span>
+<span class="mi">1</span><span class="p">.</span> <span class="nx">The</span> <span class="o">=</span><span class="nx">doneAction</span><span class="o">=</span> <span class="nx">argument</span> <span class="k">of</span> <span class="nx">the</span> <span class="nx">UGen</span> <span class="k">in</span> <span class="nx">question</span> <span class="nx">must</span> <span class="nx">have</span> <span class="nx">a</span> <span class="nx">value</span> <span class="k">of</span> <span class="mi">0</span> <span class="k">in</span> <span class="nx">order</span> <span class="nx">to</span> <span class="nx">keep</span> <span class="nx">the</span> <span class="nx">Synth</span> <span class="nx">alive</span> <span class="nx">afer</span> <span class="nx">the</span> <span class="nx">UGen</span> <span class="nx">has</span> <span class="nx">finished</span> <span class="nx">playing</span><span class="p">.</span>
+<span class="mi">2</span><span class="p">.</span> <span class="nx">The</span> <span class="nx">UGen</span> <span class="k">in</span> <span class="nx">question</span> <span class="nx">must</span> <span class="nx">use</span> <span class="nx">a</span> <span class="nx">control</span> <span class="k">in</span> <span class="nx">its</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">argument</span><span class="p">.</span> <span class="nx">The</span> <span class="nx">UGen</span> <span class="nx">restarts</span> <span class="nx">whenever</span> <span class="nx">the</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">the</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">control</span> <span class="nx">changes</span> <span class="nx">from</span> <span class="mi">0</span> <span class="nx">to</span> <span class="mi">1</span><span class="p">.</span>  <span class="nx">Furthermore</span><span class="p">,</span> <span class="k">if</span> <span class="nx">the</span> <span class="nx">Envelope</span> <span class="nx">contains</span> <span class="nx">a</span> <span class="nx">release</span> <span class="nx">part</span><span class="p">,</span> <span class="nx">then</span> <span class="nx">the</span> <span class="nx">release</span> <span class="nx">part</span> <span class="nx">will</span> <span class="nx">be</span> <span class="nx">triggered</span> <span class="nx">when</span> <span class="nx">the</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">control</span> <span class="nx">changes</span> <span class="nx">from</span> <span class="mi">1</span> <span class="nx">to</span> <span class="mi">0</span><span class="p">.</span>
+
+<span class="o">***</span> <span class="nx">Caution</span><span class="o">:</span> <span class="nx">Use</span> <span class="nx">a</span> <span class="nx">name</span> <span class="nx">other</span> <span class="nx">than</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">as</span> <span class="nx">control</span> <span class="nx">name</span> <span class="k">for</span> <span class="nx">triggering</span>
+
+<span class="o">*</span><span class="nx">NOTE</span><span class="o">:</span> <span class="nx">The</span> <span class="nx">control</span> <span class="nx">used</span> <span class="nx">to</span> <span class="nx">trigger</span> <span class="nx">the</span> <span class="nx">EnvGen</span> <span class="o">/</span><span class="nx">must</span> <span class="nx">have</span> <span class="nx">a</span> <span class="nx">name</span> <span class="nx">different</span> <span class="nx">than</span><span class="o">/</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span><span class="p">,</span> <span class="nx">otherwise</span> <span class="nx">SC</span> <span class="nx">will</span> <span class="nx">be</span> <span class="nx">unable</span> <span class="nx">to</span> <span class="nx">release</span> <span class="nx">the</span> <span class="nx">synth</span> <span class="nx">because</span> <span class="nx">it</span> <span class="nx">creates</span> <span class="nx">a</span> <span class="nx">second</span> <span class="o">=</span><span class="nx">gate</span><span class="o">=</span> <span class="nx">control</span> <span class="nx">by</span> <span class="k">default</span> <span class="nx">when</span> <span class="nx">creating</span> <span class="nx">synthdefs</span> <span class="nx">from</span> <span class="nx">functions</span><span class="p">.</span>  <span class="nx">For</span> <span class="nx">example</span><span class="o">:</span> 
+
+<span class="err">#</span><span class="o">+</span><span class="nx">BEGIN_SRC</span> <span class="nx">javascript</span>
+  <span class="c1">//: This is wrong:</span>
+  <span class="nx">a</span> <span class="o">=</span>  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">gate</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+	  <span class="kd">var</span> <span class="nx">env</span><span class="p">;</span>
+	  <span class="nx">env</span> <span class="o">=</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">adsr</span> <span class="p">();</span>
+	  <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+	  <span class="p">,</span><span class="o">*</span> <span class="nx">EnvGen</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">gate</span><span class="p">,</span> <span class="nx">doneAction</span><span class="o">:</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">}.</span><span class="nx">play</span><span class="p">;</span>
+  <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span> <span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="c1">// register a to update state when it ends</span>
+  <span class="c1">//: Test if a is playing</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">isPlaying</span><span class="p">;</span>
+  <span class="c1">// first let it make a sound:</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">gate</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="c1">//: then try to release it:</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">release</span><span class="p">;</span>
+  <span class="c1">//: The output amplitude is 0 but the synth is still playing:</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">isPlaying</span><span class="p">;</span>
+  <span class="c1">//: Try again, specifying a release time:</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">release</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">);</span>
+  <span class="c1">//: To really stop the synth, you have to free it</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">free</span><span class="p">;</span>
+  <span class="c1">//: The synth has stopped playing. Synth count should be 0 in the server display</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">isPlaying</span><span class="p">;</span> <span class="c1">// returns false</span>
+</code></pre></div>
+
+<h3 id="function-play-and-synth-set-scclasslibrary">Function play and Synth set (SCClassLibrary)</h3>
+
+<p>Here is a simple example using only the standard SCClassLibrary:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">//: Start a triggerable synth and store it in variable a</span>
+  <span class="c1">// Note: The EnvGen will not be triggered because trig is 0.</span>
+  <span class="c1">// Thus the synth will not produce an audible signal.</span>
+
+  <span class="c1">// use trig instead of gate as control name!</span>
+  <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">trig</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+	  <span class="kd">var</span> <span class="nx">env</span><span class="p">;</span>
+	  <span class="nx">env</span> <span class="o">=</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">adsr</span> <span class="p">();</span>
+	  <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+	  <span class="p">,</span><span class="o">*</span> <span class="nx">EnvGen</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">trig</span><span class="p">,</span> <span class="nx">doneAction</span><span class="o">:</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">}.</span><span class="nx">play</span><span class="p">;</span>
+  <span class="c1">//: Trigger the envelope</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="c1">//: Release the envelope</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="c1">//: Re-trigger the nevelope</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="c1">//: Release the envelope again</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="c1">//: Run a routine to start and stop the synth several times</span>
+  <span class="p">{</span>
+	  <span class="mi">10</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+		  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// i+1 : start with trigger on</span>
+		  <span class="mf">0.01</span><span class="p">.</span><span class="nx">exprand</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">).</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">}</span>
+  <span class="p">}.</span><span class="nx">fork</span><span class="p">;</span>
+  <span class="c1">//: Do the same as above, but also change the frequency</span>
+  <span class="p">{</span>
+	  <span class="mi">40</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+		  <span class="c1">// only change frequency when starting, not when releasing:</span>
+		  <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// i / 2: wholetone -&gt; chromatic</span>
+			  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">,</span> <span class="p">(</span><span class="nx">i</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">60</span><span class="p">).</span><span class="nx">midicps</span><span class="p">,</span> <span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>			
+		  <span class="p">}{</span>
+			  <span class="nx">a</span><span class="p">.</span><span class="nx">set</span> <span class="p">(</span><span class="err">\</span><span class="nx">trig</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+		  <span class="p">};</span>
+		  <span class="mf">0.01</span><span class="p">.</span><span class="nx">exprand</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">).</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">};</span>
+  <span class="p">}.</span><span class="nx">fork</span><span class="p">;</span>
+  <span class="c1">//:</span>
+</code></pre></div>
+
+<h3 id="control-through-environment-variables-using-function">Control through environment variables, using Function <code>+&gt;</code></h3>
+
+<p>In <em>sc-hacks</em>, the operator <code>+&gt;</code> plays a function and stores its synth in the global Library using a <code>SynthPlayer</code> instance.  Additionally, it makes the synth react whenever an environment variable whose name corresponds to a control parameter of the synth is set in the <code>currentEnvironment</code>.  This makes it easy to control the synth through the environment.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">{</span> <span class="o">|</span> <span class="nx">freq</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="nx">trig</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+	  <span class="kd">var</span> <span class="nx">env</span><span class="p">;</span>
+	  <span class="nx">env</span> <span class="o">=</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">adsr</span> <span class="p">();</span>
+	  <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span> <span class="p">(</span><span class="nx">freq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+	  <span class="p">,</span><span class="o">*</span> <span class="nx">EnvGen</span><span class="p">.</span><span class="nx">kr</span> <span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">gate</span><span class="o">:</span> <span class="nx">trig</span><span class="p">,</span> <span class="nx">doneAction</span><span class="o">:</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="o">~</span><span class="nx">trig</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="o">~</span><span class="nx">trig</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="p">{</span>
+	  <span class="kd">var</span> <span class="nx">trig</span><span class="p">;</span>
+	  <span class="nx">inf</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+		  <span class="nx">trig</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+		  <span class="k">if</span> <span class="p">(</span><span class="nx">trig</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">300</span> <span class="nx">rrand</span><span class="o">:</span> <span class="mi">3000</span> <span class="p">};</span>
+		  <span class="o">~</span><span class="nx">trig</span> <span class="o">=</span> <span class="nx">trig</span><span class="p">;</span>
+		  <span class="mf">0.9</span><span class="p">.</span><span class="nx">rand</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">};</span>
+  <span class="p">}.</span><span class="nx">rout</span><span class="p">;</span>
+  <span class="c1">// rout starts a routine like fork, and stores it in the library</span>
+  <span class="c1">// under a name (default: &#39;routine&#39;)</span>
+  <span class="c1">// Additionally, if a routine is running under the same name,</span>
+  <span class="c1">// it stops that routine before starting the new one to replace it.</span>
+  <span class="c1">//:</span>
+  <span class="p">{</span>
+	  <span class="kd">var</span> <span class="nx">trig</span><span class="p">;</span>
+	  <span class="mi">26</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+		  <span class="nx">trig</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+		  <span class="k">if</span> <span class="p">(</span><span class="nx">trig</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="p">(</span><span class="nx">i</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">60</span><span class="p">).</span><span class="nx">midicps</span> <span class="p">};</span>
+		  <span class="o">~</span><span class="nx">trig</span> <span class="o">=</span> <span class="nx">trig</span><span class="p">;</span>
+		  <span class="mf">0.24</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">};</span>
+  <span class="p">}.</span><span class="nx">rout</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="p">{</span>
+	  <span class="mi">20</span> <span class="k">do</span><span class="o">:</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+		  <span class="o">~</span><span class="nx">trig</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+		  <span class="o">~</span><span class="nx">freq</span> <span class="o">=</span> <span class="mi">300</span> <span class="nx">rrand</span><span class="o">:</span> <span class="mi">3000</span><span class="p">;</span>
+		  <span class="mf">0.9</span><span class="p">.</span><span class="nx">rand</span><span class="p">.</span><span class="nx">wait</span><span class="p">;</span>
+	  <span class="p">}</span>
+  <span class="p">}.</span><span class="nx">rout</span><span class="p">;</span>
+</code></pre></div>
+
+<h2 id="playing-grains">Playing Grains</h2>
+
+<p>Here are some examples for playing grains of sound from a buffer with</p>
+
+<p>To be provided ...</p>
+
+<h1 id="server-objects">Server objects</h1>
+
+<h2 id="about-server-objects">About Server Objects</h2>
+
+<p>:PROPERTIES:
+  :foldername: server_objects
+  :END:</p>
+
+<h3 id="server-objects-managed-by-nevent">Server objects managed by Nevent</h3>
+
+<p>These are:</p>
+
+<ul>
+<li>The Group which is used to create all Synths in the event.</li>
+<li>Busses connecting inputs or outputs of Synths in the event to those of other events.</li>
+<li>Buffers used for playing by Synths</li>
+</ul>
+
+<h3 id="allocating-server-objects-at-reboot">Allocating Server Objects at Reboot</h3>
+
+<h2 id="server-and-nevent">Server and Nevent</h2>
+
+<p>:PROPERTIES:
+   :filename: server-and-nevent
+   :END:
+Each <code>Nevent</code> Environment has  only one Server instance.  Synths and Patterns play in that instance.</p>
+
+<p>Open issue: Where to store the server of an Environment.  Possibilities:</p>
+
+<ol>
+<li>As variable <code>~server</code></li>
+<li>In Library using Registry, using <code>[environment \server]</code> as key</li>
+<li>In prototype event for Nevent. (Needs to be programmed yet).</li>
+<li>Do not store, use <code>Server.default</code></li>
+</ol>
+
+<p>Currently option 4 is used, to concentrate on finishing the other features of the library.  Adding multiple servers will probably require a <code>NeventGroup</code> class whose instances create and manage groups of Nevents playing on the same server. <code>NeventGroup</code> will store the selected Server instance in the parent event of each <code>Nevent</code> instance which it creates.</p>
+
+<h2 id="target-group">Target Group</h2>
+
+<p>:PROPERTIES:
+   :filename: target-group
+   :END:</p>
+
+<h3 id="maintaining-target-group-order">Maintaining Target Group Order</h3>
+
+<h2 id="busses">Busses</h2>
+
+<p>:PROPERTIES:
+   :filename: busses
+   :END:</p>
+
+<h3 id="bus-allocation">Bus Allocation</h3>
+
+<h3 id="bus-index-parameter-updates">Bus Index Parameter Updates</h3>
+
+<h2 id="buffers">Buffers</h2>
+
+<p>:PROPERTIES:
+   :filename: buffers
+   :END:</p>
+
+<h1 id="basic-classes">Basic Classes</h1>
+
+<h2 id="registry-hierarchical-namespaces">Registry: Hierarchical Namespaces</h2>
+
+<p>:PROPERTIES:
+  :foldername: basic_classes
+  :END:</p>
+
+<p>This class uses the <code>Library</code> class to store and  retrieve objects using any array of objects as key.  This extends the way that <code>Pdef</code>, <code>Ndef</code>, <code>OSCdef</code> work, making it possible for any class to store its instances in an arbitrary hierarchical path, without subclassing.  To create this behavior one can then add a method to <code>Symbol</code> for accessing the kind of object needed.  For example: <code>\aSymbol.oscFunc</code> accesses <code>OSCFunc</code> instances. This also allows easier customization of how the object is created if not found.</p>
+
+<h3 id="how-it-works-1">How it works</h3>
+
+<p>Store an object in Library under an array of objects (called a <em>path</em>).  When accessing the path, create the object if not already stored, else return the previously stored object.</p>
+
+<h3 id="who-uses-it">Who uses it</h3>
+
+<ul>
+<li><code>SynthPlayer</code> registers its instances in the current environment under their names.</li>
+- 
+<li><code>Function:oscFunc</code> and <code>Symbol:removeOsc</code> registers <code>OSCFuncs</code> under their path names in order to remove existing OSCFunc instances when creating a new one under the same path. </li>
+</ul>
+
+<h3 id="example-2">Example</h3>
+
+<p>This is the code that makes it possible to create or modify an OSCFunc bound to a symbol.  It defines the methods <code>Function:oscFunc</code> and <code>Symbol:removeOsc</code>.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">+</span> <span class="nb">Function</span> <span class="p">{</span>
+	<span class="nx">oscFunc</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">path</span> <span class="o">|</span>
+		<span class="nx">path</span><span class="p">.</span><span class="nx">removeOsc</span><span class="p">;</span>
+		<span class="o">^</span><span class="nx">Registry</span> <span class="p">(</span><span class="s1">&#39;oscFuncs&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="p">{</span> <span class="nx">OSCFunc</span> <span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span> <span class="p">});</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">+</span> <span class="nx">Symbol</span> <span class="p">{</span>
+	<span class="nx">removeOsc</span> <span class="p">{</span>
+		<span class="nx">Registry</span><span class="p">.</span><span class="nx">doIfFound</span> <span class="p">(</span><span class="s1">&#39;oscFuncs&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">found</span> <span class="o">|</span>
+			<span class="nx">found</span><span class="p">.</span><span class="nx">objectClosed</span><span class="p">;</span>
+			<span class="nx">found</span><span class="p">.</span><span class="nx">free</span><span class="p">;</span>
+		<span class="p">});</span>	
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="notification">Notification</h2>
+
+<p>Notification: Register a function callback to a message and a pair of objects
+=Notification= is an improved version of the <a href="http://doc.sccode.org/Classes/NotificationCenter.html" title="NotificationCenter class" target="_blank">NotificationCenter class</a>.  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message <code>changed</code> to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.</p>
+
+<ul>
+=Notification= adds the following enhancements: 
+<li>Ability to remove existing notification connections reliably.</li>
+<li>Several methods for easily adding or modifying connections between objects.</li>
+<li>Ability to remove all connections from an object with a single message, <code>objectClosed</code>, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.</li>
+</ul>
+
+<h3 id="examples-1">Examples</h3>
+
+<h4 id="onobjectclosed"><code>onObjectClosed</code></h4>
+
+<p><code>Registry</code> uses <code>onObjectClosed</code> to remove objects by sending them that message:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>   <span class="o">*</span><span class="k">new</span> <span class="p">{</span> <span class="o">|</span> <span class="p">...</span> <span class="nx">pathAndFunc</span> <span class="o">|</span>
+		<span class="kd">var</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">makeFunc</span><span class="p">,</span> <span class="nx">instance</span><span class="p">;</span>
+		<span class="nx">makeFunc</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
+		<span class="nx">path</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">[</span><span class="mi">0</span><span class="p">..</span><span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">size</span><span class="o">-</span><span class="mi">2</span><span class="p">];</span>
+		<span class="nx">instance</span> <span class="o">=</span> <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">atPath</span><span class="p">(</span><span class="nx">path</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">isNil</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">instance</span> <span class="o">=</span> <span class="nx">makeFunc</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+			<span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">putAtPath</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">instance</span><span class="p">);</span>
+			<span class="nx">instance</span><span class="p">.</span><span class="nx">onObjectClosed</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">{</span>
+				<span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="o">*</span><span class="nx">path</span><span class="p">)</span>
+			<span class="p">});</span>
+		<span class="p">};</span>
+		<span class="o">^</span><span class="nx">instance</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></div>
+
+<h4 id="addnotifieroneshot"><code>addNotifierOneShot</code></h4>
+
+<p>This is in turn used by <code>oscFunc</code> and <code>rout</code> methods for removing <code>OSCFunc</code> and <code>Routine</code> objects in order to replace them with new instances.</p>
+
+<p>The <code>addNotifierOneShot</code> method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the <code>onEnd</code> and <code>onStart</code> methods for <code>Node</code> make use of the <code>addNotifierOneShot</code> method:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">+</span> <span class="nx">Node</span> <span class="p">{</span>
+	<span class="nx">onStart</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+		<span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+		<span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_go</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="nx">onEnd</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+		<span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+		<span class="c1">//		this.isPlaying = true; // dangerous</span>
+		<span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_end</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h1 id="subsections">Subsections</h1>
+
+<p>Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.</p>
+
+<p>Testing here.</p>
+
+<h2 id="subsections-1">Subsections</h2>
+
+<p>Are also displayed Testing here.</p>
+
+<h3 id="subsubsections">Subsubsections</h3>
+
+<p>Are also displayed</p>
+
+<h1 id="use-examples">Use examples</h1>
+
+<h2 id="pattern-and-synth-play-scenarios">Pattern and Synth play scenarios</h2>
+
+<p>:PROPERTIES:
+  :foldername: use_examples
+  :END:</p>
+
+<p><code>Event:eplay</code> and <code>SynthPlayer</code> can play with several instances in parallel on the same environment, and also provide several additional features.  This section gives some examples that explore these features and show how they work and notes some questions regarding future features.</p>
+
+<h3 id="creating-starting-and-stopping-patterns">Creating, starting and stopping patterns</h3>
+
+<h3 id="playing-several-patterns-in-the-same-environment">Playing several patterns in the same environment</h3>
+
+<h3 id="playing-several-synths-in-the-same-environment">Playing several synths in the same environment</h3>
+
+<h1 id="playing-with-data">Playing with data</h1>
+
+<h2 id="playing-with-data-1">Playing With Data</h2>
+
+<p>:PROPERTIES:
+  :foldername: data
+  :END:</p>
+
+<p>This section discusses problems and approaches for sonifying data using EventPlayer and SynthPlayer.</p>
+
+<h3 id="data-dimensions-and-play-method">Data dimensions and play method</h3>
+
+<p>The data is a 2 dimensional array.  It is played as a <code>Pseq</code> along the first dimension.  This results in a stream of rows.  Each subsequent element returned by the stream is a row of data.</p>
+
+<h3 id="different-ways-of-playing-rows">Different ways of playing rows</h3>
+
+<h4 id="playing-each-data-row-as-one-synth">Playing each data row as one Synth</h4>
+
+<h4 id="playing-each-d">Playing each d</h4>
+
+<h1 id="making-this-site">Making this site</h1>
+
+<p>This site was made with <a href="https://gohugo.io/" title="hugo" target="_blank">hugo</a> and exported using this script:</p>
+<div class="highlight"><pre><code class="language-shell" data-lang="shell"><span></span><span class="ch">#!/bin/sh</span>
+<span class="nv">DIR</span><span class="o">=</span><span class="k">$(</span>dirname <span class="s2">&quot;</span><span class="nv">$0</span><span class="s2">&quot;</span><span class="k">)</span>
+
+<span class="nb">cd</span> <span class="nv">$DIR</span>/..
+
+<span class="k">if</span> <span class="o">[[</span> <span class="k">$(</span>git status -s<span class="k">)</span> <span class="o">]]</span>
+<span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;The working directory is dirty. Please commit any pending changes.&quot;</span>
+    <span class="nb">exit</span> 1<span class="p">;</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Deleting old publication&quot;</span>
+rm -rf public
+mkdir public
+git worktree prune
+rm -rf .git/worktrees/public/
+
+<span class="nb">echo</span> <span class="s2">&quot;Checking out gh-pages branch into public&quot;</span>
+git worktree add -B gh-pages public origin/gh-pages
+
+<span class="nb">echo</span> <span class="s2">&quot;Removing existing files&quot;</span>
+rm -rf public/*
+
+<span class="nb">echo</span> <span class="s2">&quot;Generating site&quot;</span>
+hugo
+
+<span class="nb">echo</span> <span class="s2">&quot;Updating gh-pages branch&quot;</span>
+<span class="nb">cd</span> public <span class="o">&amp;&amp;</span> git add --all <span class="o">&amp;&amp;</span> git commit -m <span class="s2">&quot;Publishing to gh-pages (publish.sh)&quot;</span>
+
+git push -v origin gh-pages<span class="se">\:</span>refs/heads/gh-pages
+</code></pre></div>
+
+<p>The script was placed in the _scripts directory under the root directory of the site. <code>[root+]/_scripts/publish_to_ghpages.sh</code></p>
+
+<p>You can clone the source for this site from: <a href="https://github.com/iani/sc-hacks-doc" title="https://github.com/iani/sc-hacks-doc" target="_blank">https://github.com/iani/sc-hacks-doc</a>.</p>
+
+    
+
+        </div>
+        <div class="dark-box">
+            
+            <div class="lang-selector">
+                
+                <a href="#" data-language-name="javascript">SuperCollider</a>
+                
+                <a href="#" data-language-name="shell">Shell</a>
+                
+                <a href="#" data-language-name="emacs-lisp">emacs-lisp</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+</body>
+</html>

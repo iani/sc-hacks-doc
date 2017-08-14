@@ -1,0 +1,8 @@
+- id: translations
+  translation:
+    one: "Ελληνικά"
+    other: "Αγγλικά"
+
+# Search label
+- id: search
+  translation: "Search"

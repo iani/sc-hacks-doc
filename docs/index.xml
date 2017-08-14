@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>sc-hacks library documentation</title>
+    <link>https://iani.github.io/sc-hacks-doc/</link>
+    <description>Recent content on sc-hacks library documentation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://iani.github.io/sc-hacks-doc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://iani.github.io/sc-hacks-doc/master_file/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://iani.github.io/sc-hacks-doc/master_file/</guid>
+      <description>Introduction Anti-Mythology As of August 2017, sc-hacks is being re-done from scratch. Both the library and its API will change in the near future.
+The purpose of the sc-hacks library is to make experimentation and music making in SuperCollider easier, by offering simpler and shorter coding options for tasks that usually require complex and careful coding. Such are:
+ Replace one synth with another seamlessly while playing Freely change the contents of patterns while playing Set the parameters of synths either by setting environment variables or through a gui Link outputs and inputs of synths and place them in the right order to filter the output of a synth with another synth Manage sets of code files to be loaded at startup, and of audio files to be loaded when the server boots Map the control signal of synth functions or envelopes to the parameters of a synth.</description>
+    </item>
+    
+  </channel>
+</rss>
