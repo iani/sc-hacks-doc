@@ -1,6 +1,6 @@
 #!/bin/sh
 
-hexo
+hugo
 
 git add .
 
