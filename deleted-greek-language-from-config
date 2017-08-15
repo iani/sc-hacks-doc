@@ -1,0 +1,16 @@
+
+
+[languages.el]
+languageName = "Ελληνικά"
+weight = 2
+title = "σκάψε"
+
+# Left sidebar footer items. Use HTMl or Markdown.
+toc_footers = [ 
+"<a href=\"https://github.com/iani/sc-hacks\">SC-HACKS SOURCE AT GITHUB</a>",
+"Documentation Powered by [DocuAPI](https://github.com/bep/docuapi)",
+"Hugo Theme by [bep](https://github.com/bep)"
+]
+[languages.el.blackfriday]
+angledQuotes = false
+hrefTargetBlank = true

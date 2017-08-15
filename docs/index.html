@@ -44,18 +44,6 @@
         
         <div id="toc">
         </div>
-        
-        <div class="toc-footer">
-            <h3 class="translations-title">English</h3> 
-            
-<ul>
-    
-        <li><a href="https://iani.github.io/sc-hacks-doc/el/">Ελληνικά</a></li>
-    
-</ul>
-
-
-        </div>
          
         
         <ul class="toc-footer">
@@ -265,25 +253,39 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 <h1 id="operators">Operators</h1>
 
 <h2 id="introduction-to-operators-in-sc-hacks">Introduction to Operators in sc-hacks</h2>
+<pre class="example">
+Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// 1. receiver   2. operator 3. adverb   4.argument</span>
+<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span>       <span class="err">\</span><span class="nx">mysynth</span>
+</code></pre></div>
 
 <h2 id="overview-the-4-operators">Overview: The 4 operators <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code></h2>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="nx">operator</span><span class="p">[</span><span class="nx">optional</span><span class="o">:</span> <span class="p">.</span><span class="nx">adverb</span><span class="p">]</span> <span class="nx">argument</span>
+<pre class="example">
+Examples of 4 operator types in sc-hacks
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// type 1: +&gt;</span>
+<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// 1. function +&gt;player</span>
+<span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pwhite</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// 2. event +&gt; player</span>
+<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// 3. SynthDef name +&gt; player</span>
+<span class="c1">// type 2: &lt;+</span>
+<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// 1. parameter &lt;+ Function</span>
+<span class="err">\</span><span class="nx">amp</span> <span class="o">&lt;+</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">perc</span><span class="p">;</span> <span class="c1">// 1. parameter &lt;+ Envelope</span>
+<span class="c1">// type 3: *&gt;</span>
+<span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// 1. source player *&gt; effect player</span>
+<span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// 2. event *&gt; player&#39;s environment</span>
+<span class="c1">// type 4: &lt;*</span>
+<span class="err">\</span><span class="nx">test</span> <span class="o">&lt;*</span> <span class="err">\</span><span class="nx">hihat</span><span class="p">;</span> <span class="c1">// 1. parameter &lt;* buffer name</span>
 </code></pre></div>
 
 <p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:</span>
-<span class="c1">// 1. receiver   2. operator 3. adverb   4.argument</span>
-<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span>       <span class="err">\</span><span class="nx">mysynth</span>
-</code></pre></div>
 
 <p>As basic operators, <em>sc-hacks</em> uses four combinations built from + and * with > and <.  They are in two groups (=+=-group and =*=-group):</p>
 
 <ol>
-<li><code>+=-Group: =+&gt;</code>, <code>&lt;+</code></li>
-<li><code>*=-Group: =*&gt;, =&lt;*</code></li>
+<li><strong>+-Group</strong> : <code>+&gt;</code>, <code>&lt;+</code>.  <strong>+></strong> plays the receiver (left argument) object in the player whose name is named by the left argument.  <strong><+</strong> plays the left argument object in the parameter whose name is named by the receiver .  </li>
+<li><strong>*-Group</strong> : <code>*&gt;, =&lt;*</code>. The operators of the <code>*=-Group have parallel usage principles as that of the =+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</li>
 </ol>
-
-<p>The operators of the <code>*=-Group have parallel usage principles as that of the =+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</p>
 
 <ol>
 <li><code>+&gt;</code> : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. <strong>Function:</strong> Play as synth function into the Player named by the argument. 2. <strong>Event:</strong> Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. <strong>Symbol:</strong> Play as synth using the Receiver Symbol as name of the Synth to be player.</li>
@@ -291,6 +293,8 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 <li><code>*&gt;</code> : The <code>*&gt;</code> operator functions like the <code>+&gt;</code> operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: <strong>Functions</strong> get played as routines in the environment of the player.  <strong>Events</strong> get played as patterns, but using a custom type which instead of playing sounds with <code>play</code> event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.</li>
 <li><code>&lt;*</code> </li>
 </ol>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// </span>
+</code></pre></div>
 
 <h2 id="some-object-symbol">(Some Object) +> Symbol</h2>
 
