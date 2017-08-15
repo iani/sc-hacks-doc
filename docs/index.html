@@ -85,7 +85,7 @@ Both the library and its API will change in the near future.</strong></p>
 
 <p><em>sc-hacks</em> is in <strong>permanent alpha</strong>.  According to <a href="http://semver.org/" title="semantic versioning" target="_blank">semantic versioning</a>, <em>"If you’re changing the API every day you should either still be in version 0.y.z or on a separate development branch working on the next major version."</em>.  This library will remain 0.n alpha for a long time, as changes in operator names and syntax are happening constantly.</p>
 
-<p>Right now, this site is a design draft to guide the development of the next version of <em>sc-hacks</em>.  The source currently <a href="https://iani.github.io/sc-hacks-doc" title="available on github" target="_blank">available on github</a> contains a copy of the old version, and therefore is incompatible to the present documentation.</p>
+<p><strong>Right now, this site is a design draft to guide the development of the next version of <em>sc-hacks</em>.  The source currently <a href="https://iani.github.io/sc-hacks-doc" title="available on github" target="_blank">available on github</a> contains a copy of the old version, and therefore is incompatible to the present documentation.</strong></p>
 
 <h2 id="history">History</h2>
 
@@ -178,7 +178,7 @@ Both the library and its API will change in the near future.</strong></p>
 
 <p>You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel.</p>
 
-<h4 id="adding-emacs-to-supercollider">Adding EMACS to SuperCollider</h4>
+<h4 id="adding-emacs-functionality-to-supercollider">Adding EMACS functionality to SuperCollider</h4>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">Platform</span><span class="p">.</span><span class="nx">userAppSupportDir</span><span class="p">;</span>
 </code></pre></div>
 
@@ -193,7 +193,7 @@ git clone https://github.com/supercollider/supercollider.git
 
 <p>On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to <code>scel</code> as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the <code>Shell</code> tab of the code column to the right of the present text text.</p>
 
-<h4 id="supercollider-to-emacs">SuperCollider to EMACS</h4>
+<h4 id="adding-supercollider-functionality-to-emacs">Adding SuperCollider functionality to EMACS</h4>
 
 <p>You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to ~/.emacs.d/vendor/scel/el directory.</p>
 

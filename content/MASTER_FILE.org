@@ -19,7 +19,7 @@ The purpose of the /sc-hacks/ library is to make experimentation and music makin
 
 /sc-hacks/ is in *permanent alpha*.  According to [[http://semver.org/][semantic versioning]], /"If you’re changing the API every day you should either still be in version 0.y.z or on a separate development branch working on the next major version."/.  This library will remain 0.n alpha for a long time, as changes in operator names and syntax are happening constantly.
 
-Right now, this site is a design draft to guide the development of the next version of /sc-hacks/.  The source currently [[https://iani.github.io/sc-hacks-doc][available on github]] contains a copy of the old version, and therefore is incompatible to the present documentation.
+*Right now, this site is a design draft to guide the development of the next version of /sc-hacks/.  The source currently [[https://iani.github.io/sc-hacks-doc][available on github]] contains a copy of the old version, and therefore is incompatible to the present documentation.*
 
 ** History
 
@@ -120,7 +120,7 @@ git clone https://github.com/supercollider/supercollider.git
 
 You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel. 
 
-**** Adding EMACS to SuperCollider
+**** Adding EMACS functionality to SuperCollider
 
 #+BEGIN_SRC javascript
 Platform.userAppSupportDir;
@@ -139,7 +139,7 @@ git clone https://github.com/supercollider/supercollider.git
 
 On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the =Shell= tab of the code column to the right of the present text text.
 
-**** SuperCollider to EMACS
+**** Adding SuperCollider functionality to EMACS
 You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to ~/.emacs.d/vendor/scel/el directory.
 
 Add this to your init file:
