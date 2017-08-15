@@ -253,6 +253,8 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h1 id="operators">Operators</h1>
 
+<h2 id="overview-the-4-operators">Overview: The 4 operators <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code></h2>
+
 <h2 id="some-object-symbol">(Some Object) +> Symbol</h2>
 
 <p>Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol.</p>
@@ -317,25 +319,33 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <p>If the parameter specified by the adverb is <code>\buf</code> or <code>\bufnum</code>, then the argument is interpreted as name of a buffer, and the parameter is set to the <code>bufnum</code> of that buffer.</p>
 
-<h3 id="symbol-osctemplate">Symbol <+ OSCtemplate</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: symbol &lt;+ Function</span>
-<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
-<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
-</code></pre></div>
-
-<h3 id="symbol-miditemplate">Symbol <+ MIDItemplate</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: symbol &lt;+ Function</span>
-<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
-<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
-</code></pre></div>
-
 <h2 id="ugen-symbol">UGen <+ Symbol</h2>
+
+<h2 id="symbol-some-object-1">Symbol <* (Some Object)</h2>
+
+<h3 id="symbol-symbol-2">Symbol <* Symbol</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: symbol &lt;+ Function</span>
+<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
+<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
+</code></pre></div>
+
+<h3 id="symbol-midi">Symbol <* MIDI</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
+<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
+</code></pre></div>
+
+<p>The MIDI Class is a template class for creating MIDIfunc instances.</p>
+
+<h3 id="symbol-osc">Symbol <* OSC</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
+<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
+</code></pre></div>
+
+<p>The OSC class is a template class for creating OSCfunc instances.</p>
 
 <h2 id="some-object-symbol-1">(Some Object) *> Symbol</h2>
 
-<p>Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol.</p>
-
-<h3 id="symbol-symbol-2">Symbol *> Symbol</h3>
+<h3 id="symbol-symbol-3">Symbol *> Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Symbol *&gt; Symbol</span>
 <span class="err">\</span><span class="k">default</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>

@@ -203,6 +203,8 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 
 * Operators
 
+** Overview: The 4 operators =+>=, =<+=, =*>=, =<*=
+
 ** (Some Object) +> Symbol
 
 Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol. 
@@ -260,7 +262,6 @@ Map the control signal output by playing the Function into the parameter named b
 Play the Event in an EventStreamPlayer, letting the patterns of all keys except =\dur= set the corresponding parameters in the event of the player named by the receiver Symbol.
 
 *** Symbol <+ Env
-
 #+BEGIN_SRC javascript
 \default +> \test; // pushes environment of test
 \freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
@@ -280,29 +281,36 @@ Make the player named by the receiver symbol read its default input from the out
 
 If the parameter specified by the adverb is =\buf= or =\bufnum=, then the argument is interpreted as name of a buffer, and the parameter is set to the =bufnum= of that buffer.
 
-*** Symbol <+ OSCtemplate
-
-#+BEGIN_SRC javascript
-//: symbol <+ Function
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-#+END_SRC
-
-*** Symbol <+ MIDItemplate
-
-#+BEGIN_SRC javascript
-//: symbol <+ Function
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-#+END_SRC
-
 ** UGen <+ Symbol
 
+** Symbol <* (Some Object)
 
+*** Symbol <* Symbol
+#+BEGIN_SRC javascript
+//: symbol <+ Function
+\default +> \test; // pushes environment of test
+\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
+#+END_SRC
+
+*** Symbol <* MIDI
+
+#+BEGIN_SRC javascript
+\default +> \test; // pushes environment of test
+\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
+#+END_SRC
+
+The MIDI Class is a template class for creating MIDIfunc instances.
+
+*** Symbol <* OSC
+
+#+BEGIN_SRC javascript
+\default +> \test; // pushes environment of test
+\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
+#+END_SRC
+
+The OSC class is a template class for creating OSCfunc instances.
 
 ** (Some Object) *> Symbol
-
-Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol. 
 
 *** Symbol *> Symbol
 
