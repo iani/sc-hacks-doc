@@ -140,16 +140,14 @@ git clone https://github.com/supercollider/supercollider.git
 On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the =Shell= tab of the code column to the right of the present text text.
 
 **** Adding SuperCollider functionality to EMACS
-You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to ~/.emacs.d/vendor/scel/el directory.
-
-Add this to your init file:
-
-#+BEGIN_SRC javascript
+#+BEGIN_SRC lisp
 (add-to-list 'load-path "~/.emacs.d/vendor/scel/el")
 (require 'sclang)
 (add-to-list 'load-path "~/.emacs.d/vendor/scel/el")
 (require 'sclang)
 #+END_SRC
+
+You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to =~/.emacs.d/vendor/scel/el= directory. Add to your init file the code displayed here under the "emacs-lisp" tab.
 
 #+BEGIN_SRC lisp
 (setenv "PATH" (concat (getenv "PATH")
