@@ -231,7 +231,7 @@ The code examples to the right illustrate the action of different types of objec
 
 1. =+>= : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. *Function:* Play as synth function into the Player named by the argument. 2. *Event:* Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. *Symbol:* Play as synth using the Receiver Symbol as name of the Synth to be player.
 2. =<+= : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).
-3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.
+3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event. A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  
 4. =<*= This operator is used to send the bufnum of buffers to parameters.
 
 ** (Some Object) +> Symbol
@@ -298,28 +298,43 @@ Play the Event in an EventStreamPlayer, letting the patterns of all keys except 
 
 Play the Env into a control bus and map the parameter named by the symbol in the =currentEnvironment= to that bus.
 
-*** Symbol <+ Symbol
+** UGen <+ Symbol
 
 #+BEGIN_SRC javascript
-  \b <+ \a; // \effect <+ \source;
+  { Ringz.ar(Fin() <+ \fb, LFnoise0.kr(5).range(300, 1000)) } +> \fb;
+#+END_SRC
+
+Set the parameter corresponding to the control value of the UGen to the index of the audio bus output of the player named by the symbol.  This makes it possible to code the connection to another player directly in a synth-function of another player.  It also makes it possible to code audio feedback of a player to itself in a single statement.  It requires use of the utility UGen class =Fin= defined in the present library.
+
+** (Some Object) *> Symbol
+
+*** Symbol *> Symbol
+
+#+BEGIN_SRC javascript
+  \a *> \b; // \source *> \effect
   { Dust.ar([1, 2]) } +> \a;
   { Ringz.ar(Fin(), LFNoise0.kr([5, 10]).range(400, 4000), 1) } +> \b;
 #+END_SRC
 
-Make the player named by the receiver symbol read its default input from the output of the player of the argument symbol.  An adverb to the <+ operator can indicate the name of an alternative input in the receiver player's Synth.
+A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  Make the player named by the argument symbol read its default input from the output of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative input in the receiver player's Synth.
 
-If the parameter specified by the adverb is =\buf= or =\bufnum=, then the argument is interpreted as name of a buffer, and the parameter is set to the =bufnum= of that buffer.
+*** Function *> Symbol
 
-** UGen <+ Symbol
+Play function as routine in environment of player named by the argument symbol.
+
+*** Event *> Symbol
+
+Play event as pattern of custom type, which sets the values of all keys to the variables of the environment of the player named by the argument event.
 
 ** Symbol <* (Some Object)
 
 *** Symbol <* Symbol
 #+BEGIN_SRC javascript
-//: symbol <+ Function
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
+//: symbol <* symbol
+\bufnum <* \hihat; // Set ~bufnum to the bufnum of the buffer whose name is hihat.
 #+END_SRC
+
+Set the parameter environment variable named by the receiver to the bufnum of the buffer named by the argument.
 
 *** Symbol <* MIDI
 

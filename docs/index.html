@@ -290,7 +290,7 @@ Examples of 4 operator types in sc-hacks
 <ol>
 <li><code>+&gt;</code> : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. <strong>Function:</strong> Play as synth function into the Player named by the argument. 2. <strong>Event:</strong> Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. <strong>Symbol:</strong> Play as synth using the Receiver Symbol as name of the Synth to be player.</li>
 <li><code>&lt;+</code> : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).</li>
-<li><code>*&gt;</code> : The <code>*&gt;</code> operator functions like the <code>+&gt;</code> operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: <strong>Functions</strong> get played as routines in the environment of the player.  <strong>Events</strong> get played as patterns, but using a custom type which instead of playing sounds with <code>play</code> event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.</li>
+<li><code>*&gt;</code> : The <code>*&gt;</code> operator functions like the <code>+&gt;</code> operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: <strong>Functions</strong> get played as routines in the environment of the player.  <strong>Events</strong> get played as patterns, but using a custom type which instead of playing sounds with <code>play</code> event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event. A <strong>Symbol</strong> as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  </li>
 <li><code>&lt;*</code> This operator is used to send the bufnum of buffers to parameters.</li>
 </ol>
 
@@ -348,25 +348,38 @@ Examples of 4 operator types in sc-hacks
 
 <p>Play the Env into a control bus and map the parameter named by the symbol in the <code>currentEnvironment</code> to that bus.</p>
 
-<h3 id="symbol-symbol">Symbol <+ Symbol</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="err">\</span><span class="nx">b</span> <span class="o">&lt;+</span> <span class="err">\</span><span class="nx">a</span><span class="p">;</span> <span class="c1">// \effect &lt;+ \source;</span>
+<h2 id="ugen-symbol">UGen <+ Symbol</h2>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">()</span> <span class="o">&lt;+</span> <span class="err">\</span><span class="nx">fb</span><span class="p">,</span> <span class="nx">LFnoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">fb</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Set the parameter corresponding to the control value of the UGen to the index of the audio bus output of the player named by the symbol.  This makes it possible to code the connection to another player directly in a synth-function of another player.  It also makes it possible to code audio feedback of a player to itself in a single statement.  It requires use of the utility UGen class <code>Fin</code> defined in the present library.</p>
+
+<h2 id="some-object-symbol-1">(Some Object) *> Symbol</h2>
+
+<h3 id="symbol-symbol">Symbol *> Symbol</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="err">\</span><span class="nx">a</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span> <span class="c1">// \source *&gt; \effect</span>
   <span class="p">{</span> <span class="nx">Dust</span><span class="p">.</span><span class="nx">ar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">a</span><span class="p">;</span>
   <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span>
 </code></pre></div>
 
-<p>Make the player named by the receiver symbol read its default input from the output of the player of the argument symbol.  An adverb to the <+ operator can indicate the name of an alternative input in the receiver player's Synth.</p>
+<p>A <strong>Symbol</strong> as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  Make the player named by the argument symbol read its default input from the output of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative input in the receiver player's Synth.</p>
 
-<p>If the parameter specified by the adverb is <code>\buf</code> or <code>\bufnum</code>, then the argument is interpreted as name of a buffer, and the parameter is set to the <code>bufnum</code> of that buffer.</p>
+<h3 id="function-symbol">Function *> Symbol</h3>
 
-<h2 id="ugen-symbol">UGen <+ Symbol</h2>
+<p>Play function as routine in environment of player named by the argument symbol.</p>
+
+<h3 id="event-symbol">Event *> Symbol</h3>
+
+<p>Play event as pattern of custom type, which sets the values of all keys to the variables of the environment of the player named by the argument event.</p>
 
 <h2 id="symbol-some-object-1">Symbol <* (Some Object)</h2>
 
 <h3 id="symbol-symbol-1">Symbol <* Symbol</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: symbol &lt;+ Function</span>
-<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
-<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: symbol &lt;* symbol</span>
+<span class="err">\</span><span class="nx">bufnum</span> <span class="o">&lt;*</span> <span class="err">\</span><span class="nx">hihat</span><span class="p">;</span> <span class="c1">// Set ~bufnum to the bufnum of the buffer whose name is hihat.</span>
 </code></pre></div>
+
+<p>Set the parameter environment variable named by the receiver to the bufnum of the buffer named by the argument.</p>
 
 <h3 id="symbol-midi">Symbol <* MIDI</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
@@ -382,21 +395,21 @@ Examples of 4 operator types in sc-hacks
 
 <p>The OSC class is a template class for creating OSCfunc instances.</p>
 
-<h2 id="some-object-symbol-1">(Some Object) *> Symbol</h2>
+<h2 id="some-object-symbol-2">(Some Object) *> Symbol</h2>
 
 <h3 id="symbol-symbol-2">Symbol *> Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Symbol *&gt; Symbol</span>
 <span class="err">\</span><span class="k">default</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
-<h3 id="function-symbol">Function *> Symbol</h3>
+<h3 id="function-symbol-1">Function *> Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Function +&gt; Symbol</span>
 <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
 <p>Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as <code>{}.play</code>.</p>
 
-<h3 id="event-symbol">Event *> Symbol</h3>
+<h3 id="event-symbol-1">Event *> Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">// Event +&gt; Symbol</span>
   <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span><span class="nx">midicps</span><span class="p">)</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
