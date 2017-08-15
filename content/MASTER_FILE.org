@@ -231,12 +231,14 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <.  They are in two groups (=+=-group and =*=-group): 
 
 1. *+-Group* : =+>=, =<+=.  *+>* plays the receiver (left argument) object in the player whose name is named by the left argument.  *<+* plays the left argument object in the parameter whose name is named by the receiver .  
-2. **-Group* : =*>, =<*=. The operators of the =*=-Group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
+2. **-Group* : =*>, =<*=. The operators of the =*= group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
+
+The examples to the write illustrate the action of different types of objects sent to players, which are:
 
 1. =+>= : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. *Function:* Play as synth function into the Player named by the argument. 2. *Event:* Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. *Symbol:* Play as synth using the Receiver Symbol as name of the Synth to be player.
 2. =<+= : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).
 3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.
-4. =<*= 
+4. =<*= This operator is used to send the bufnum of buffers to parameters.
 
 #+BEGIN_SRC javascript
 // 

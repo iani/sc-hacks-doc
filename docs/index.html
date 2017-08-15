@@ -284,14 +284,16 @@ Examples of 4 operator types in sc-hacks
 
 <ol>
 <li><strong>+-Group</strong> : <code>+&gt;</code>, <code>&lt;+</code>.  <strong>+></strong> plays the receiver (left argument) object in the player whose name is named by the left argument.  <strong><+</strong> plays the left argument object in the parameter whose name is named by the receiver .  </li>
-<li><strong>*-Group</strong> : <code>*&gt;, =&lt;*</code>. The operators of the <code>*=-Group have parallel usage principles as that of the =+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</li>
+<li><strong>*-Group</strong> : <code>*&gt;, =&lt;*</code>. The operators of the <code>*</code> group have parallel usage principles as that of the <code>+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</li>
 </ol>
+
+<p>The examples to the write illustrate the action of different types of objects sent to players, which are:</p>
 
 <ol>
 <li><code>+&gt;</code> : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. <strong>Function:</strong> Play as synth function into the Player named by the argument. 2. <strong>Event:</strong> Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. <strong>Symbol:</strong> Play as synth using the Receiver Symbol as name of the Synth to be player.</li>
 <li><code>&lt;+</code> : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).</li>
 <li><code>*&gt;</code> : The <code>*&gt;</code> operator functions like the <code>+&gt;</code> operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: <strong>Functions</strong> get played as routines in the environment of the player.  <strong>Events</strong> get played as patterns, but using a custom type which instead of playing sounds with <code>play</code> event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.</li>
-<li><code>&lt;*</code> </li>
+<li><code>&lt;*</code> This operator is used to send the bufnum of buffers to parameters.</li>
 </ol>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// </span>
 </code></pre></div>
