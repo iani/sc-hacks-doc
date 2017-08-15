@@ -112,34 +112,32 @@ SuperCollider (Github) has a decent IDE these days. But perhaps you’d like to 
 [...]
 
 **** Getting the source
-You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel. 
-
 #+BEGIN_SRC shell
 git clone https://github.com/supercollider/supercollider.git
-cd supercollider/editors/scel
 #+END_SRC
 
+You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel. 
 
-
-**** Making sc->emacs available to SuperCollider
-
-The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating this in the SuperCollider interpreter:
+**** Adding EMACS to SuperCollider
 
 #+BEGIN_SRC javascript
 Platform.userAppSupportDir;
 #+END_SRC
 
-On OSX that will be ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist.
+This step puts the Class code that is needed to access EMACS from SuperCollider inside the Users =Extensions= folder so that SuperCollider can use it.
 
-Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.
+The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating in the SuperCollider interpreter the line posted in the =SuperCollider= tab of the code column to the right of the present text text.
 
 #+BEGIN_SRC shell
+cd supercollider/editors/scel
 sudo mkdir ~/Library/Application\ Support/SuperCollider/Extensions
 sudo cp -r sc ~/Library/Application\ Support/SuperCollider/Extensions
 git clone https://github.com/supercollider/supercollider.git
 #+END_SRC
 
-**** Making emacs->sc available to emacs
+On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the =Shell= tab of the code column to the right of the present text text.
+
+**** SuperCollider to EMACS
 You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to ~/.emacs.d/vendor/scel/el directory.
 
 Add this to your init file:
@@ -151,17 +149,16 @@ Add this to your init file:
 (require 'sclang)
 #+END_SRC
 
-You need to set your path within Emacs also. The sclang program is located in =/Applications/SuperCollider/SuperCollider.app/Contents/Resources=, 
-so that needs to be in your path.
-
-(For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).
-
-#+BEGIN_SRC emacs-lisp
-(setenv "PATH" (concat (getenv "PATH") ":/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources"))
-(setq exec-path (append exec-path '("/Applications/SuperCollider"  "/Applications/SuperCollider/SuperCollider.app/Contents/Resources" )))
-(setenv "PATH" (concat (getenv "PATH") ":/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources"))
+#+BEGIN_SRC lisp
+(setenv "PATH" (concat (getenv "PATH")
+":/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources"))
 (setq exec-path (append exec-path '("/Applications/SuperCollider"  "/Applications/SuperCollider/SuperCollider.app/Contents/Resources" )))
 #+END_SRC
+
+You need to set your path within Emacs also. The sclang program is located in =/Applications/SuperCollider/SuperCollider.app/Contents/Resources=, 
+so that needs to be in your path.  The code for doing this is found under the =emacs-lisp= tab in the right column of this web page.
+
+(For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).
 
 Launch Emacs. When the dust settles, type
 
@@ -203,13 +200,41 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 
 * Operators
 
+** Introduction to Operators in sc-hacks
+
+
 ** Overview: The 4 operators =+>=, =<+=, =*>=, =<*=
+
+#+BEGIN_SRC javascript
+receiver operator[optional: .adverb] argument
+#+END_SRC
+
+/sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  
+
+#+BEGIN_SRC javascript
+// receiver      operator adverb   argument
+{ WhiteNoise.ar(0.1) } +>.newenvir \mysynth
+#+END_SRC
+
+As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <:
+
+1. =+>= : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. *Function:* Play as synth function into the Player named by the argument. 2. *Event:* Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. *Symbol:* Play as synth using the Receiver Symbol as name of the Synth to be player.
+2. =<+= : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).
+3. =*>= : 
+4. =<*=
+
+|----+------------------------+------------------------------------------------------------------------------------------|
+|  1 | receiver +> argument   | Play the receiver in the Player named by the argument. 3 types of receivers are accepted |
+| 1a | Function               | blah                                                                                     |
+| 1b | Event                  | blah                                                                                     |
+|  2 | xxx                    | blah                                                                                     |
+|----+------------------------+------------------------------------------------------------------------------------------|
 
 ** (Some Object) +> Symbol
 
 Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol. 
 
-*** Function +> Symbol
+*** Function +> Symbol: Play function as Synth
 
 #+BEGIN_SRC javascript
 // Function +> Symbol
@@ -218,7 +243,7 @@ Generally, sending an object to a Symbol with the +> operator attempts to play t
 
 Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as ={}.play=.  
 
-*** Event +> Symbol
+*** Event +> Symbol: Play event as Pattern
 
 #+BEGIN_SRC javascript
 // Event +> Symbol
@@ -231,7 +256,7 @@ Play the event as the Player named by the Symbol.  This involves instances of 3 
 2. =EventStream=
 3. =EventStreamPlayer=
 
-*** Symbol +> Symbol
+*** Symbol +> Symbol: Play symbol as SynthDef
 
 Play synthdef whose name is the receiver into player whose name is the argument.
 
@@ -243,7 +268,7 @@ Play synthdef whose name is the receiver into player whose name is the argument.
 
 ** Symbol <+ (Some Object)
 
-*** Symbol <+ Function
+*** Symbol <+ Function: Map functions control synth to parameter
 
 #+BEGIN_SRC javascript
 \default +> \test; // pushes environment of test
@@ -252,7 +277,7 @@ Play synthdef whose name is the receiver into player whose name is the argument.
 
 Map the control signal output by playing the Function into the parameter named by the Symbol in the =currentEnvironment=.
 
-*** Symbol <+ Event
+*** Symbol <+ Event: 
 
 #+BEGIN_SRC javascript
 \default +> \test; // pushes environment of test
@@ -333,53 +358,97 @@ Play the function as a synth in the Player named by the Symbol.  The Function is
 *** Event *> Symbol
 
 #+BEGIN_SRC javascript
-// Event +> Symbol
-(dur: 0.05, degree: Pseq((0..1))) +> \test;
+  // Event +> Symbol
+  (dur: 0.05, freq: Pbrown(50, 90, 5).midicps) *> \test;
 #+END_SRC
 
-Play the event as the Player named by the Symbol.  This involves instances of 3 different classes: 
+Play event in the environment of the symbol, and 
 
-1. =EventPattern=
-2. =EventStream=
-3. =EventStreamPlayer=
+** Backward compatibility: Operators before August 2017
 
-** Operator Overview
+This section lists the operators of the version before August 2017. 
 
-/sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  The syntax of a binary operator in SuperCollider is: 
+**** Operators on Functions
+
+These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes: 
+
+1. Play a synth (=Function:play= : operator =+>=)
+2. Play a routine (=Function:fork= : operator =*>=)
+
+
++> play as synth
+
+*> play as routine (fork)
+
+**** Operators on Events
+
+These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.
+
+@> play
+
+@>+ addEvent
+
+@>! setEvent
+
+@>@ addKey 
+
+**** Operators on Symbols
+
+These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the =out= and =in= environment variables in Nenvir instances to a common bus.
+
+- =&>= :: set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)
+- =<&= :: set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)
 
 #+BEGIN_SRC javascript
-receiver operator[optional: .adverb] argument
+receiver &>! argument
 #+END_SRC
 
-For example:
+
+- =&>!= :: set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)
 
 #+BEGIN_SRC javascript
-// receiver      operator adverb   argument
-{ WhiteNoise.ar(0.1) } +>.newenvir \mysynth
+receiver &/> argument
 #+END_SRC
 
-Here is a list of operators introduced in /sc-hacks/.
+- =&/>= :: Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.
 
-*** List of Operators
+#+BEGIN_SRC javascript
+receiver </> argument
+#+END_SRC 
 
-Planned are 4 operators taking functions as argument, 4 operators taking event as argument, and 5 operators taking a symbol as argument. Currently (26 Jun 2017 08:57) the 8 first operators have been tested.
+- =</>= :: Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.
 
-1. ={ function } +> synthname = play as synth
-1. ={ function } *> synthname= play as routine (fork)
-1. ={ function } **> synthname= wrap in loop and play as routine (fork)
-1. ={ function } <* key= evaluate function whenever value of key is set in envir
-1. =( event ) @> patternname= play
-1. =( event ) @>+ patternname= addEvent
-1. =( event ) @>! patternname= setEvent
-1. =( event ) <@ key= play next event from EventStream created from event, whenever value of key is set in envir.
-1. =receiver &> argument= set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)
-1. =receiver <& argument= set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)
-1. =receiver &>! argument= set the output bus of the receiver to the input bus of the argument, - on a new private bus (both receiver and argument change)
-1. =receiver &/> argument= Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth. (neither receiver nor argument changes).
-1. =receiver </> argument= Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths (neither receiver nor argument changes).
+**** Messages to symbols
 
-*** Examples
+splay
 
+eplay
+
+rplay
+
+**** Operators on strings (!?)
+
+string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?
+
+**** Additional possible operators
+
+These operators are now being implemented, with new simpler unified form =<+=.
+
+***** Within the currentEnvironment Nevent
+
+When one (or any) parameter in the currentEnvironment changes:
+
+1. Play an event (from an EventPattern / EventStream) =<@=
+1. Play a synth from a SynthPlayer =<+=
+
+*****  Within an EventStreamPlayer playing within an Nevent (with Event @>)
+
+- Play an event (from an EventPattern / EventStream)
+- Evaluate a function
+
+**** Some example code
+
+***** Several examples
 #+BEGIN_SRC javascript
 // ================================================================
 // ================ Routines
@@ -433,25 +502,9 @@ Planned are 4 operators taking functions as argument, 4 operators taking event a
 //:
 #+END_SRC
 
-*** Additional possible operators
 
-Draft: 
 
-**** Within the currentEnvironment Nevent
-
-When one (or any) parameter in the currentEnvironment changes:
-
-1. Play an event (from an EventPattern / EventStream) =<@=
-1. Play a synth from a SynthPlayer =<+=
-
-****  Within an EventStreamPlayer playing within an Nevent (with Event @>)
-
-- Play an event (from an EventPattern / EventStream)
-- Evaluate a function
-
-*** General principle: 4 types of objects stored under names in environments.
-
-***  Function:play: ={} +>.envir \playerName=
+*****  Function:play: ={} +>.envir \playerName=
 
 #+BEGIN_SRC javascript
   // Start a synth and store it in \synth1
@@ -534,6 +587,8 @@ The code implementing these methods for =Symbol= in =Nevent.sc= is:
 //: Play a function in envir: 
 { PinkNoise.ar(0.2) } +>.envir \test;
 #+END_SRC
+
+
 
 ** Mini-Language Overview
 
@@ -1157,7 +1212,7 @@ Window ("window name")
 
 *** Add value update for number box and slider
 
-#+BEGIN_SRC 
+#+BEGIN_SRC javascript
 
 var makeSlider;
 

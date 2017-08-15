@@ -15,7 +15,7 @@
 
     
 </head>
-<body class="index" data-languages="[ &#34;javascript&#34; ,  &#34;shell&#34; ,  &#34;emacs-lisp&#34; ]">
+<body class="index" data-languages="[ &#34;javascript&#34; ,  &#34;shell&#34; ,  &#34;lisp&#34; ]">
     <a href="#" id="nav-button">
         <span>
         NAV
@@ -32,7 +32,7 @@
             
             <a href="#" data-language-name="shell">Shell</a>
             
-            <a href="#" data-language-name="emacs-lisp">emacs-lisp</a>
+            <a href="#" data-language-name="lisp">emacs-lisp</a>
             
         </div>
          
@@ -171,27 +171,27 @@ Both the library and its API will change in the near future.</strong></p>
 <p>[...]</p>
 
 <h4 id="getting-the-source">Getting the source</h4>
-
-<p>You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel.</p>
 <div class="highlight"><pre><code class="language-shell" data-lang="shell"><span></span>git clone https://github.com/supercollider/supercollider.git
-<span class="nb">cd</span> supercollider/editors/scel
 </code></pre></div>
 
-<h4 id="making-sc-emacs-available-to-supercollider">Making sc->emacs available to SuperCollider</h4>
+<p>You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel.</p>
 
-<p>The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating this in the SuperCollider interpreter:</p>
+<h4 id="adding-emacs-to-supercollider">Adding EMACS to SuperCollider</h4>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">Platform</span><span class="p">.</span><span class="nx">userAppSupportDir</span><span class="p">;</span>
 </code></pre></div>
 
-<p>On OSX that will be ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist.</p>
+<p>This step puts the Class code that is needed to access EMACS from SuperCollider inside the Users <code>Extensions</code> folder so that SuperCollider can use it.</p>
 
-<p>Once you have cloned the repo and gone to <code>scel</code> as indicated above, copy the scel folder to SuperCollider/Extensions.</p>
-<div class="highlight"><pre><code class="language-shell" data-lang="shell"><span></span>sudo mkdir ~/Library/Application<span class="se">\ </span>Support/SuperCollider/Extensions
+<p>The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating in the SuperCollider interpreter the line posted in the <code>SuperCollider</code> tab of the code column to the right of the present text text.</p>
+<div class="highlight"><pre><code class="language-shell" data-lang="shell"><span></span><span class="nb">cd</span> supercollider/editors/scel
+sudo mkdir ~/Library/Application<span class="se">\ </span>Support/SuperCollider/Extensions
 sudo cp -r sc ~/Library/Application<span class="se">\ </span>Support/SuperCollider/Extensions
 git clone https://github.com/supercollider/supercollider.git
 </code></pre></div>
 
-<h4 id="making-emacs-sc-available-to-emacs">Making emacs->sc available to emacs</h4>
+<p>On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to <code>scel</code> as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the <code>Shell</code> tab of the code column to the right of the present text text.</p>
+
+<h4 id="supercollider-to-emacs">SuperCollider to EMACS</h4>
 
 <p>You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to ~/.emacs.d/vendor/scel/el directory.</p>
 
@@ -201,16 +201,15 @@ git clone https://github.com/supercollider/supercollider.git
 <span class="p">(</span><span class="nx">add</span><span class="o">-</span><span class="nx">to</span><span class="o">-</span><span class="nx">list</span> <span class="s1">&#39;load-path &quot;~/.emacs.d/vendor/scel/el&quot;)</span>
 <span class="s1">(require &#39;</span><span class="nx">sclang</span><span class="p">)</span>
 </code></pre></div>
+<div class="highlight"><pre><code class="language-lisp" data-lang="lisp"><span></span><span class="p">(</span><span class="nv">setenv</span> <span class="s">&quot;PATH&quot;</span> <span class="p">(</span><span class="nv">concat</span> <span class="p">(</span><span class="nv">getenv</span> <span class="s">&quot;PATH&quot;</span><span class="p">)</span>
+<span class="s">&quot;:/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span><span class="p">))</span>
+<span class="p">(</span><span class="k">setq</span> <span class="nv">exec-path</span> <span class="p">(</span><span class="nb">append</span> <span class="nv">exec-path</span> <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;/Applications/SuperCollider&quot;</span>  <span class="s">&quot;/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span> <span class="p">)))</span>
+</code></pre></div>
 
 <p>You need to set your path within Emacs also. The sclang program is located in <code>/Applications/SuperCollider/SuperCollider.app/Contents/Resources</code>, 
-so that needs to be in your path.</p>
+so that needs to be in your path.  The code for doing this is found under the <code>emacs-lisp</code> tab in the right column of this web page.</p>
 
 <p>(For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).</p>
-<div class="highlight"><pre><code class="language-emacs-lisp" data-lang="emacs-lisp"><span></span><span class="p">(</span><span class="nv">setenv</span> <span class="s">&quot;PATH&quot;</span> <span class="p">(</span><span class="nf">concat</span> <span class="p">(</span><span class="nv">getenv</span> <span class="s">&quot;PATH&quot;</span><span class="p">)</span> <span class="s">&quot;:/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span><span class="p">))</span>
-<span class="p">(</span><span class="k">setq</span> <span class="nv">exec-path</span> <span class="p">(</span><span class="nf">append</span> <span class="nv">exec-path</span> <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;/Applications/SuperCollider&quot;</span>  <span class="s">&quot;/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span> <span class="p">)))</span>
-<span class="p">(</span><span class="nv">setenv</span> <span class="s">&quot;PATH&quot;</span> <span class="p">(</span><span class="nf">concat</span> <span class="p">(</span><span class="nv">getenv</span> <span class="s">&quot;PATH&quot;</span><span class="p">)</span> <span class="s">&quot;:/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span><span class="p">))</span>
-<span class="p">(</span><span class="k">setq</span> <span class="nv">exec-path</span> <span class="p">(</span><span class="nf">append</span> <span class="nv">exec-path</span> <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;/Applications/SuperCollider&quot;</span>  <span class="s">&quot;/Applications/SuperCollider/SuperCollider.app/Contents/Resources&quot;</span> <span class="p">)))</span>
-</code></pre></div>
 
 <p>Launch Emacs. When the dust settles, type</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">M</span><span class="o">-</span><span class="nx">x</span> <span class="nx">sclang</span><span class="o">-</span><span class="nx">start</span>
@@ -253,20 +252,66 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h1 id="operators">Operators</h1>
 
+<h2 id="introduction-to-operators-in-sc-hacks">Introduction to Operators in sc-hacks</h2>
+
 <h2 id="overview-the-4-operators">Overview: The 4 operators <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code></h2>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="nx">operator</span><span class="p">[</span><span class="nx">optional</span><span class="o">:</span> <span class="p">.</span><span class="nx">adverb</span><span class="p">]</span> <span class="nx">argument</span>
+</code></pre></div>
+
+<p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// receiver      operator adverb   argument</span>
+<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span> <span class="err">\</span><span class="nx">mysynth</span>
+</code></pre></div>
+
+<p>As basic operators, <em>sc-hacks</em> uses four combinations built from + and * with > and <:</p>
+
+<ol>
+<li><code>+&gt;</code> : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. <strong>Function:</strong> Play as synth function into the Player named by the argument. 2. <strong>Event:</strong> Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. <strong>Symbol:</strong> Play as synth using the Receiver Symbol as name of the Synth to be player.</li>
+<li><code>&lt;+</code> : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).</li>
+<li><code>*&gt;</code> : </li>
+<li><code>&lt;*</code></li>
+</ol>
+
+<table>
+<tbody>
+<tr>
+<td>1</td>
+<td>receiver +> argument</td>
+<td>Play the receiver in the Player named by the argument. 3 types of receivers are accepted</td>
+</tr>
+
+<tr>
+<td>1a</td>
+<td>Function</td>
+<td>blah</td>
+</tr>
+
+<tr>
+<td>1b</td>
+<td>Event</td>
+<td>blah</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>xxx</td>
+<td>blah</td>
+</tr>
+</tbody>
+</table>
 
 <h2 id="some-object-symbol">(Some Object) +> Symbol</h2>
 
 <p>Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol.</p>
 
-<h3 id="function-symbol">Function +> Symbol</h3>
+<h3 id="function-symbol-play-function-as-synth">Function +> Symbol: Play function as Synth</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Function +&gt; Symbol</span>
 <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
 <p>Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as <code>{}.play</code>.</p>
 
-<h3 id="event-symbol">Event +> Symbol</h3>
+<h3 id="event-symbol-play-event-as-pattern">Event +> Symbol: Play event as Pattern</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Event +&gt; Symbol</span>
 <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">((</span><span class="mi">0</span><span class="p">..</span><span class="mi">1</span><span class="p">)))</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
@@ -279,7 +324,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 <li><code>EventStreamPlayer</code></li>
 </ol>
 
-<h3 id="symbol-symbol">Symbol +> Symbol</h3>
+<h3 id="symbol-symbol-play-symbol-as-synthdef">Symbol +> Symbol: Play symbol as SynthDef</h3>
 
 <p>Play synthdef whose name is the receiver into player whose name is the argument.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Symbol +&gt; Symbol</span>
@@ -288,14 +333,14 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h2 id="symbol-some-object">Symbol <+ (Some Object)</h2>
 
-<h3 id="symbol-function">Symbol <+ Function</h3>
+<h3 id="symbol-function-map-functions-control-synth-to-parameter">Symbol <+ Function: Map functions control synth to parameter</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
 <span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
 </code></pre></div>
 
 <p>Map the control signal output by playing the Function into the parameter named by the Symbol in the <code>currentEnvironment</code>.</p>
 
-<h3 id="symbol-event">Symbol <+ Event</h3>
+<h3 id="symbol-event">Symbol <+ Event:</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
 <span class="err">\</span><span class="nx">test</span> <span class="o">&lt;+</span> <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span><span class="nx">midicps</span><span class="p">,</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">);</span>
 </code></pre></div>
@@ -309,7 +354,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <p>Play the Env into a control bus and map the parameter named by the symbol in the <code>currentEnvironment</code> to that bus.</p>
 
-<h3 id="symbol-symbol-1">Symbol <+ Symbol</h3>
+<h3 id="symbol-symbol">Symbol <+ Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="err">\</span><span class="nx">b</span> <span class="o">&lt;+</span> <span class="err">\</span><span class="nx">a</span><span class="p">;</span> <span class="c1">// \effect &lt;+ \source;</span>
   <span class="p">{</span> <span class="nx">Dust</span><span class="p">.</span><span class="nx">ar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">a</span><span class="p">;</span>
   <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span>
@@ -323,7 +368,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h2 id="symbol-some-object-1">Symbol <* (Some Object)</h2>
 
-<h3 id="symbol-symbol-2">Symbol <* Symbol</h3>
+<h3 id="symbol-symbol-1">Symbol <* Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//: symbol &lt;+ Function</span>
 <span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
 <span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
@@ -345,65 +390,121 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h2 id="some-object-symbol-1">(Some Object) *> Symbol</h2>
 
-<h3 id="symbol-symbol-3">Symbol *> Symbol</h3>
+<h3 id="symbol-symbol-2">Symbol *> Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Symbol *&gt; Symbol</span>
 <span class="err">\</span><span class="k">default</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
-<h3 id="function-symbol-1">Function *> Symbol</h3>
+<h3 id="function-symbol">Function *> Symbol</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Function +&gt; Symbol</span>
 <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
 <p>Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as <code>{}.play</code>.</p>
 
-<h3 id="event-symbol-1">Event *> Symbol</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Event +&gt; Symbol</span>
-<span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pseq</span><span class="p">((</span><span class="mi">0</span><span class="p">..</span><span class="mi">1</span><span class="p">)))</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
+<h3 id="event-symbol">Event *> Symbol</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">// Event +&gt; Symbol</span>
+  <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span><span class="nx">midicps</span><span class="p">)</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
-<p>Play the event as the Player named by the Symbol.  This involves instances of 3 different classes:</p>
+<p>Play event in the environment of the symbol, and</p>
+
+<h2 id="backward-compatibility-operators-before-august-2017">Backward compatibility: Operators before August 2017</h2>
+
+<p>This section lists the operators of the version before August 2017.</p>
+
+<h4 id="operators-on-functions">Operators on Functions</h4>
+
+<p>These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:</p>
 
 <ol>
-<li><code>EventPattern</code></li>
-<li><code>EventStream</code></li>
-<li><code>EventStreamPlayer</code></li>
+<li>Play a synth (<code>Function:play</code> : operator <code>+&gt;</code>)</li>
+<li>Play a routine (<code>Function:fork</code> : operator <code>*&gt;</code>)</li>
 </ol>
 
-<h2 id="operator-overview">Operator Overview</h2>
+<p>+> play as synth</p>
 
-<p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  The syntax of a binary operator in SuperCollider is:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="nx">operator</span><span class="p">[</span><span class="nx">optional</span><span class="o">:</span> <span class="p">.</span><span class="nx">adverb</span><span class="p">]</span> <span class="nx">argument</span>
+<p>*> play as routine (fork)</p>
+
+<h4 id="operators-on-events">Operators on Events</h4>
+
+<p>These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.</p>
+
+<p>@> play</p>
+
+<p>@>+ addEvent</p>
+
+<p>@>! setEvent</p>
+
+<p>@>@ addKey</p>
+
+<h4 id="operators-on-symbols">Operators on Symbols</h4>
+
+<p>These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the <code>out</code> and <code>in</code> environment variables in Nenvir instances to a common bus.</p>
+
+<dl>
+<dt><code>&amp;&gt;</code></dt>
+<dd>set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)</dd>
+<dt><code>&lt;&amp;</code></dt>
+<dd>set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)</dd>
+</dl>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="o">&amp;&gt;!</span> <span class="nx">argument</span>
 </code></pre></div>
 
-<p>For example:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// receiver      operator adverb   argument</span>
-<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span> <span class="err">\</span><span class="nx">mysynth</span>
+<dl>
+<dt><code>&amp;&gt;!</code></dt>
+<dd>set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)</dd>
+</dl>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="o">&amp;</span><span class="err">/&gt; argument</span>
 </code></pre></div>
 
-<p>Here is a list of operators introduced in <em>sc-hacks</em>.</p>
+<dl>
+<dt><code>&amp;/&gt;</code></dt>
+<dd>Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.</dd>
+</dl>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">receiver</span> <span class="o">&lt;</span><span class="err">/&gt; argument</span>
+</code></pre></div>
 
-<h3 id="list-of-operators">List of Operators</h3>
+<dl>
+<dt><code>&lt;/&gt;</code></dt>
+<dd>Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.</dd>
+</dl>
 
-<p>Planned are 4 operators taking functions as argument, 4 operators taking event as argument, and 5 operators taking a symbol as argument. Currently (26 Jun 2017 08:57) the 8 first operators have been tested.</p>
+<h4 id="messages-to-symbols">Messages to symbols</h4>
+
+<p>splay</p>
+
+<p>eplay</p>
+
+<p>rplay</p>
+
+<h4 id="operators-on-strings">Operators on strings (!?)</h4>
+
+<p>string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?</p>
+
+<h4 id="additional-possible-operators">Additional possible operators</h4>
+
+<p>These operators are now being implemented, with new simpler unified form <code>&lt;+</code>.</p>
+
+<h5 id="within-the-currentenvironment-nevent">Within the currentEnvironment Nevent</h5>
+
+<p>When one (or any) parameter in the currentEnvironment changes:</p>
 
 <ol>
-<li><code>{ function } +&gt; synthname </code> play as synth</li>
-<li><code>{ function } *&gt; synthname</code> play as routine (fork)</li>
-<li><code>{ function } **&gt; synthname</code> wrap in loop and play as routine (fork)</li>
-<li><code>{ function } &lt;* key</code> evaluate function whenever value of key is set in envir</li>
-<li><code>( event ) @&gt; patternname</code> play</li>
-<li><code>( event ) @&gt;+ patternname</code> addEvent</li>
-<li><code>( event ) @&gt;! patternname</code> setEvent</li>
-<li><code>( event ) &lt;@ key</code> play next event from EventStream created from event, whenever value of key is set in envir.</li>
-<li><code>receiver &amp;&gt; argument</code> set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)</li>
-<li><code>receiver &lt;&amp; argument</code> set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)</li>
-<li><code>receiver &amp;&gt;! argument</code> set the output bus of the receiver to the input bus of the argument, - on a new private bus (both receiver and argument change)</li>
-<li><code>receiver &amp;/&gt; argument</code> Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth. (neither receiver nor argument changes).</li>
-<li><code>receiver &lt;/&gt; argument</code> Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths (neither receiver nor argument changes).</li>
+<li>Play an event (from an EventPattern / EventStream) <code>&lt;@</code></li>
+<li>Play a synth from a SynthPlayer <code>&lt;+</code></li>
 </ol>
 
-<h3 id="examples">Examples</h3>
+<h5 id="within-an-eventstreamplayer-playing-within-an-nevent-with-event">Within an EventStreamPlayer playing within an Nevent (with Event @>)</h5>
+
+<ul>
+<li>Play an event (from an EventPattern / EventStream)</li>
+<li>Evaluate a function</li>
+</ul>
+
+<h4 id="some-example-code">Some example code</h4>
+
+<h5 id="several-examples">Several examples</h5>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// ================================================================</span>
 <span class="c1">// ================ Routines</span>
 <span class="c1">//: Start a routine </span>
@@ -456,29 +557,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 <span class="c1">//:</span>
 </code></pre></div>
 
-<h3 id="additional-possible-operators">Additional possible operators</h3>
-
-<p>Draft:</p>
-
-<h4 id="within-the-currentenvironment-nevent">Within the currentEnvironment Nevent</h4>
-
-<p>When one (or any) parameter in the currentEnvironment changes:</p>
-
-<ol>
-<li>Play an event (from an EventPattern / EventStream) <code>&lt;@</code></li>
-<li>Play a synth from a SynthPlayer <code>&lt;+</code></li>
-</ol>
-
-<h4 id="within-an-eventstreamplayer-playing-within-an-nevent-with-event">Within an EventStreamPlayer playing within an Nevent (with Event @>)</h4>
-
-<ul>
-<li>Play an event (from an EventPattern / EventStream)</li>
-<li>Evaluate a function</li>
-</ul>
-
-<h3 id="general-principle-4-types-of-objects-stored-under-names-in-environments">General principle: 4 types of objects stored under names in environments.</h3>
-
-<h3 id="function-play-envir-playername">Function:play: <code>{} +&gt;.envir \playerName</code></h3>
+<h5 id="function-play-envir-playername">Function:play: <code>{} +&gt;.envir \playerName</code></h5>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">// Start a synth and store it in \synth1</span>
   <span class="p">{</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="err">\</span><span class="nx">freq</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">400</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="err">\</span><span class="nx">amp</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">synth1</span><span class="p">;</span>
   <span class="c1">//: Start a routine modifying the freq parameter</span>
@@ -571,7 +650,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <p><strong>This is a draft: Implementation of the following operators has just started.</strong> <em>The purpose of the overview is to guide coding by keeping the different versions discrete and consistent.</em></p>
 
-<h4 id="operators-on-functions">Operators on Functions</h4>
+<h4 id="operators-on-functions-1">Operators on Functions</h4>
 
 <p>These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:</p>
 
@@ -584,7 +663,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <p>*> play as routine (fork)</p>
 
-<h4 id="operators-on-events">Operators on Events</h4>
+<h4 id="operators-on-events-1">Operators on Events</h4>
 
 <p>These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.</p>
 
@@ -596,7 +675,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <p>@>@ addKey</p>
 
-<h4 id="operators-on-symbols">Operators on Symbols</h4>
+<h4 id="operators-on-symbols-1">Operators on Symbols</h4>
 
 <p>These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the <code>out</code> and <code>in</code> environment variables in Nenvir instances to a common bus.</p>
 
@@ -628,7 +707,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 <dd>Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.</dd>
 </dl>
 
-<h4 id="messages-to-symbols">Messages to symbols</h4>
+<h4 id="messages-to-symbols-1">Messages to symbols</h4>
 
 <p>splay</p>
 
@@ -636,7 +715,7 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <p>rplay</p>
 
-<h4 id="operators-on-strings">Operators on strings (!?)</h4>
+<h4 id="operators-on-strings-1">Operators on strings (!?)</h4>
 
 <p>string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?</p>
 
@@ -1148,49 +1227,44 @@ Make the orientation an argument to enable customization.</p>
 </code></pre></div>
 
 <h3 id="add-value-update-for-number-box-and-slider">Add value update for number box and slider</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">makeSlider</span><span class="p">;</span>
 
-<pre><code>
+<span class="nx">makeSlider</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">label</span> <span class="o">=</span> <span class="s2">&quot;slider&quot;</span><span class="p">,</span> <span class="nx">min</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">max</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="k">default</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nx">orientation</span> <span class="o">=</span> <span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span>
+	<span class="nx">action</span> <span class="o">|</span>
+	<span class="kd">var</span> <span class="nx">controlSpec</span><span class="p">,</span> <span class="nx">mappedVal</span><span class="p">,</span> <span class="nx">slider</span><span class="p">,</span> <span class="nx">numberBox</span><span class="p">;</span>
+	<span class="nx">controlSpec</span> <span class="o">=</span> <span class="p">[</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">,</span> <span class="err">\</span><span class="nx">lin</span><span class="p">,</span> <span class="nx">step</span><span class="p">,</span> <span class="k">default</span><span class="p">].</span><span class="nx">asSpec</span><span class="p">;</span>
+	<span class="c1">// provide default action if needed:</span>
+	<span class="nx">action</span> <span class="o">??</span> <span class="p">{</span>
+		<span class="nx">action</span> <span class="o">=</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">value</span> <span class="o">|</span> <span class="nx">value</span><span class="p">.</span><span class="nx">postln</span> <span class="p">}</span>
+	<span class="p">};</span>
+	<span class="nx">HLayout</span> <span class="p">(</span>
+		<span class="nx">StaticText</span> <span class="p">().</span><span class="nx">string_</span> <span class="p">(</span><span class="nx">label</span><span class="p">),</span>
+		<span class="nx">slider</span> <span class="o">=</span> <span class="nx">Slider</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">action_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span>
+			<span class="nx">mappedVal</span> <span class="o">=</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="nx">map</span> <span class="p">(</span><span class="nx">me</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+			<span class="nx">numberBox</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">mappedVal</span><span class="p">;</span>
+			<span class="nx">action</span><span class="p">.(</span><span class="nx">mappedVal</span><span class="p">)})</span>
+		<span class="p">.</span><span class="nx">orientation_</span> <span class="p">(</span><span class="nx">orientation</span><span class="p">),</span>
+		<span class="nx">numberBox</span> <span class="o">=</span> <span class="nx">NumberBox</span> <span class="p">()</span>
+		<span class="p">.</span><span class="nx">action_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span>
+			<span class="nx">mappedVal</span> <span class="o">=</span> <span class="nx">me</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+			<span class="nx">slider</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">controlSpec</span><span class="p">.</span><span class="nx">unmap</span> <span class="p">(</span><span class="nx">mappedVal</span><span class="p">);</span>
+			<span class="nx">action</span><span class="p">.(</span><span class="nx">mappedVal</span><span class="p">)</span>
+		<span class="p">})</span>
+	<span class="p">)</span>
+<span class="p">};</span>
 
-var makeSlider;
-
-makeSlider = { | label = &quot;slider&quot;, min = 0, max = 10, step = 0, default = 0.5, orientation = \horizontal,
-	action |
-	var controlSpec, mappedVal, slider, numberBox;
-	controlSpec = [min, max, \lin, step, default].asSpec;
-	// provide default action if needed:
-	action ?? {
-		action = { | value | value.postln }
-	};
-	HLayout (
-		StaticText ().string_ (label),
-		slider = Slider ()
-		.action_ ({ | me |
-			mappedVal = controlSpec.map (me.value);
-			numberBox.value = mappedVal;
-			action.(mappedVal)})
-		.orientation_ (orientation),
-		numberBox = NumberBox ()
-		.action_ ({ | me |
-			mappedVal = me.value;
-			slider.value = controlSpec.unmap (mappedVal);
-			action.(mappedVal)
-		})
-	)
-};
-
-Window (&quot;window name&quot;)
-.view.layout_ (
-	VLayout (
-		*({ | i |
-			makeSlider.(format (&quot;slider %&quot;, i),
-				max: 0.0.rrand (20.0),
-				orientation: [\horizontal, \vertical].choose)
-		} ! 10)
-	)
-).front;
-
-
-</code></pre>
+<span class="nx">Window</span> <span class="p">(</span><span class="s2">&quot;window name&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">layout_</span> <span class="p">(</span>
+	<span class="nx">VLayout</span> <span class="p">(</span>
+		<span class="o">*</span><span class="p">({</span> <span class="o">|</span> <span class="nx">i</span> <span class="o">|</span>
+			<span class="nx">makeSlider</span><span class="p">.(</span><span class="nx">format</span> <span class="p">(</span><span class="s2">&quot;slider %&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">),</span>
+				<span class="nx">max</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">.</span><span class="nx">rrand</span> <span class="p">(</span><span class="mf">20.0</span><span class="p">),</span>
+				<span class="nx">orientation</span><span class="o">:</span> <span class="p">[</span><span class="err">\</span><span class="nx">horizontal</span><span class="p">,</span> <span class="err">\</span><span class="nx">vertical</span><span class="p">].</span><span class="nx">choose</span><span class="p">)</span>
+		<span class="p">}</span> <span class="o">!</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">)</span>
+<span class="p">).</span><span class="nx">front</span><span class="p">;</span>
+</code></pre></div>
 
 <h3 id="group-the-controlspec-arguments-to-make-them-more-compact">Group the controlSpec arguments to make them more compact</h3>
 
@@ -1499,7 +1573,7 @@ Two items are necessary to re-trigger envelope or line-segment UGens in a Synth:
 <li>Ability to remove all connections from an object with a single message, <code>objectClosed</code>, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.</li>
 </ul>
 
-<h3 id="examples-1">Examples</h3>
+<h3 id="examples">Examples</h3>
 
 <h4 id="onobjectclosed"><code>onObjectClosed</code></h4>
 
@@ -1578,6 +1652,17 @@ Two items are necessary to re-trigger envelope or line-segment UGens in a Synth:
 <p>Contact: zannos [at] gmail.com</p>
 
     
+        <ol>
+<li><code>receiver +&gt; argument</code> : Play the receiver in the Player named by the argument. 3 types of receivers can be used:</li>
+<li>Function: Play as synth function into the Player named by the argument.</li>
+<li>Event: Play as pattern (via EventStreamPlayer) into the Player named by the argument</li>
+   3. 
+<li><code>receiver &lt;+ argument</code> : Use the argument as input to the environment variable named by the receiver (in the current environment).</li>
+<li><code>*&gt;</code></li>
+<li><code>&lt;*</code></li>
+</ol>
+
+    
 
         </div>
         <div class="dark-box">
@@ -1588,7 +1673,7 @@ Two items are necessary to re-trigger envelope or line-segment UGens in a Synth:
                 
                 <a href="#" data-language-name="shell">Shell</a>
                 
-                <a href="#" data-language-name="emacs-lisp">emacs-lisp</a>
+                <a href="#" data-language-name="lisp">emacs-lisp</a>
                 
             </div>
             

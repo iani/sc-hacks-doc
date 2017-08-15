@@ -31,7 +31,7 @@ name = "SuperCollider"
 key = "shell"
 name = "Shell" 
 [[params.language_tabs]]
-key = "emacs-lisp"
+key = "lisp"
 name = "emacs-lisp" 
 # # [[params.language_tabs]]
 # # key = "ruby"

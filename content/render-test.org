@@ -1,0 +1,8 @@
+
+1. =receiver +> argument= : Play the receiver in the Player named by the argument. 3 types of receivers can be used:
+   1. Function: Play as synth function into the Player named by the argument.
+   2. Event: Play as pattern (via EventStreamPlayer) into the Player named by the argument
+   3. 
+2. =receiver <+ argument= : Use the argument as input to the environment variable named by the receiver (in the current environment).
+3. =*>=
+4. =<*=
