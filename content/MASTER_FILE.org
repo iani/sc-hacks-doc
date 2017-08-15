@@ -212,23 +212,22 @@ receiver operator[optional: .adverb] argument
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  
 
 #+BEGIN_SRC javascript
-// receiver      operator adverb   argument
-{ WhiteNoise.ar(0.1) } +>.newenvir \mysynth
+// Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
+// 1. receiver   2. operator 3. adverb   4.argument
+{ WhiteNoise.ar(0.1) } +>.newenvir       \mysynth
 #+END_SRC
 
-As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <:
+As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <.  They are in two groups (=+=-group and =*=-group): 
+
+1. =+=-Group: =+>=, =<+=
+2. =*=-Group: =*>, =<*=
+
+The operators of the =*=-Group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
 
 1. =+>= : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. *Function:* Play as synth function into the Player named by the argument. 2. *Event:* Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. *Symbol:* Play as synth using the Receiver Symbol as name of the Synth to be player.
 2. =<+= : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).
-3. =*>= : 
-4. =<*=
-
-|----+------------------------+------------------------------------------------------------------------------------------|
-|  1 | receiver +> argument   | Play the receiver in the Player named by the argument. 3 types of receivers are accepted |
-| 1a | Function               | blah                                                                                     |
-| 1b | Event                  | blah                                                                                     |
-|  2 | xxx                    | blah                                                                                     |
-|----+------------------------+------------------------------------------------------------------------------------------|
+3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.
+4. =<*= 
 
 ** (Some Object) +> Symbol
 
