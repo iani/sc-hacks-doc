@@ -42,7 +42,7 @@ The first results of these attempts are the libraries [[https://github.com/iani/
 
 *** Future plans: Audio Feedback between synths
 
-A particularly interesting case is when an Ndef reads and processes its own output.  An implementation of this feature, using [[http://doc.sccode.org/Classes/InFeedback.html][InFeedback]] is planned for the future.
+A particularly interesting case is when an Ndef reads and processes its own output.  An implementation of this feature, using [[http://doc.sccode.org/Classes/InFeedback.html][InFeedback]] is being tested.
 
 ** By way of demo
 
