@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://iani.github.io/sc-hacks-doc/el/master_file/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://iani.github.io/sc-hacks-doc/master_file/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="el"
+                href="https://iani.github.io/sc-hacks-doc/el/master_file/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://iani.github.io/sc-hacks-doc/el/categories/</loc>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://iani.github.io/sc-hacks-doc/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="el"
+                href="https://iani.github.io/sc-hacks-doc/el/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://iani.github.io/sc-hacks-doc/el/tags/</loc>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://iani.github.io/sc-hacks-doc/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="el"
+                href="https://iani.github.io/sc-hacks-doc/el/tags/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://iani.github.io/sc-hacks-doc/el/</loc>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://iani.github.io/sc-hacks-doc/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="el"
+                href="https://iani.github.io/sc-hacks-doc/el/"
+                />
+  </url>
+  
+</urlset>

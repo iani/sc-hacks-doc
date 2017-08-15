@@ -1,7 +1,7 @@
 - id: translations
   translation:
     one: "English"
-    other: "English"
+    other: "Translations"
 
 # Search label
 - id: search

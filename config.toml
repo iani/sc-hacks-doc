@@ -1,11 +1,12 @@
 theme = "docuapi"
-# themesdir = "../.."
 languageCode = "en-us"
 baseURL = "https://iani.github.io/sc-hacks-doc"
-title = "DocuAPI Example Site"
+title = "sc-hacks documentation"
 
 # deploying on github
 publishDir = "docs"
+# See: https://gohugo.io/hosting-and-deployment/hosting-on-github/
+# Section: Deployment via /docs Folder on Master Branch
 
 # Code higlighting settings
 pygmentsCodefences = true
@@ -32,7 +33,7 @@ key = "shell"
 name = "Shell" 
 [[params.language_tabs]]
 key = "lisp"
-name = "emacs-lisp" 
+name = "emacs-lisp"
 # # [[params.language_tabs]]
 # # key = "ruby"
 # # name = "Ruby"
@@ -46,7 +47,7 @@ name = "emacs-lisp"
 
 [languages.en]
 languageName = "English"
-weight = 2
+weight = 1
 title = "sc-hacks library documentation"
 
 # Left sidebar footer items. Use HTMl or Markdown.
@@ -56,5 +57,21 @@ toc_footers = [
 "Hugo Theme by [bep](https://github.com/bep)"
 ]
 [languages.en.blackfriday]
+angledQuotes = false
+hrefTargetBlank = true
+
+
+[languages.el]
+languageName = "Ελληνικά"
+weight = 2
+title = "σκάψε"
+
+# Left sidebar footer items. Use HTMl or Markdown.
+toc_footers = [ 
+"<a href=\"https://github.com/iani/sc-hacks\">SC-HACKS SOURCE AT GITHUB</a>",
+"Documentation Powered by [DocuAPI](https://github.com/bep/docuapi)",
+"Hugo Theme by [bep](https://github.com/bep)"
+]
+[languages.el.blackfriday]
 angledQuotes = false
 hrefTargetBlank = true
