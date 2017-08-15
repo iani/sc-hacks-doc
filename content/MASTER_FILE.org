@@ -86,6 +86,15 @@ One can jump between
 ** Design
 
 ** The trouble with operators
+: Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
+#+BEGIN_SRC javascript
+// 1. receiver   2. operator 3. adverb   4.argument
+{ WhiteNoise.ar(0.1) } +>.newenvir       \mysynth
+#+END_SRC
+
+/sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, /, <, >, =, /, |, %, &, @, -.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  /sc-hacks/ makes use of this feature.
+
+The disadvantage of operators is that they are not as easy to familiarize and understand as the usual method names which describe the action of a method.  This makes both the memorization of operators and the reading of code containing such operators difficult.  Therefore every effort has been made to limit the number of operators introduced.  Currently, this library uses just 4 new operators: =+>=, =<+=, =*>= and =<*=.  
 
 ** A word (or 2) about EMACS
 
@@ -160,11 +169,7 @@ so that needs to be in your path.  The code for doing this is found under the =e
 
 (For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).
 
-Launch Emacs. When the dust settles, type
-
-#+BEGIN_SRC javascript
-M-x sclang-start
-#+END_SRC
+Launch Emacs. When the dust settles, type =M-x sclang-start=
 
 The interpreter will start in a buffer named SCLang:PostBuffer and you will be presented with a new buffer named SCLang:Workspace.
 
@@ -200,15 +205,6 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 
 * Operators
 
-** Introduction to Operators in sc-hacks
-
-: Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
-#+BEGIN_SRC javascript
-
-// 1. receiver   2. operator 3. adverb   4.argument
-{ WhiteNoise.ar(0.1) } +>.newenvir       \mysynth
-#+END_SRC
-
 ** Overview: The 4 operators =+>=, =<+=, =*>=, =<*=
 : Examples of 4 operator types in sc-hacks
 #+BEGIN_SRC javascript
@@ -226,23 +222,17 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 \test <* \hihat; // 1. parameter <* buffer name
 #+END_SRC
 
-/sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  
+As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <.  They are in two groups (=+=-Group and =*=-Group): 
 
-As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <.  They are in two groups (=+=-group and =*=-group): 
-
-1. *+-Group* : =+>=, =<+=.  *+>* plays the receiver (left argument) object in the player whose name is named by the left argument.  *<+* plays the left argument object in the parameter whose name is named by the receiver .  
+1. *+-Group* : =+>=, =<+=.  *+>* plays the receiver (left argument) object in the player whose name is named by the left argument.  *<+* plays the left argument object in the parameter whose name is named by the receiver.  
 2. **-Group* : =*>, =<*=. The operators of the =*= group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
 
-The examples to the write illustrate the action of different types of objects sent to players, which are:
+The code examples to the right illustrate the action of different types of objects sent to players, which are:
 
 1. =+>= : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. *Function:* Play as synth function into the Player named by the argument. 2. *Event:* Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. *Symbol:* Play as synth using the Receiver Symbol as name of the Synth to be player.
 2. =<+= : Use the argument as input to the environment variable named by the receiver (in the current environment). Several different types of argument are possible: Function, SimpleNumber (Integer, Float), MIDI and OSC-function templates (custom classes in this library), GUI type objects, Symbol (names of buffers or of players).
 3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.
 4. =<*= This operator is used to send the bufnum of buffers to parameters.
-
-#+BEGIN_SRC javascript
-// 
-#+END_SRC
 
 ** (Some Object) +> Symbol
 
@@ -251,8 +241,8 @@ Generally, sending an object to a Symbol with the +> operator attempts to play t
 *** Function +> Symbol: Play function as Synth
 
 #+BEGIN_SRC javascript
-// Function +> Symbol
-{ WhiteNoise.ar(0.1) } +> \test;
+  // Function +> Symbol
+  { WhiteNoise.ar(0.1) } +> \test;
 #+END_SRC
 
 Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as ={}.play=.  

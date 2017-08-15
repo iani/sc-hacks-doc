@@ -145,6 +145,16 @@ Both the library and its API will change in the near future.</strong></p>
 <h2 id="design">Design</h2>
 
 <h2 id="the-trouble-with-operators">The trouble with operators</h2>
+<pre class="example">
+Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// 1. receiver   2. operator 3. adverb   4.argument</span>
+<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span>       <span class="err">\</span><span class="nx">mysynth</span>
+</code></pre></div>
+
+<p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, /, <, >, =, /, |, %, &, @, -.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  <em>sc-hacks</em> makes use of this feature.</p>
+
+<p>The disadvantage of operators is that they are not as easy to familiarize and understand as the usual method names which describe the action of a method.  This makes both the memorization of operators and the reading of code containing such operators difficult.  Therefore every effort has been made to limit the number of operators introduced.  Currently, this library uses just 4 new operators: <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code> and <code>&lt;*</code>.</p>
 
 <h2 id="a-word-or-2-about-emacs">A word (or 2) about EMACS</h2>
 
@@ -211,9 +221,7 @@ so that needs to be in your path.  The code for doing this is found under the <c
 
 <p>(For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).</p>
 
-<p>Launch Emacs. When the dust settles, type</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">M</span><span class="o">-</span><span class="nx">x</span> <span class="nx">sclang</span><span class="o">-</span><span class="nx">start</span>
-</code></pre></div>
+<p>Launch Emacs. When the dust settles, type <code>M-x sclang-start</code></p>
 
 <p>The interpreter will start in a buffer named SCLang:PostBuffer and you will be presented with a new buffer named SCLang:Workspace.</p>
 
@@ -252,14 +260,6 @@ It has something to do with cmake, I’ve inferred, but I simply just changed to
 
 <h1 id="operators">Operators</h1>
 
-<h2 id="introduction-to-operators-in-sc-hacks">Introduction to Operators in sc-hacks</h2>
-<pre class="example">
-Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
-</pre>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// 1. receiver   2. operator 3. adverb   4.argument</span>
-<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span><span class="p">.</span><span class="nx">newenvir</span>       <span class="err">\</span><span class="nx">mysynth</span>
-</code></pre></div>
-
 <h2 id="overview-the-4-operators">Overview: The 4 operators <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code></h2>
 <pre class="example">
 Examples of 4 operator types in sc-hacks
@@ -278,16 +278,14 @@ Examples of 4 operator types in sc-hacks
 <span class="err">\</span><span class="nx">test</span> <span class="o">&lt;*</span> <span class="err">\</span><span class="nx">hihat</span><span class="p">;</span> <span class="c1">// 1. parameter &lt;* buffer name</span>
 </code></pre></div>
 
-<p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.</p>
-
-<p>As basic operators, <em>sc-hacks</em> uses four combinations built from + and * with > and <.  They are in two groups (=+=-group and =*=-group):</p>
+<p>As basic operators, <em>sc-hacks</em> uses four combinations built from + and * with > and <.  They are in two groups (=+=-Group and =*=-Group):</p>
 
 <ol>
-<li><strong>+-Group</strong> : <code>+&gt;</code>, <code>&lt;+</code>.  <strong>+></strong> plays the receiver (left argument) object in the player whose name is named by the left argument.  <strong><+</strong> plays the left argument object in the parameter whose name is named by the receiver .  </li>
+<li><strong>+-Group</strong> : <code>+&gt;</code>, <code>&lt;+</code>.  <strong>+></strong> plays the receiver (left argument) object in the player whose name is named by the left argument.  <strong><+</strong> plays the left argument object in the parameter whose name is named by the receiver.  </li>
 <li><strong>*-Group</strong> : <code>*&gt;, =&lt;*</code>. The operators of the <code>*</code> group have parallel usage principles as that of the <code>+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</li>
 </ol>
 
-<p>The examples to the write illustrate the action of different types of objects sent to players, which are:</p>
+<p>The code examples to the right illustrate the action of different types of objects sent to players, which are:</p>
 
 <ol>
 <li><code>+&gt;</code> : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. <strong>Function:</strong> Play as synth function into the Player named by the argument. 2. <strong>Event:</strong> Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. <strong>Symbol:</strong> Play as synth using the Receiver Symbol as name of the Synth to be player.</li>
@@ -295,16 +293,14 @@ Examples of 4 operator types in sc-hacks
 <li><code>*&gt;</code> : The <code>*&gt;</code> operator functions like the <code>+&gt;</code> operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: <strong>Functions</strong> get played as routines in the environment of the player.  <strong>Events</strong> get played as patterns, but using a custom type which instead of playing sounds with <code>play</code> event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event.</li>
 <li><code>&lt;*</code> This operator is used to send the bufnum of buffers to parameters.</li>
 </ol>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// </span>
-</code></pre></div>
 
 <h2 id="some-object-symbol">(Some Object) +> Symbol</h2>
 
 <p>Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol.</p>
 
 <h3 id="function-symbol-play-function-as-synth">Function +> Symbol: Play function as Synth</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// Function +&gt; Symbol</span>
-<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">// Function +&gt; Symbol</span>
+  <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span>
 </code></pre></div>
 
 <p>Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as <code>{}.play</code>.</p>
