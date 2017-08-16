@@ -33,7 +33,7 @@ key = "shell"
 name = "Shell" 
 [[params.language_tabs]]
 key = "lisp"
-name = "emacs-lisp"
+name = "Emacs-Lisp"
 # # [[params.language_tabs]]
 # # key = "ruby"
 # # name = "Ruby"
@@ -52,9 +52,11 @@ title = "sc-hacks library documentation"
 
 # Left sidebar footer items. Use HTMl or Markdown.
 toc_footers = [ 
-"<a href=\"https://github.com/iani/sc-hacks\">SC-HACKS SOURCE AT GITHUB</a>",
+"<a href=\"https://github.com/iani/sc-hacks\">Lib source @ GITHUB</a>",
 "Documentation Powered by [DocuAPI](https://github.com/bep/docuapi)",
-"Hugo Theme by [bep](https://github.com/bep)"
+"Hugo Theme by [bep](https://github.com/bep)",
+"License: CC",
+"Contact: zannos[at]google.com"
 ]
 [languages.en.blackfriday]
 angledQuotes = false

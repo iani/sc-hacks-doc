@@ -53,7 +53,7 @@ INCOMPLETE
 Start a synth
 
 #+BEGIN_SRC javascript
-\default +> \example1;
+  \default +> \example1;
 #+END_SRC
 
 Control the parameters of the synth from the enviroment
@@ -1663,7 +1663,7 @@ The data is a 2 dimensional array.  It is played as a =Pseq= along the first dim
 
 * Making this site
 
-This site was made with [[https://gohugo.io/][hugo]] usin the [[https://themes.gohugo.io/theme/docuapi/][docuapi]] theme.
+This site was made with [[https://gohugo.io/][hugo]] using the [[https://themes.gohugo.io/theme/docuapi/][docuapi]] theme.
 
 You can clone the source for this site from: [[https://github.com/iani/sc-hacks-doc]].
 
