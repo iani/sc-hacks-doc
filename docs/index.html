@@ -361,14 +361,6 @@ Examples of 4 operator types in sc-hacks
 
 <h2 id="2-receiver-argument">2. Receiver *> Argument</h2>
 
-<h3 id="symbol-symbol-link-players-input">Symbol *> Symbol: link players input</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">a</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span> <span class="c1">// \source *&gt; \effect</span>
-<span class="p">{</span> <span class="nx">Dust</span><span class="p">.</span><span class="nx">ar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">a</span><span class="p">;</span>
-<span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span>
-</code></pre></div>
-
-<p>A <strong>Symbol</strong> as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  Make the player named by the argument symbol read its default input from the output of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative input in the argument player's Synth.</p>
-
 <h3 id="function-symbol">Function *> Symbol</h3>
 
 <p>Play function as routine in environment of player named by the argument symbol.</p>
@@ -376,6 +368,14 @@ Examples of 4 operator types in sc-hacks
 <h3 id="event-symbol">Event *> Symbol</h3>
 
 <p>Play event as pattern of custom type, which sets the values of all keys to the variables of the environment of the player named by the argument event.</p>
+
+<h3 id="symbol-symbol-link-players-input">Symbol *> Symbol: link players input</h3>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">a</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span> <span class="c1">// \source *&gt; \effect</span>
+<span class="p">{</span> <span class="nx">Dust</span><span class="p">.</span><span class="nx">ar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">a</span><span class="p">;</span>
+<span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">b</span><span class="p">;</span>
+</code></pre></div>
+
+<p>A <strong>Symbol</strong> as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  Make the player named by the argument symbol read its default input from the output of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative input in the argument player's Synth.</p>
 
 <h2 id="3-receiver-argument">3. Receiver <+ Argument</h2>
 

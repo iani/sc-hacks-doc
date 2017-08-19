@@ -281,6 +281,14 @@ Play synthdef whose name is the receiver into player whose name is the argument.
 #+END_SRC
 ** 2. Receiver *> Argument
 
+*** Function *> Symbol
+
+Play function as routine in environment of player named by the argument symbol.
+
+*** Event *> Symbol
+
+Play event as pattern of custom type, which sets the values of all keys to the variables of the environment of the player named by the argument event.
+
 *** Symbol *> Symbol: link players input
 
 #+BEGIN_SRC javascript
@@ -290,14 +298,6 @@ Play synthdef whose name is the receiver into player whose name is the argument.
 #+END_SRC
 
 A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  Make the player named by the argument symbol read its default input from the output of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative input in the argument player's Synth.
-
-*** Function *> Symbol
-
-Play function as routine in environment of player named by the argument symbol.
-
-*** Event *> Symbol
-
-Play event as pattern of custom type, which sets the values of all keys to the variables of the environment of the player named by the argument event.
 
 ** 3. Receiver <+ Argument
 
