@@ -101,7 +101,7 @@
 
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, / -, <, >, =, |, %, &, @.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  /sc-hacks/ makes use of this feature.
 
-While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  This makes both the memorization of operators and the reading of code containing such operators difficult.  Therefore every effort has been made to limit the number of operators introduced.  Currently, this library uses 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.
+While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore every effort has been made to limit the number of operators introduced.  Currently, this library proposes 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.
 
 ** A word (or 2) about EMACS
 
