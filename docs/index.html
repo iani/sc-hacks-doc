@@ -380,11 +380,9 @@ Examples of 4 operator types in sc-hacks
 <h2 id="3-receiver-argument">3. Receiver <+ Argument</h2>
 
 <h3 id="symbol-function-map-functions-control-synth-to-parameter">Symbol <+ Function: Map functions control synth to parameter</h3>
-
-<p>#+BEGIN_SRC javascript
-\default <del>> \test; // pushes environment of test
-\freq <</del> { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-    #+END_SRC</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// pushes environment of test</span>
+<span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// maps to \freq of current environment</span>
+</code></pre></div>
 
 <p>Map the control signal output by playing the Function into the parameter named by the Symbol in the <code>currentEnvironment</code>.</p>
 

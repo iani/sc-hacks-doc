@@ -303,12 +303,12 @@ A *Symbol* as receiver indicates to connect the output of the player named by th
 
 *** Symbol <+ Function: Map functions control synth to parameter
 
-    #+BEGIN_SRC javascript
+#+BEGIN_SRC javascript
 \default +> \test; // pushes environment of test
 \freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-    #+END_SRC
+#+END_SRC
 
-    Map the control signal output by playing the Function into the parameter named by the Symbol in the =currentEnvironment=.
+Map the control signal output by playing the Function into the parameter named by the Symbol in the =currentEnvironment=.
 
 *** Symbol <+ Env
 #+BEGIN_SRC javascript
