@@ -91,15 +91,17 @@
 ** Design
 
 ** The trouble with operators
-   : Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
-   #+BEGIN_SRC javascript
+
+: Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
+
+#+BEGIN_SRC javascript
 // 1. receiver   2. operator 3. adverb   4.argument
 { WhiteNoise.ar(0.1) } +>.newenvir       \mysynth
-   #+END_SRC
+#+END_SRC
 
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, \/, <, >, =, \/, |, %, &, @, -.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  /sc-hacks/ makes use of this feature.
 
-While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  This makes both the memorization of operators and the reading of code containing such operators difficult.  Therefore every effort has been made to limit the number of operators introduced.  Currently, this library uses 4 new operators: =+>=, =<+=, =*>=, and =<*=.
+While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  This makes both the memorization of operators and the reading of code containing such operators difficult.  Therefore every effort has been made to limit the number of operators introduced.  Currently, this library uses 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.
 
 ** A word (or 2) about EMACS
 
@@ -113,87 +115,85 @@ While operators can shorten the amount of code needed - which is why they are us
 
 *** Configuring emacs for SuperCollider
 
-    There is a very good guide here: [[http://www.rockhoppertech.com/blog/supercollider-with-emacs-on-osx/]]
+There is a very good guide here: [[http://www.rockhoppertech.com/blog/supercollider-with-emacs-on-osx/]]
 
-    I quote from the guide below:
+I quote from the guide below:
 
-    *BEGIN QUOTE*
+*BEGIN QUOTE*
 
-    SuperCollider with Emacs on OSX
+SuperCollider with Emacs on OSX
 
-    By GENE DE LISA | Published: MAY 16, 2013
+By GENE DE LISA | Published: MAY 16, 2013
 
-    SuperCollider (Github) has a decent IDE these days. But perhaps you’d like to use an actual editor like Emacs.
+SuperCollider (Github) has a decent IDE these days. But perhaps you’d like to use an actual editor like Emacs.
 
-    [...]
+[...]
 
 **** Getting the source
-     #+BEGIN_SRC shell
+#+BEGIN_SRC shell
 git clone https://github.com/supercollider/supercollider.git
-     #+END_SRC
+#+END_SRC
 
-     You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel.
+You need to get the current source for scmode. There is no separate repo, so you need the whole SuperCollider repo. Once you clone the repo, the scmode code is under supercollider/editors/scel.
 
 **** Adding EMACS functionality to SuperCollider
 
-     #+BEGIN_SRC javascript
+#+BEGIN_SRC javascript
 Platform.userAppSupportDir;
-     #+END_SRC
+#+END_SRC
 
-     This step puts the Class code that is needed to access EMACS from SuperCollider inside the Users =Extensions= folder so that SuperCollider can use it.
+This step puts the Class code that is needed to access EMACS from SuperCollider inside the Users =Extensions= folder so that SuperCollider can use it.
 
-     The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating in the SuperCollider interpreter the line posted in the =SuperCollider= tab of the code column to the right of the present text text.
+The contents of the sc directory needs to be copied to the Extensions directory of your application support directory. You can discover the location of your application support directory by evaluating in the SuperCollider interpreter the line posted in the =SuperCollider= tab of the code column to the right of the present text text.
 
-     #+BEGIN_SRC shell
+#+BEGIN_SRC shell
 cd supercollider/editors/scel
 sudo mkdir ~/Library/Application\ Support/SuperCollider/Extensions
 sudo cp -r sc ~/Library/Application\ Support/SuperCollider/Extensions
 git clone https://github.com/supercollider/supercollider.git
-     #+END_SRC
+#+END_SRC
 
-     On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the =Shell= tab of the code column to the right of the present text text.
+On OSX, the user application support directory is ~/Library/Application Support/SuperCollider, so copy scel to ~/Library/Application Support/SuperCollider/Extensions, creating the directory if it doesn’t already exist. Once you have cloned the repo and gone to =scel= as indicated above, copy the scel folder to SuperCollider/Extensions.  The code for this is found in the =Shell= tab of the code column to the right of the present text text.
 
 **** Adding SuperCollider functionality to EMACS
-     #+BEGIN_SRC lisp
+#+BEGIN_SRC lisp
 (add-to-list 'load-path "~/.emacs.d/vendor/scel/el")
 (require 'sclang)
 (add-to-list 'load-path "~/.emacs.d/vendor/scel/el")
 (require 'sclang)
-     #+END_SRC
+#+END_SRC
 
-     You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to =~/.emacs.d/vendor/scel/el= directory. Add to your init file the code displayed here under the "emacs-lisp" tab.
+You need to add the contents of supercollider/editors/scel/el to your load path. You can just point to where you cloned the git repo, but I prefer to have my emacs lisp in a logical place. I copied the el directory to =~/.emacs.d/vendor/scel/el= directory. Add to your init file the code displayed here under the "emacs-lisp" tab.
 
-     #+BEGIN_SRC lisp
+#+BEGIN_SRC lisp
 (setenv "PATH" (concat (getenv "PATH")
 ":/Applications/SuperCollider:/Applications/SuperCollider/SuperCollider.app/Contents/Resources"))
 (setq exec-path (append exec-path '("/Applications/SuperCollider"  "/Applications/SuperCollider/SuperCollider.app/Contents/Resources" )))
-     #+END_SRC
+#+END_SRC
 
-     You need to set your path within Emacs also. The sclang program is located in =/Applications/SuperCollider/SuperCollider.app/Contents/Resources=,
-     so that needs to be in your path.  The code for doing this is found under the =emacs-lisp= tab in the right column of this web page.
+You need to set your path within Emacs also. The sclang program is located in =/Applications/SuperCollider/SuperCollider.app/Contents/Resources=,
+so that needs to be in your path.  The code for doing this is found under the =emacs-lisp= tab in the right column of this web page.
 
-     (For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).
+(For hacking in iTerm, I’ve also added it to my PATH in my bash startup file).
 
-     Launch Emacs. When the dust settles, type =M-x sclang-start=
+Launch Emacs. When the dust settles, type =M-x sclang-start=
 
-     The interpreter will start in a buffer named SCLang:PostBuffer and you will be presented with a new buffer named SCLang:Workspace.
+The interpreter will start in a buffer named SCLang:PostBuffer and you will be presented with a new buffer named SCLang:Workspace.
 
-     There will be a SCLang menu and you can execute commands from there. You’ll see the C-x C-f will evaluate the entire document. (Or type C-c C-p b to boot. Of course you can type C-h m to get the help for sclang mode).
+There will be a SCLang menu and you can execute commands from there. You’ll see the C-x C-f will evaluate the entire document. (Or type C-c C-p b to boot. Of course you can type C-h m to get the help for sclang mode).
 
-     [...]
+[...]
 
-     Awesome, thank you! I wasn’t doing two things exactly right and this post was the missing link among all the various bits of emacs-supercollider info out there.
+Awesome, thank you! I wasn’t doing two things exactly right and this post was the missing link among all the various bits of emacs-supercollider info out there.
 
-     Two notes that may be helpful to others, or may simply be the result of mistakes on my part:
+Two notes that may be helpful to others, or may simply be the result of mistakes on my part:
 
-     1. In my scel/el directory, there was a file with a .in ending (specifically “sclang-vars.el.in”) that was causing a problem.
-     It has something to do with cmake, I’ve inferred, but I simply just changed to the file ending to “.el” and I stopped getting the error.
+1. In my scel/el directory, there was a file with a .in ending (specifically “sclang-vars.el.in”) that was causing a problem. It has something to do with cmake, I’ve inferred, but I simply just changed to the file ending to “.el” and I stopped getting the error.
+2. Apparently, there were/are two “Document.sc” files (one in Supercollider/extensions directory and one buried in the SCClassLibrary/Common/GUI directory); that caused an error. I simply removed the one from the Supercollider/extensions (they appeared to hold the same contents) and, voilá/voilà!
 
-     2. Apparently, there were/are two “Document.sc” files (one in Supercollider/extensions directory and one buried in the SCClassLibrary/Common/GUI directory); that caused an error. I simply removed the one from the Supercollider/extensions (they appeared to hold the same contents) and, voilá/voilà!
+Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!
 
-     Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!
-
-     *END QUOTE*
+*END QUOTE*
 
 * Basic Classes
 
@@ -208,10 +208,13 @@ git clone https://github.com/supercollider/supercollider.git
 * Auxiliary Classes
 
 
+
 * Operators
 
-** Operator Overview: =+>=, =<+=, =*>=, =<*=
+** Operator Overview
+   
 : Examples of 4 operator types in sc-hacks
+
 #+BEGIN_SRC javascript
 // type 1: +>
 { WhiteNoise.ar(0.1) } +> \test; // 1. function +>player
@@ -239,16 +242,12 @@ The code examples to the right illustrate the action of different types of objec
 3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event. A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.
 4. =<*= This operator is used to send the bufnum of buffers to parameters.
 
-: 2 player-linking operators
+: bus binding operator: Store bus in parameter of player. Adverb indicates number of channels
 #+BEGIN_SRC javascript
-\source @>.in \effect;
-\effect <@.out \source;
+\player @.numChannels \parameter;
 #+END_SRC
 
-In addition to the 4 operators above, /sc-hacks/ uses 2 operators dedicated to connecting players through audio-busses.  These are:
-
-1. =@>= : Connect the output of the receiver with the input of the argument with an allocated audio bus.  Adverb, if present, overrides the default name of the argument's input (=\in=).
-2. =<@= : Connect the output of the argument with the input of the receiver with an allocated audio bus.  Adverb, if present, overrides the default name of the argument's output (=\out=).
+In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.
 
 ** 1. Receiver +> Argument
 
