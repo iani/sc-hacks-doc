@@ -171,7 +171,7 @@ Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
 
 <p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, / -, <, >, =, |, %, &, @.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  <em>sc-hacks</em> makes use of this feature.</p>
 
-<p>While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code> and <code>@</code>.  Additionally, different types of receiver and argument pairs (Function +> Symbol, Event +> Symbol, etc.) imply different actions.  <em>sc-hacks</em> defines 14 different types of actions in all.</p>
+<p>While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code> and <code>@</code>.  The action performed by each operator varies according to the Classes of the receiver and the argument. <em>sc-hacks</em> defines 14 different types of actions in all.</p>
 
 <h2 id="a-word-or-2-about-emacs">A word (or 2) about EMACS</h2>
 
@@ -258,18 +258,6 @@ so that needs to be in your path.  The code for doing this is found under the <c
 <p>Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!</p>
 
 <p>*END</p>
-
-<h1 id="basic-classes">Basic Classes</h1>
-
-<h2 id="nenvir">Nenvir</h2>
-
-<h2 id="player">Player</h2>
-
-<h2 id="notification">Notification</h2>
-
-<h2 id="registry">Registry</h2>
-
-<h1 id="auxiliary-classes">Auxiliary Classes</h1>
 
 <h1 id="operators">Operators</h1>
 
@@ -464,190 +452,9 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 
 <p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.</p>
 
-<h2 id="backward-compatibility-operators-before-august-2017">Backward compatibility: Operators before August 2017</h2>
+<h1 id="accessing-named-objects">Accessing named objects</h1>
 
-<p>This section lists the operators of the version before August 2017.</p>
-
-<h4 id="operators-on-functions">Operators on Functions</h4>
-
-<p>These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:</p>
-
-<ol>
-<li>Play a synth (<code>Function:play</code> : operator <code>+&gt;</code>)</li>
-<li>Play a routine (<code>Function:fork</code> : operator <code>*&gt;</code>)</li>
-</ol>
-
-<p>+> play as synth</p>
-
-<p>*> play as routine (fork)</p>
-
-<h4 id="operators-on-events">Operators on Events</h4>
-
-<p>These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.</p>
-
-<p>@> play</p>
-
-<p>@>+ addEvent</p>
-
-<p>@>! setEvent</p>
-
-<p>@>@ addKey</p>
-
-<h4 id="operators-on-symbols">Operators on Symbols</h4>
-
-<p>These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the <code>out</code> and <code>in</code> environment variables in Nenvir instances to a common bus.</p>
-
-<dl>
-<dt><code>&amp;&gt;</code></dt>
-<dd>set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)</dd>
-<dt><code>&lt;&amp;</code></dt>
-<dd>set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)</dd>
-</dl>
-
-<p>#+BEGIN_SRC javascript
-receiver &>! argument
-     #+END_SRC</p>
-
-<dl>
-<dt><code>&amp;&gt;!</code></dt>
-<dd>set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)</dd>
-</dl>
-
-<p>#+BEGIN_SRC javascript
-receiver &/> argument
-     #+END_SRC</p>
-
-<dl>
-<dt><code>&amp;/&gt;</code></dt>
-<dd>Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.</dd>
-</dl>
-
-<p>#+BEGIN_SRC javascript
-receiver </> argument
-     #+END_SRC</p>
-
-<dl>
-<dt><code>&lt;/&gt;</code></dt>
-<dd>Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.</dd>
-</dl>
-
-<h4 id="messages-to-symbols">Messages to symbols</h4>
-
-<p>splay</p>
-
-<p>eplay</p>
-
-<p>rplay</p>
-
-<h4 id="operators-on-strings">Operators on strings (!?)</h4>
-
-<p>string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?</p>
-
-<h4 id="additional-possible-operators">Additional possible operators</h4>
-
-<p>These operators are now being implemented, with new simpler unified form <code>&lt;+</code>.</p>
-
-<h5 id="within-the-currentenvironment-nevent">Within the currentEnvironment Nevent</h5>
-
-<p>When one (or any) parameter in the currentEnvironment changes:</p>
-
-<ol>
-<li>Play an event (from an EventPattern / EventStream) <code>&lt;@</code></li>
-<li>Play a synth from a SynthPlayer <code>&lt;+</code></li>
-</ol>
-
-<h5 id="within-an-eventstreamplayer-playing-within-an-nevent-with-event">Within an EventStreamPlayer playing within an Nevent (with Event @>)</h5>
-
-<ul>
-<li>Play an event (from an EventPattern / EventStream)</li>
-<li>Evaluate a function</li>
-</ul>
-
-<h4 id="some-example-code">Some example code</h4>
-
-<h5 id="several-examples">Several examples</h5>
-
-<p>#+BEGIN_SRC javascript
-// <code>===============================================================
-// ===============</code> Routines
-//: Start a routine
-{
-        loop {
-                ~freq = 500 rrand: 4000;
-                1.wait;
-        }
-} *> \rout1
-//: replace this with a different routine
-{
-        loop {
-                ~freq = 100 rrand: 400;
-                0.2.exprand (0.5).wait;
-        }
-} *> \rout1
-//: Shortcut for loop {}
-{
-        ~freq = 50 exprand: 400;
-        0.1.wait;
-} **> \rout1;
-//: stop the routine
-\rout1.routine.stop;</p>
-
-<p>// <code>===============================================================
-// ===============</code> Patterns
-//: start a new pattern
-(dur: 0.1, degree: Pseq ((0..7), inf)) @> \pat1;
-//: replace the pattern running at \pat1 with a new one
-(dur: Pwhite (0.01, 0.1, inf), degree: Pwhite(0, 7, inf)) @> \pat1;
-//: add event's contents to the playing event
-(dur: Pwhite (0.01, 2.1, inf)) @>+ \pat1;
-//: testing function in event key
-// Defer runs the function after the event has played all parameters
-(func1: {{ postf("freq param is: %\n", ~freq )}.defer }) @>+ \pat1;</p>
-
-<p>//: <code>===============================================================
-//: ===============</code> More function operators
-//: Testing function in envir
-{ | freq | { SinOsc.ar(freq, 0, EnvGen.kr(Env.perc(0.01, 0.1, 0.1)))}.play } <* \freq;</p>
-
-<p><em><em>: <code>========</code> Polyphony: EventStreams triggered by a pattern playing in currentEnvironment
-() @> \pat1;
-</em></em> { ~freq.postln; } <* \freq; // just as a test;
-(degree: Pseq((0..7), inf)) <@ \freq;
-//: add another stream on a different label
-(degree: Pseq((0..7).scramble, inf)) <@.label2 \freq;
-//: add another stream on a different label yet
-(degree: Pseq((0..7) + 10, inf), dur: 0.1) <@.label3 \freq;
-//:
-      #+END_SRC</p>
-
-<h5 id="function-play-envir-playername">Function:play: <code>{} +&gt;.envir \playerName</code></h5>
-
-<p>#+BEGIN_SRC javascript
-  // Start a synth and store it in \synth1
-  { SinOsc.ar(\freq.kr(400), 0, \amp.kr(0.1)) } +> \synth1;
-  //: Start a routine modifying the freq parameter
-  {
-          loop {
-                  ~freq = 50 rrand: 100;
-                  5.1.wait;
-          }
-  } rout: \envir;
-  //: Replace the function playing in \synth1
-  { Ringz.ar (WhiteNoise.ar (\amp.kr (0.1)), \freq.kr (400)) } +> \synth1;
-  //: Start a synth in a different environment
-  { LFSaw.ar(\freq.kr(400), 0, \amp.kr(0.1)) } +>.envir2 \synth1;
-  //: Start a routine modifying the freq parameter in the second environment
-  {
-          loop {
-                  ~freq = 400 rrand: 4000;
-                  0.1.wait;
-          }
-  } rout: \envir2;
-  //: Test the contents of the library
-  Library.global.dictionary;
-      #+END_SRC</p>
-
-<h3 id="accessing-synthplayers-eventpatterns-eventstreamplayers-routines-and-windows">Accessing SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows</h3>
+<p>(SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows)</p>
 
 <p>The following messages are used to access a SynthPlayer, EventStreamPlayer, Routine or Window stored under a name in an environment.  If no enviroment is specified, then the currentEnvironment is used.</p>
 
@@ -672,30 +479,28 @@ receiver </> argument
 <h4 id="method-implementation-code">Method implementation code</h4>
 
 <p>The code implementing these methods for <code>Symbol</code> in <code>Nevent.sc</code> is:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="c1">// Return nil if no element found.</span>
+  <span class="c1">// Also, do not push the environment if created.</span>
+  <span class="nx">synth</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">|</span>
+          <span class="o">^</span><span class="nx">Registry</span><span class="p">.</span><span class="nx">at</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span> <span class="p">(</span><span class="kc">false</span><span class="p">),</span> <span class="err">\</span><span class="nx">synths</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
 
-<p>#+BEGIN_SRC javascript
- // Return nil if no element found.
-  // Also, do not push the environment if created.
-  synth { | envir |
-          ^Registry.at (envir.asEnvironment (false), \synths, this);
-  }</p>
+  <span class="nx">pattern</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">|</span>
+          <span class="o">^</span><span class="nx">Registry</span><span class="p">.</span><span class="nx">at</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span> <span class="p">(</span><span class="kc">false</span><span class="p">),</span> <span class="err">\</span><span class="nx">patterns</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
 
-<p>pattern { | envir |
-          ^Registry.at (envir.asEnvironment (false), \patterns, this);
-  }</p>
+  <span class="nx">routine</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span> <span class="o">|</span>
+          <span class="o">^</span><span class="nx">Registry</span><span class="p">.</span><span class="nx">at</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span> <span class="p">(</span><span class="kc">false</span><span class="p">),</span> <span class="err">\</span><span class="nx">routines</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
 
-<p>routine { | envir |
-          ^Registry.at (envir.asEnvironment (false), \routines, this);
-  }</p>
-
-<p>window { | envir, rect |
-          // always construct new window, and push the environment
-          ^Registry (envir.asEnvironment, \windows, this, {
-                  Window (this, rect)
-                  .onClose_ ({ | me | me.objectClosed; });
-          })
-  }
-     #+END_SRC</p>
+  <span class="nb">window</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">envir</span><span class="p">,</span> <span class="nx">rect</span> <span class="o">|</span>
+          <span class="c1">// always construct new window, and push the environment</span>
+          <span class="o">^</span><span class="nx">Registry</span> <span class="p">(</span><span class="nx">envir</span><span class="p">.</span><span class="nx">asEnvironment</span><span class="p">,</span> <span class="err">\</span><span class="nx">windows</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span>
+                  <span class="nx">Window</span> <span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">rect</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">onClose_</span> <span class="p">({</span> <span class="o">|</span> <span class="nx">me</span> <span class="o">|</span> <span class="nx">me</span><span class="p">.</span><span class="nx">objectClosed</span><span class="p">;</span> <span class="p">});</span>
+          <span class="p">})</span>
+  <span class="p">}</span>
+</code></pre></div>
 
 <h4 id="tests">Tests</h4>
 
@@ -709,102 +514,17 @@ receiver </> argument
 { PinkNoise.ar(0.2) } +>.envir \test;
      #+END_SRC</p>
 
-<h2 id="mini-language-overview">Mini-Language Overview</h2>
+<h1 id="basic-classes">Basic Classes</h1>
 
-<p>The classes, methods and operators provided by <em>sc-hacks</em> extend SuperCollider to simplify the coding of GUI and of sound / musical structure / interaction.  They are designed in the sense of a very small language.  Here is a summary.</p>
+<h2 id="nenvir">Nenvir</h2>
 
-<p>#+HTML: <!-- more --></p>
+<h2 id="player">Player</h2>
 
-<h3 id="items-connected-to-currentenvironment-gui-synths-patterns-routines">Items connected to currentEnvironment: GUI, Synths, Patterns, Routines</h3>
+<h2 id="notification">Notification</h2>
 
-<h3 id="operator-and-message-overview">Operator and message overview</h3>
+<h2 id="registry">Registry</h2>
 
-<p><strong>This is a draft: Implementation of the following operators has just started.</strong> <em>The purpose of the overview is to guide coding by keeping the different versions discrete and consistent.</em></p>
-
-<h4 id="operators-on-functions-1">Operators on Functions</h4>
-
-<p>These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:</p>
-
-<ol>
-<li>Play a synth (<code>Function:play</code> : operator <code>+&gt;</code>)</li>
-<li>Play a routine (<code>Function:fork</code> : operator <code>*&gt;</code>)</li>
-</ol>
-
-<p>+> play as synth</p>
-
-<p>*> play as routine (fork)</p>
-
-<h4 id="operators-on-events-1">Operators on Events</h4>
-
-<p>These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.</p>
-
-<p>@> play</p>
-
-<p>@>+ addEvent</p>
-
-<p>@>! setEvent</p>
-
-<p>@>@ addKey</p>
-
-<h4 id="operators-on-symbols-1">Operators on Symbols</h4>
-
-<p>These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the <code>out</code> and <code>in</code> environment variables in Nenvir instances to a common bus.</p>
-
-<dl>
-<dt><code>&amp;&gt;</code></dt>
-<dd>set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)</dd>
-<dt><code>&lt;&amp;</code></dt>
-<dd>set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)</dd>
-</dl>
-
-<p>#+BEGIN_SRC javascript
-receiver &>! argument
-     #+END_SRC</p>
-
-<dl>
-<dt><code>&amp;&gt;!</code></dt>
-<dd>set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)</dd>
-</dl>
-
-<p>#+BEGIN_SRC javascript
-receiver &/> argument
-     #+END_SRC</p>
-
-<dl>
-<dt><code>&amp;/&gt;</code></dt>
-<dd>Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.</dd>
-</dl>
-
-<p>#+BEGIN_SRC javascript
-receiver </> argument
-     #+END_SRC</p>
-
-<dl>
-<dt><code>&lt;/&gt;</code></dt>
-<dd>Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.</dd>
-</dl>
-
-<h4 id="messages-to-symbols-1">Messages to symbols</h4>
-
-<p>splay</p>
-
-<p>eplay</p>
-
-<p>rplay</p>
-
-<h4 id="operators-on-strings-1">Operators on strings (!?)</h4>
-
-<p>string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?</p>
-
-<h3 id="playing-synths">Playing Synths</h3>
-
-<h3 id="playing-routines">Playing Routines</h3>
-
-<h3 id="playing-patterns-with-default-note-events">Playing patterns with default note events</h3>
-
-<h3 id="playing-patterns-in-currentenvironment">Playing patterns in currentEnvironment</h3>
-
-<h3 id="creating-guis">Creating GUIs</h3>
+<h1 id="auxiliary-classes">Auxiliary Classes</h1>
 
 <h1 id="functions-and-synth-playing">Functions and Synth Playing</h1>
 
@@ -1236,7 +956,7 @@ receiver </> argument
 
 <h1 id="gui">GUI</h1>
 
-<h2 id="creating-guis-1">Creating GUIs</h2>
+<h2 id="creating-guis">Creating GUIs</h2>
 
 <p>This library provides utilities for creating GUI elements and connecting them to both patterns and synths.  Here are some examples.</p>
 

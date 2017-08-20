@@ -101,7 +101,7 @@
 
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, / -, <, >, =, |, %, &, @.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  /sc-hacks/ makes use of this feature.
 
-While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.  Additionally, different types of receiver and argument pairs (Function +> Symbol, Event +> Symbol, etc.) imply different actions.  /sc-hacks/ defines 14 different types of actions in all.
+While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.  The action performed by each operator varies according to the Classes of the receiver and the argument. /sc-hacks/ defines 14 different types of actions in all.
 
 ** A word (or 2) about EMACS
 
@@ -194,18 +194,6 @@ Two notes that may be helpful to others, or may simply be the result of mistakes
 Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!
 
 *END
-
-* Basic Classes
-
-** Nenvir
-
-** Player
-
-** Notification
-
-** Registry
-
-* Auxiliary Classes
 
 
 
@@ -301,196 +289,31 @@ The code examples to the right illustrate the action of different types of objec
 
 In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.
 
-** Backward compatibility: Operators before August 2017
+* Accessing named objects
 
-   This section lists the operators of the version before August 2017.
+(SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows)
 
-**** Operators on Functions
+  The following messages are used to access a SynthPlayer, EventStreamPlayer, Routine or Window stored under a name in an environment.  If no enviroment is specified, then the currentEnvironment is used.
 
-     These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:
+  - =symbol.synth(optional: envir)=
+  - =symbol.pattern(optional: envir)=
+  - =symbol.routine(optional: envir)=
+  - =symbol.window(optional: envir)=
 
-     1. Play a synth (=Function:play= : operator =+>=)
-     2. Play a routine (=Function:fork= : operator =*>=)
+  Additionally, the following introspection methods are provided:
 
-
-     +> play as synth
-
-     *> play as routine (fork)
-
-**** Operators on Events
-
-     These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.
-
-     @> play
-
-     @>+ addEvent
-
-     @>! setEvent
-
-     @>@ addKey
-
-**** Operators on Symbols
-
-     These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the =out= and =in= environment variables in Nenvir instances to a common bus.
-
-     - =&>= :: set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)
-     - =<&= :: set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)
-
-     #+BEGIN_SRC javascript
-receiver &>! argument
-     #+END_SRC
-
-
-     - =&>!= :: set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)
-
-     #+BEGIN_SRC javascript
-receiver &/> argument
-     #+END_SRC
-
-     - =&/>= :: Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.
-
-     #+BEGIN_SRC javascript
-receiver </> argument
-     #+END_SRC
-
-     - =</>= :: Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.
-
-**** Messages to symbols
-
-     splay
-
-     eplay
-
-     rplay
-
-**** Operators on strings (!?)
-
-     string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?
-
-**** Additional possible operators
-
-     These operators are now being implemented, with new simpler unified form =<+=.
-
-***** Within the currentEnvironment Nevent
-
-      When one (or any) parameter in the currentEnvironment changes:
-
-      1. Play an event (from an EventPattern / EventStream) =<@=
-      1. Play a synth from a SynthPlayer =<+=
-
-*****  Within an EventStreamPlayer playing within an Nevent (with Event @>)
-
-      - Play an event (from an EventPattern / EventStream)
-      - Evaluate a function
-
-**** Some example code
-
-***** Several examples
-      #+BEGIN_SRC javascript
-// ================================================================
-// ================ Routines
-//: Start a routine
-{
-        loop {
-                ~freq = 500 rrand: 4000;
-                1.wait;
-        }
-} *> \rout1
-//: replace this with a different routine
-{
-        loop {
-                ~freq = 100 rrand: 400;
-                0.2.exprand (0.5).wait;
-        }
-} *> \rout1
-//: Shortcut for loop {}
-{
-        ~freq = 50 exprand: 400;
-        0.1.wait;
-} **> \rout1;
-//: stop the routine
-\rout1.routine.stop;
-
-// ================================================================
-// ================ Patterns
-//: start a new pattern
-(dur: 0.1, degree: Pseq ((0..7), inf)) @> \pat1;
-//: replace the pattern running at \pat1 with a new one
-(dur: Pwhite (0.01, 0.1, inf), degree: Pwhite(0, 7, inf)) @> \pat1;
-//: add event's contents to the playing event
-(dur: Pwhite (0.01, 2.1, inf)) @>+ \pat1;
-//: testing function in event key
-// Defer runs the function after the event has played all parameters
-(func1: {{ postf("freq param is: %\n", ~freq )}.defer }) @>+ \pat1;
-
-//: ================================================================
-//: ================ More function operators
-//: Testing function in envir
-{ | freq | { SinOsc.ar(freq, 0, EnvGen.kr(Env.perc(0.01, 0.1, 0.1)))}.play } <* \freq;
-
-//: ========== Polyphony: EventStreams triggered by a pattern playing in currentEnvironment
-() @> \pat1;
-// { ~freq.postln; } <* \freq; // just as a test;
-(degree: Pseq((0..7), inf)) <@ \freq;
-//: add another stream on a different label
-(degree: Pseq((0..7).scramble, inf)) <@.label2 \freq;
-//: add another stream on a different label yet
-(degree: Pseq((0..7) + 10, inf), dur: 0.1) <@.label3 \freq;
-//:
-      #+END_SRC
-
-
-
-*****  Function:play: ={} +>.envir \playerName=
-
-      #+BEGIN_SRC javascript
-  // Start a synth and store it in \synth1
-  { SinOsc.ar(\freq.kr(400), 0, \amp.kr(0.1)) } +> \synth1;
-  //: Start a routine modifying the freq parameter
-  {
-          loop {
-                  ~freq = 50 rrand: 100;
-                  5.1.wait;
-          }
-  } rout: \envir;
-  //: Replace the function playing in \synth1
-  { Ringz.ar (WhiteNoise.ar (\amp.kr (0.1)), \freq.kr (400)) } +> \synth1;
-  //: Start a synth in a different environment
-  { LFSaw.ar(\freq.kr(400), 0, \amp.kr(0.1)) } +>.envir2 \synth1;
-  //: Start a routine modifying the freq parameter in the second environment
-  {
-          loop {
-                  ~freq = 400 rrand: 4000;
-                  0.1.wait;
-          }
-  } rout: \envir2;
-  //: Test the contents of the library
-  Library.global.dictionary;
-      #+END_SRC
-
-*** Accessing SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows
-
-    The following messages are used to access a SynthPlayer, EventStreamPlayer, Routine or Window stored under a name in an environment.  If no enviroment is specified, then the currentEnvironment is used.
-
-    - =symbol.synth(optional: envir)=
-    - =symbol.pattern(optional: envir)=
-    - =symbol.routine(optional: envir)=
-    - =symbol.window(optional: envir)=
-
-    Additionally, the following introspection methods are provided:
-
-    - =Nevent:envirs= : Dictionary with all Nenvirs stored in Library under =\environments=
-    - =Registry;envirs= : Synonym of =Nevent:envirs=
-    - =\envirName.synths= : All synth players of Nenvir named =\envirName=.
-    - =\envirName.patterns= : All EventStreamPlayers of Nenvir named =\envirName=.
-    - =\envirName.routines= : All Routines of Nenvir named =\envirName=.
-    - =\envirName.windows= : All windows of Nenvir named =\envirName=.
+  - =Nevent:envirs= : Dictionary with all Nenvirs stored in Library under =\environments=
+  - =Registry;envirs= : Synonym of =Nevent:envirs=
+  - =\envirName.synths= : All synth players of Nenvir named =\envirName=.
+  - =\envirName.patterns= : All EventStreamPlayers of Nenvir named =\envirName=.
+  - =\envirName.routines= : All Routines of Nenvir named =\envirName=.
+  - =\envirName.windows= : All windows of Nenvir named =\envirName=.
 
 **** Method implementation code
      The code implementing these methods for =Symbol= in =Nevent.sc= is:
 
-     #+BEGIN_SRC javascript
- // Return nil if no element found.
+#+BEGIN_SRC javascript
+  // Return nil if no element found.
   // Also, do not push the environment if created.
   synth { | envir |
           ^Registry.at (envir.asEnvironment (false), \synths, this);
@@ -511,7 +334,7 @@ receiver </> argument
                   .onClose_ ({ | me | me.objectClosed; });
           })
   }
-     #+END_SRC
+#+END_SRC
 
 **** Tests
 
@@ -525,91 +348,18 @@ receiver </> argument
 { PinkNoise.ar(0.2) } +>.envir \test;
      #+END_SRC
 
+* Basic Classes
 
+** Nenvir
 
-** Mini-Language Overview
+** Player
 
-   The classes, methods and operators provided by /sc-hacks/ extend SuperCollider to simplify the coding of GUI and of sound / musical structure / interaction.  They are designed in the sense of a very small language.  Here is a summary.
+** Notification
 
-   #+HTML: <!-- more -->
+** Registry
 
-*** Items connected to currentEnvironment: GUI, Synths, Patterns, Routines
+* Auxiliary Classes
 
-*** Operator and message overview
-
-    *This is a draft: Implementation of the following operators has just started.* /The purpose of the overview is to guide coding by keeping the different versions discrete and consistent./
-
-**** Operators on Functions
-
-     These are operators that are written after a function, and thus take a function as receiver.  They serve two main uses of functions in musical processes:
-
-     1. Play a synth (=Function:play= : operator =+>=)
-     2. Play a routine (=Function:fork= : operator =*>=)
-
-
-     +> play as synth
-
-     *> play as routine (fork)
-
-**** Operators on Events
-
-     These are operators that are written after an event, and thus take an event as receiver.  They serve to play the event as EventPattern inside currentEnvironment, setting the environments keys (but not producing any sound by itself).  Furthermore, they serve to modify the event of such a playing EventPattern.
-
-     @> play
-
-     @>+ addEvent
-
-     @>! setEvent
-
-     @>@ addKey
-
-**** Operators on Symbols
-
-     These are operators that are written after a symbol, and thus take a symbol as receiver. They are primarily used to link synths by setting the =out= and =in= environment variables in Nenvir instances to a common bus.
-
-     - =&>= :: set the output bus of the receiver to the input bus of the argument (only the output bus of the receiver changes)
-     - =<&= :: set the input bus of the argument to the output bus of the receiver (only the input bus of the argument changes)
-
-     #+BEGIN_SRC javascript
-receiver &>! argument
-     #+END_SRC
-
-
-     - =&>!= :: set the output bus of the receiver to the input bus of the argument, on a new private bus (both receiver and argument change)
-
-     #+BEGIN_SRC javascript
-receiver &/> argument
-     #+END_SRC
-
-     - =&/>= :: Copy the output signal of the receiver from its bus onto the input bus of the argument, using a signal copy synth.
-
-     #+BEGIN_SRC javascript
-receiver </> argument
-     #+END_SRC
-
-     - =</>= :: Copy the output signal of the receiver onto a new private bus, and the signal from that private bus onto the input bus of the argument, using 2 signal copy synths.
-
-**** Messages to symbols
-
-     splay
-
-     eplay
-
-     rplay
-
-**** Operators on strings (!?)
-
-     string +> symbol : play synthdef named by string on the symbol as SynthPlayer ?
-
-*** Playing Synths
-
-*** Playing Routines
-
-*** Playing patterns with default note events
-
-*** Playing patterns in currentEnvironment
-
-*** Creating GUIs
 
 
 * Functions and Synth Playing
