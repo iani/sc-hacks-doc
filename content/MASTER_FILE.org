@@ -43,8 +43,8 @@
 
 *** Future plans
 
-- sound file display with sound file view. 
-- sound file processing from emacs-dired.  Test NRT file processing too. 
+- sound file display with sound file view.
+- sound file processing from emacs-dired.  Test NRT file processing too.
 - SCMIR
 - NRT SCMIR
 - Concatenative Synthesis
@@ -101,7 +101,7 @@
 
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, / -, <, >, =, |, %, &, @.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  /sc-hacks/ makes use of this feature.
 
-While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.
+While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.  Additionally, different types of receiver and argument pairs (Function +> Symbol, Event +> Symbol, etc.) imply different actions.  /sc-hacks/ defines 14 different types of actions in all.
 
 ** A word (or 2) about EMACS
 
@@ -193,7 +193,7 @@ Two notes that may be helpful to others, or may simply be the result of mistakes
 
 Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!
 
-*END QUOTE*
+*END
 
 * Basic Classes
 
@@ -212,7 +212,7 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 * Operators
 
 ** Operator Overview
-   
+
 : Examples of 4 operator types in sc-hacks
 
 #+BEGIN_SRC javascript
@@ -235,6 +235,58 @@ As basic operators, /sc-hacks/ uses four combinations built from + and * with > 
 1. *+-Group* : =+>=, =<+=.  *+>* plays the receiver (left argument) object in the player whose name is named by the left argument.  *<+* plays the left argument object in the parameter whose name is named by the receiver.
 2. **-Group* : =*>, =<*=. The operators of the =*= group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
 
+Here is a tabular overview of operator actions associated to different types of receiver and argument:
+
+|------------+------------+------------+--------------------------------------|
+| *receiver* | *operator* | *argument* | *action*                             |
+|------------+------------+------------+--------------------------------------|
+| Symbol     | =+>=       | Symbol     | Play Synthdef                        |
+| Symbol     | =*>=       | Symbol     | Link Players                         |
+| Symbol     | =<+=       | Number     | Set parameter                        |
+| Symbol     | =<+=       | Function   | Map parameter                        |
+| Symbol     | =<+=       | Env        | Map parameter                        |
+| Symbol     | =<*=       | Symbol     | Set bufnum                           |
+| Symbol     | =<*=       | MIDI       | Bind MIDIFunc                        |
+| Symbol     | =<*=       | OSC        | Bind OSCFunc                         |
+| Symbol     | =<*=       | Widget     | Bind GUI Widget                      |
+| Function   | =+>=       | Symbol     | Play Synth                           |
+| Function   | =*>=       | Symbol     | Play Routine                         |
+| Event      | =+>=       | Symbol     | Play Pattern in Player               |
+| Event      | =*>=       | Symbol     | Play Pattern in Player's Environment |
+| UGen       | =<+=       | Symbol     | Read input from Player's Output      |
+
+** 1. Symbol =+>= Symbol: Play Synthdef
+
+#+BEGIN_SRC javascript
+\default +> \player1; // play SynthDef named default in player named player1
+#+END_SRC
+
+** 2. Symbol =*>= Symbol: Link Players
+
+#+BEGIN_SRC javascript
+\source *> \effect; // use default i/o parameters (\out, \in)
+\source *>.input2 \effect; // specify custom input parameter
+\source @.output2 *> \effect // specify custom output parameter
+\source @.output2 *>.input2 \effect; // specify custom input and output parameter
+#+END_SRC
+
+Adverb specifies custom input parameter for the argument player.
+
+To specify a custom output parameter for the reader player, use the =@= operator:
+
+** 3. Symbol =<+= Number: Set parameter
+** 4. Symbol =<+= Function: Map parameter
+** 5. Symbol =<+= Env: Map parameter
+** 6. Symbol =<+= Symbol: Set bufnum
+** 7. Symbol =<*= MIDI: Bind MIDIFunc
+** 8. Symbol =<*= OSC: Bind OSCFunc
+** 9. Symbol =<*= Widget: Bind GUI Widget
+** 10. Function =+>= Symbol: Play Synth
+** 11. Function =*>= Symbol: Play Routine
+** 12. Event =+>= Symbol: Play Pattern in Player
+** 13. Event =*>= Symbol: Play Pattern in Player's Environment
+** 14. UGen =<+= Symbol: Read input from Player's Output
+
 The code examples to the right illustrate the action of different types of objects sent to players, which are:
 
 1. =+>= : Play the receiver in the Player named by the argument. 3 types of receivers can be used: 1. *Function:* Play as synth function into the Player named by the argument. 2. *Event:* Play as pattern (via EventStreamPlayer) into the Player named by the argument. 3. *Symbol:* Play as synth using the Receiver Symbol as name of the Synth to be player.
@@ -248,123 +300,6 @@ The code examples to the right illustrate the action of different types of objec
 #+END_SRC
 
 In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.
-
-** 1. Receiver +> Argument
-
-Generally, sending an object to a Symbol with the +> operator attempts to play the object in the Player instance hat is stored under that Symbol.
-
-*** Function +> Symbol: Play function as Synth
-
-#+BEGIN_SRC javascript
-// Function +> Symbol
-{ WhiteNoise.ar(0.1) } +> \test;
-#+END_SRC
-
-Play the function as a synth in the Player named by the Symbol.  The Function is played in similar manner as ={}.play=.
-
-*** Event +> Symbol: Play event as Pattern
-
-#+BEGIN_SRC javascript
-// Event +> Symbol
-(dur: 0.05, degree: Pseq((0..1))) +> \test;
-#+END_SRC
-
-Play the event as the Player named by the Symbol.  This involves instances of 3 different classes:
-
-1. =EventPattern=
-2. =EventStream=
-3. =EventStreamPlayer=
-
-*** Symbol +> Symbol: Play symbol as SynthDef
-
-Play synthdef whose name is the receiver into player whose name is the argument.
-
-#+BEGIN_SRC javascript
-// Symbol +> Symbol
-\default +> \test;
-#+END_SRC
-** 2. Receiver *> Argument
-
-*** Function *> Symbol
-
-Play function as routine in environment of player named by the argument symbol.
-
-*** Event *> Symbol
-
-Play event as pattern of custom type, which sets the values of all keys to the variables of the environment of the player named by the argument event.
-
-*** Symbol *> Symbol: link players input
-
-#+BEGIN_SRC javascript
-\a *> \b; // \source *> \effect
-{ Dust.ar([1, 2]) } +> \a;
-{ Ringz.ar(Fin(), LFNoise0.kr([5, 10]).range(400, 4000), 1) } +> \b;
-#+END_SRC
-
-A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.  Make the player named by the argument symbol read its default input from the output of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative input in the argument player's Synth.
-
-** 3. Receiver <+ Argument
-
-*** Symbol <+ Function: Map functions control synth to parameter
-
-#+BEGIN_SRC javascript
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-#+END_SRC
-
-Map the control signal output by playing the Function into the parameter named by the Symbol in the =currentEnvironment=.
-
-*** Symbol <+ Env
-#+BEGIN_SRC javascript
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-#+END_SRC
-
-Play the Env into a control bus and map the parameter named by the symbol in the =currentEnvironment= to that bus.
-
-*** UGen <+ Symbol
-
-#+BEGIN_SRC javascript
-\a *> \b; // \source *> \effect
-{ Dust.ar([1, 2]) } +> \a;
-{ Ringz.ar(Fin() <+ \a, LFNoise0.kr([5, 10]).range(400, 4000), 1) } +> \b;
-#+END_SRC
-
-Connect the input of the player named by the receiver to the output of the player named by the argument.  Make the player named by the argument symbol write its default output to the input of the player of the receiver symbol.  An adverb to the *> operator can indicate the name of an alternative output in the argument player's Synth.
-
-#+BEGIN_SRC javascript
-{ Ringz.ar(Fin() <+ \fb, LFnoise0.kr(5).range(300, 1000)) } +> \fb;
-#+END_SRC
-
-Set the parameter corresponding to the control value of the UGen to the index of the audio bus output of the player named by the symbol.  This makes it possible to code the connection to another player directly in a synth-function of another player.  It also makes it possible to code audio feedback of a player to itself in a single statement.  It requires use of the utility UGen class =Fin= defined in the present library.
-
-** 4. Receiver <* Argument
-
-*** Symbol <* Symbol
-#+BEGIN_SRC javascript
-//: symbol <* symbol
-\bufnum <* \hihat; // Set ~bufnum to the bufnum of the buffer whose name is hihat.
-#+END_SRC
-
-Set the parameter environment variable named by the receiver to the bufnum of the buffer named by the argument.
-
-*** Symbol <* MIDI
-
-#+BEGIN_SRC javascript
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-#+END_SRC
-
-The MIDI Class is a template class for creating MIDIfunc instances.
-
-*** Symbol <* OSC
-
-#+BEGIN_SRC javascript
-\default +> \test; // pushes environment of test
-\freq <+ { LFNoise0.kr(5).range(400, 4000) }; // maps to \freq of current environment
-#+END_SRC
-
-The OSC class is a template class for creating OSCfunc instances.
 
 ** Backward compatibility: Operators before August 2017
 
