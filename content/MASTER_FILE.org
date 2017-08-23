@@ -442,14 +442,14 @@ Similar extensions can be built for whatever object needs to monitor the closing
 *** Done (19 Jun 2017 10:52):
 **** Synth start-stop (release) and set control from Event:eplay (EventPatterns)
 
-     The following will add some complexity to the current scheme and may therefore be added later on only.
+The following will add some complexity to the current scheme and may therefore be added later on only.
 
-     - Define =SynthPlayer= to add synth start-stop capabilities to =Function:eplay=
-     - Add synths instance variable to Nevent for faster access to SynthPlayers
+- Define =SynthPlayer= to add synth start-stop capabilities to =Function:eplay=
+- Add synths instance variable to Nevent for faster access to SynthPlayers
 
-     In addition to listening for changes from the =currentEnvironment=, a second notification mechanism should be added to Function:eplay, to enable creating new synths, releasing or freeing this synth when playing EventPatterns with an =EventStreamPlayer=.  A simple way to do this is by a stream which generates the commands to be played.  The stream is stored in a key with the same name as the synth to be controlled.  Function:eplay or SynthPlayer:play adds the environment as notifier to the synth with the synth's name as message and a switch statement which choses the action to be performed depending on the value that was sent in addition to the key (message) by the changed message. A draft for this code has been added now to Function:eplay:
+In addition to listening for changes from the =currentEnvironment=, a second notification mechanism should be added to Function:eplay, to enable creating new synths, releasing or freeing this synth when playing EventPatterns with an =EventStreamPlayer=.  A simple way to do this is by a stream which generates the commands to be played.  The stream is stored in a key with the same name as the synth to be controlled.  Function:eplay or SynthPlayer:play adds the environment as notifier to the synth with the synth's name as message and a switch statement which choses the action to be performed depending on the value that was sent in addition to the key (message) by the changed message. A draft for this code has been added now to Function:eplay:
 
-     #+BEGIN_SRC javascript
+#+BEGIN_SRC javascript
   synth.onStart (this, {| myself |
           // "Synth started, so I add notifiers for updates".postln;
           argNames do: { | param |
@@ -469,92 +469,20 @@ Similar extensions can be built for whatever object needs to monitor the closing
                   })
           };
   });
-     #+END_SRC
+#+END_SRC
 *** Still TODO (19 Jun 2017 10:52)
 **** Synth start-stop notifications for GUI and other listeners
-     - When a new synth starts or when an old synth is removed, it should emit notifications so that GUIS that depend on it update their status.  Such guis may be:
-       - Start-stop buttons
-       - Guis with widgets for controlling the synths parameters.  When a new synth starts, then the old gui should be replaced with a new one with widgets corresponding to the new synth's control parameters.
-       Note: Possibly the notification should be emitted from the =\synthName= under which the synth is stored.  The messages may be:
-       - =\started=
-       - =\stopped=
-       - =\replaced=
-         The above is subject to testing.
+- When a new synth starts or when an old synth is removed, it should emit notifications so that GUIS that depend on it update their status.  Such guis may be:
 
-     #+HTML: <!-- more -->
+- Start-stop buttons
+- Guis with widgets for controlling the synths parameters.  When a new synth starts, then the old gui should be replaced with a new one with widgets corresponding to the new synth's control parameters.
 
-*** Notes
-    - When this is done, it should be possible to create multiple gui windows for multiple synths running in the same environment. However, parameters under the same name will control the parameters under that name for all synths in that environment.
-    - To develop the right code for this, do it with a plain function, adding the functionalities one-by-one.
+Note: Possibly the notification should be emitted from the =\synthName= under which the synth is stored.  The messages may be:
 
-*** Current =Function:eplay= method code
-
-*** Drafts
-
-    See [[https://github.com/iani/sc-hacks/blob/master/LabCode/rebuildFunctionEplay.scd]] for draft used to build this functionality in =SynthPlayer=
-
-** Play a function in the environment
-
-   1. Provide arguments for playing a function from values found in an environment.
-   2. connect all control names in the function's arguments to an environment for auto-update
-   3. Free all notifications from the synth when it stops playing.
-
-   #+HTML: <!-- more -->
-
-*** Method code
-
-    #+BEGIN_SRC javascript
-+ Function {
-        eplay { | envir = \envir |
-                var synth;
-                envir = envir.asEnvironment;
-                envir use: {
-                        var argNames, args;
-                        argNames = this.def.argNames;
-                        args = argNames.collect ({ | name |
-                                [name, currentEnvironment [name]]
-                        }).select ({ | pair |
-                                pair [1].notNil;
-                        }).flat;
-                        //  arg target, outbus = 0, fadeTime = 0.02, addAction=\addToHead, args;
-                        synth = this.play  (
-                                ~target.asTarget, ~outbus ? 0, ~fadeTime ? 0.02,
-                                ~addAction ? \addToHead, args
-                        );
-                        argNames do: { | param |
-                                synth.addNotifier (envir, param, { | val |
-                                        synth.set (param, val);
-                                });
-                        };
-                };
-                // This is done by addNotifier anyway:
-                //              synth.onEnd (this, { synth.objectClosed });
-                ^synth;
-        }
-}
-    #+END_SRC
-
-*** Example
-
-    #+BEGIN_SRC javascript
-\window.vlayout (
-        HLayout (
-                StaticText ().string_ (\freq),
-                Slider.horizontal.connectEnvir (\freq),
-                NumberBox ().connectEnvir (\freq)
-        )
-).front;
-//:
-{
-        loop {
-                ~freq = 400 + 400.rand;
-           1.wait;
-        }
-}.fork;
-//:
-{ | freq = 440 | SinOsc.ar (freq, 0, 0.1) }.eplay;
-//:
-    #+END_SRC
+- =\started=
+- =\stopped=
+- =\replaced=
+The above is subject to testing.
 
 * Patterns
 
