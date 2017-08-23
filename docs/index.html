@@ -535,7 +535,95 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 <li>One can play control-rate synths and map them to the inputs of a player synth via its environment.</li>
 </ul>
 
+<h3 id="player-play-method">Player</h3>
+
+<p>Decision table:</p>
+
 <h2 id="nevent">Nevent</h2>
+
+<table>
+<tbody>
+<tr>
+<td>!</td>
+<td>receiver</td>
+<td>argument</td>
+<td>method / action</td>
+<td>result returned</td>
+</tr>
+
+<tr>
+<td></td>
+<td>Nil</td>
+<td>Function</td>
+<td>makeSource</td>
+<td>new SythPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>Nil</td>
+<td>Symbol</td>
+<td>makeSource</td>
+<td>new SynthPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>Nil</td>
+<td>Event</td>
+<td>makeSource</td>
+<td>new PatternPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>SynthPlayer</td>
+<td>Function</td>
+<td>clearPreviousSynth</td>
+<td>old SynthPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>SynthPlayer</td>
+<td>Symbol</td>
+<td>clearPreviousSynth</td>
+<td>old SynthPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>SynthPlayer</td>
+<td>Event</td>
+<td>clearPreviousSynth</td>
+<td>new PatternPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>PatternPlayer</td>
+<td>Function</td>
+<td>stop pattern</td>
+<td>new SynthPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>PatternPlayer</td>
+<td>Symbol</td>
+<td>stop pattern</td>
+<td>new SynthPlayer</td>
+</tr>
+
+<tr>
+<td></td>
+<td>PatternPlayer</td>
+<td>Event</td>
+<td>merge into pattern</td>
+<td>old PatternPlayer</td>
+</tr>
+</tbody>
+</table>
 
 <h2 id="notification-dependency-adapter">Notification: Dependency Adapter</h2>
 
