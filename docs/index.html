@@ -516,6 +516,63 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 
 <h1 id="basic-classes">Basic Classes</h1>
 
+<h2 id="notification">Notification</h2>
+
+<p>Notification: Register a function callback to a message and a pair of objects.</p>
+
+<p><code>Notification</code> is an improved version of the <a href="http://doc.sccode.org/Classes/NotificationCenter.html" title="NotificationCenter class" target="_blank">NotificationCenter class</a>.  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message <code>changed</code> to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.</p>
+
+<ul>
+=Notification= adds the following enhancements:
+<li>Ability to remove existing notification connections reliably.</li>
+<li>Several methods for easily adding or modifying connections between objects.</li>
+<li>Ability to remove all connections from an object with a single message, <code>objectClosed</code>, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.</li>
+</ul>
+
+<h3 id="examples">Examples</h3>
+
+<h4 id="onobjectclosed"><code>onObjectClosed</code></h4>
+
+<p><code>Registry</code> uses <code>onObjectClosed</code> to remove objects by sending them that message:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">*</span><span class="k">new</span> <span class="p">{</span> <span class="o">|</span> <span class="p">...</span> <span class="nx">pathAndFunc</span> <span class="o">|</span>
+           <span class="kd">var</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">makeFunc</span><span class="p">,</span> <span class="nx">instance</span><span class="p">;</span>
+           <span class="nx">makeFunc</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
+           <span class="nx">path</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">[</span><span class="mi">0</span><span class="p">..</span><span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">size</span><span class="o">-</span><span class="mi">2</span><span class="p">];</span>
+           <span class="nx">instance</span> <span class="o">=</span> <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">atPath</span><span class="p">(</span><span class="nx">path</span><span class="p">);</span>
+           <span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">isNil</span><span class="p">)</span> <span class="p">{</span>
+                   <span class="nx">instance</span> <span class="o">=</span> <span class="nx">makeFunc</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+                   <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">putAtPath</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">instance</span><span class="p">);</span>
+                   <span class="nx">instance</span><span class="p">.</span><span class="nx">onObjectClosed</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">{</span>
+                           <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="o">*</span><span class="nx">path</span><span class="p">)</span>
+                   <span class="p">});</span>
+           <span class="p">};</span>
+           <span class="o">^</span><span class="nx">instance</span><span class="p">;</span>
+ <span class="p">}</span>
+</code></pre></div>
+
+<h4 id="addnotifieroneshot"><code>addNotifierOneShot</code></h4>
+
+<p>This is in turn used by <code>oscFunc</code> and <code>rout</code> methods for removing <code>OSCFunc</code> and <code>Routine</code> objects in order to replace them with new instances.</p>
+
+<p>The <code>addNotifierOneShot</code> method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the <code>onEnd</code> and <code>onStart</code> methods for <code>Node</code> make use of the <code>addNotifierOneShot</code> method:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>   <span class="o">+</span> <span class="nx">Node</span> <span class="p">{</span>
+           <span class="nx">onStart</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+                   <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                   <span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_go</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+           <span class="p">}</span>
+
+           <span class="nx">onEnd</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+                   <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                   <span class="c1">//              this.isPlaying = true; // dangerous</span>
+                   <span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_end</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+           <span class="p">}</span>
+   <span class="p">}</span>
+</code></pre></div>
+
+<p>Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.</p>
+
+<h2 id="nevent">Nevent</h2>
+
 <h2 id="player">Player</h2>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">test</span><span class="p">.</span><span class="nx">player</span><span class="p">;</span>  <span class="c1">// Obtain the player stored under name \test.</span>
 </code></pre></div>
@@ -538,8 +595,6 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 <h3 id="player-play-method">Player</h3>
 
 <p>Decision table:</p>
-
-<h2 id="nevent">Nevent</h2>
 
 <table>
 <tbody>
@@ -624,61 +679,6 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 </tr>
 </tbody>
 </table>
-
-<h2 id="notification-dependency-adapter">Notification: Dependency Adapter</h2>
-
-<p>Notification: Register a function callback to a message and a pair of objects.</p>
-
-<p><code>Notification</code> is an improved version of the <a href="http://doc.sccode.org/Classes/NotificationCenter.html" title="NotificationCenter class" target="_blank">NotificationCenter class</a>.  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message <code>changed</code> to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.</p>
-
-<ul>
-=Notification= adds the following enhancements:
-<li>Ability to remove existing notification connections reliably.</li>
-<li>Several methods for easily adding or modifying connections between objects.</li>
-<li>Ability to remove all connections from an object with a single message, <code>objectClosed</code>, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.</li>
-</ul>
-
-<h3 id="examples">Examples</h3>
-
-<h4 id="onobjectclosed"><code>onObjectClosed</code></h4>
-
-<p><code>Registry</code> uses <code>onObjectClosed</code> to remove objects by sending them that message:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">*</span><span class="k">new</span> <span class="p">{</span> <span class="o">|</span> <span class="p">...</span> <span class="nx">pathAndFunc</span> <span class="o">|</span>
-          <span class="kd">var</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">makeFunc</span><span class="p">,</span> <span class="nx">instance</span><span class="p">;</span>
-          <span class="nx">makeFunc</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
-          <span class="nx">path</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">[</span><span class="mi">0</span><span class="p">..</span><span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">size</span><span class="o">-</span><span class="mi">2</span><span class="p">];</span>
-          <span class="nx">instance</span> <span class="o">=</span> <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">atPath</span><span class="p">(</span><span class="nx">path</span><span class="p">);</span>
-          <span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">isNil</span><span class="p">)</span> <span class="p">{</span>
-                  <span class="nx">instance</span> <span class="o">=</span> <span class="nx">makeFunc</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
-                  <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">putAtPath</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">instance</span><span class="p">);</span>
-                  <span class="nx">instance</span><span class="p">.</span><span class="nx">onObjectClosed</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">{</span>
-                          <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="o">*</span><span class="nx">path</span><span class="p">)</span>
-                  <span class="p">});</span>
-          <span class="p">};</span>
-          <span class="o">^</span><span class="nx">instance</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div>
-
-<h4 id="addnotifieroneshot"><code>addNotifierOneShot</code></h4>
-
-<p>This is in turn used by <code>oscFunc</code> and <code>rout</code> methods for removing <code>OSCFunc</code> and <code>Routine</code> objects in order to replace them with new instances.</p>
-
-<p>The <code>addNotifierOneShot</code> method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the <code>onEnd</code> and <code>onStart</code> methods for <code>Node</code> make use of the <code>addNotifierOneShot</code> method:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="o">+</span> <span class="nx">Node</span> <span class="p">{</span>
-          <span class="nx">onStart</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
-                  <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-                  <span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_go</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
-          <span class="p">}</span>
-
-          <span class="nx">onEnd</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
-                  <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-                  <span class="c1">//              this.isPlaying = true; // dangerous</span>
-                  <span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_end</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
-          <span class="p">}</span>
-  <span class="p">}</span>
-</code></pre></div>
-
-<p>Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.</p>
 
 <h1 id="functions-and-synth-playing">Functions and Synth Playing</h1>
 
