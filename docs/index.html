@@ -516,15 +516,81 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 
 <h1 id="basic-classes">Basic Classes</h1>
 
-<h2 id="nenvir">Nenvir</h2>
-
 <h2 id="player">Player</h2>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">test</span><span class="p">.</span><span class="nx">player</span><span class="p">;</span>  <span class="c1">// Obtain the player stored under name \test.</span>
+</code></pre></div>
 
-<h2 id="notification">Notification</h2>
+<p>The <code>Player</code> class plays Synths and Patterns in <em>sc-hacks</em>.  Its features are:</p>
 
-<h2 id="registry">Registry</h2>
+<ul>
+<li>Players are accessible per name using the message player (<code>name.player</code>)</li>
+<li>Players can play either synths or patterns</li>
+<li>A synth can be created in Players either from a Function or from the name of a SynthDef.</li>
+<li>A pattern can be created from an Event, whose values may contain patterns.</li>
+<li>A pattern playing be modified while playing in a player by adding key-value pairs from any other event.</li>
+<li>Creating a new synth in a Player releases any previously running synth or pattern, replacing it with the new synth.</li>
+<li>Sending an event to a player to be played will replace any previous synth with a pattern made from the event.  If a pattern is already playing in that player, then the event's patterns are merged to those of the pattern playing.</li>
+<li>Changes between subsequent synths or patterns happen with a cross-fade envelope.</li>
+<li>A player always plays in an EnvironmentRedirect which informs it about changes done to its values.  Setting environment variables (keys) in that environment will update the values of control parameters in the corresponding synth played by the player.</li>
+<li>One can play control-rate synths and map them to the inputs of a player synth via its environment.</li>
+</ul>
 
-<h1 id="auxiliary-classes">Auxiliary Classes</h1>
+<h2 id="nevent">Nevent</h2>
+
+<h2 id="notification-dependency-adapter">Notification: Dependency Adapter</h2>
+
+<p>Notification: Register a function callback to a message and a pair of objects.</p>
+
+<p><code>Notification</code> is an improved version of the <a href="http://doc.sccode.org/Classes/NotificationCenter.html" title="NotificationCenter class" target="_blank">NotificationCenter class</a>.  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message <code>changed</code> to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.</p>
+
+<ul>
+=Notification= adds the following enhancements:
+<li>Ability to remove existing notification connections reliably.</li>
+<li>Several methods for easily adding or modifying connections between objects.</li>
+<li>Ability to remove all connections from an object with a single message, <code>objectClosed</code>, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.</li>
+</ul>
+
+<h3 id="examples">Examples</h3>
+
+<h4 id="onobjectclosed"><code>onObjectClosed</code></h4>
+
+<p><code>Registry</code> uses <code>onObjectClosed</code> to remove objects by sending them that message:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">*</span><span class="k">new</span> <span class="p">{</span> <span class="o">|</span> <span class="p">...</span> <span class="nx">pathAndFunc</span> <span class="o">|</span>
+          <span class="kd">var</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">makeFunc</span><span class="p">,</span> <span class="nx">instance</span><span class="p">;</span>
+          <span class="nx">makeFunc</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
+          <span class="nx">path</span> <span class="o">=</span> <span class="nx">pathAndFunc</span><span class="p">[</span><span class="mi">0</span><span class="p">..</span><span class="nx">pathAndFunc</span><span class="p">.</span><span class="nx">size</span><span class="o">-</span><span class="mi">2</span><span class="p">];</span>
+          <span class="nx">instance</span> <span class="o">=</span> <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">atPath</span><span class="p">(</span><span class="nx">path</span><span class="p">);</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">isNil</span><span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">instance</span> <span class="o">=</span> <span class="nx">makeFunc</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+                  <span class="nx">Library</span><span class="p">.</span><span class="nx">global</span><span class="p">.</span><span class="nx">putAtPath</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">instance</span><span class="p">);</span>
+                  <span class="nx">instance</span><span class="p">.</span><span class="nx">onObjectClosed</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">{</span>
+                          <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="o">*</span><span class="nx">path</span><span class="p">)</span>
+                  <span class="p">});</span>
+          <span class="p">};</span>
+          <span class="o">^</span><span class="nx">instance</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="addnotifieroneshot"><code>addNotifierOneShot</code></h4>
+
+<p>This is in turn used by <code>oscFunc</code> and <code>rout</code> methods for removing <code>OSCFunc</code> and <code>Routine</code> objects in order to replace them with new instances.</p>
+
+<p>The <code>addNotifierOneShot</code> method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the <code>onEnd</code> and <code>onStart</code> methods for <code>Node</code> make use of the <code>addNotifierOneShot</code> method:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="o">+</span> <span class="nx">Node</span> <span class="p">{</span>
+          <span class="nx">onStart</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+                  <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                  <span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_go</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+          <span class="p">}</span>
+
+          <span class="nx">onEnd</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">action</span> <span class="o">|</span>
+                  <span class="nx">NodeWatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                  <span class="c1">//              this.isPlaying = true; // dangerous</span>
+                  <span class="nx">listener</span><span class="p">.</span><span class="nx">addNotifierOneShot</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="err">\</span><span class="nx">n_end</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+          <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre></div>
+
+<p>Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.</p>
 
 <h1 id="functions-and-synth-playing">Functions and Synth Playing</h1>
 
@@ -1397,113 +1463,7 @@ var makeSlider;</p>
 
 <h2 id="buffers">Buffers</h2>
 
-<h1 id="basic-classes-1">Basic Classes</h1>
-
-<h2 id="registry-hierarchical-namespaces">Registry: Hierarchical Namespaces</h2>
-
-<p>This class uses the <code>Library</code> class to store and  retrieve objects using any array of objects as key.  This extends the way that <code>Pdef</code>, <code>Ndef</code>, <code>OSCdef</code> work, making it possible for any class to store its instances in an arbitrary hierarchical path, without subclassing.  To create this behavior one can then add a method to <code>Symbol</code> for accessing the kind of object needed.  For example: <code>\aSymbol.oscFunc</code> accesses <code>OSCFunc</code> instances. This also allows easier customization of how the object is created if not found.</p>
-
-<p>#+HTML: <!-- more --></p>
-
-<h3 id="how-it-works-1">How it works</h3>
-
-<p>Store an object in Library under an array of objects (called a <em>path</em>).  When accessing the path, create the object if not already stored, else return the previously stored object.</p>
-
-<h3 id="who-uses-it">Who uses it</h3>
-
-<ul>
-<li><code>SynthPlayer</code> registers its instances in the current environment under their names.</li>
-    -
-<li><code>Function:oscFunc</code> and <code>Symbol:removeOsc</code> registers <code>OSCFuncs</code> under their path names in order to remove existing OSCFunc instances when creating a new one under the same path.</li>
-</ul>
-
-<h3 id="example-2">Example</h3>
-
-<p>This is the code that makes it possible to create or modify an OSCFunc bound to a symbol.  It defines the methods <code>Function:oscFunc</code> and <code>Symbol:removeOsc</code>.</p>
-
-<ul>
-    #+BEGIN_SRC javascript
-<li>Function {</li>
-        oscFunc { | path |
-                path.removeOsc;
-                ^Registry ('oscFuncs', path, { OSCFunc (this, path) });
-        }
-}
-</ul>
-
-<ul>
-<li>Symbol {</li>
-        removeOsc {
-                Registry.doIfFound ('oscFuncs', this, { | found |
-                        found.objectClosed;
-                        found.free;
-                });
-        }
-}
-    #+END_SRC
-</ul>
-
-<h2 id="notification-1">Notification</h2>
-
-<p>Notification: Register a function callback to a message and a pair of objects
-   <code>Notification</code> is an improved version of the <a href="http://doc.sccode.org/Classes/NotificationCenter.html" title="NotificationCenter class" target="_blank">NotificationCenter class</a>.  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message <code>changed</code> to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.</p>
-
-<ul>
-   =Notification= adds the following enhancements:
-<li>Ability to remove existing notification connections reliably.</li>
-<li>Several methods for easily adding or modifying connections between objects.</li>
-<li>Ability to remove all connections from an object with a single message, <code>objectClosed</code>, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.</li>
-</ul>
-
-<h3 id="examples">Examples</h3>
-
-<h4 id="onobjectclosed"><code>onObjectClosed</code></h4>
-
-<p><code>Registry</code> uses <code>onObjectClosed</code> to remove objects by sending them that message:</p>
-
-<p>#+BEGIN_SRC javascript
-   *new { | ... pathAndFunc |
-                var path, makeFunc, instance;
-                makeFunc = pathAndFunc.last;
-                path = pathAndFunc[0..pathAndFunc.size-2];
-                instance = Library.global.atPath(path);
-                if (instance.isNil) {
-                        instance = makeFunc.value;
-                        Library.global.putAtPath(path, instance);
-                        instance.onObjectClosed(this, {
-                                this.remove(*path)
-                        });
-                };
-                ^instance;
-  }
-     #+END_SRC</p>
-
-<h4 id="addnotifieroneshot"><code>addNotifierOneShot</code></h4>
-
-<p>This is in turn used by <code>oscFunc</code> and <code>rout</code> methods for removing <code>OSCFunc</code> and <code>Routine</code> objects in order to replace them with new instances.</p>
-
-<p>The <code>addNotifierOneShot</code> method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the <code>onEnd</code> and <code>onStart</code> methods for <code>Node</code> make use of the <code>addNotifierOneShot</code> method:</p>
-
-<ul>
-     #+BEGIN_SRC javascript
-<li>Node {</li>
-        onStart { | listener, action |
-                NodeWatcher.register(this);
-                listener.addNotifierOneShot(this, \n_go, action);
-        }
-</ul>
-
-<p>onEnd { | listener, action |
-                NodeWatcher.register(this);
-                //              this.isPlaying = true; // dangerous
-                listener.addNotifierOneShot(this, \n_end, action);
-        }
-}
-     #+END_SRC</p>
-
 <h1 id="use-examples">Use examples</h1>
-
-<p>Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.</p>
 
 <h2 id="pattern-and-synth-play-scenarios">Pattern and Synth play scenarios</h2>
 
@@ -1548,6 +1508,15 @@ var makeSlider;</p>
 <p>You can clone the source for this site from: <a href="https://github.com/iani/sc-hacks-doc" title="https://github.com/iani/sc-hacks-doc" target="_blank">https://github.com/iani/sc-hacks-doc</a>.</p>
 
 <p>Contact: zannos [at] gmail.com</p>
+
+    
+        <h1 id="test">test</h1>
+
+<p>test</p>
+
+<h2 id="test-1">test</h2>
+
+<p>test</p>
 
     
 

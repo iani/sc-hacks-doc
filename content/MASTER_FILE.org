@@ -350,17 +350,80 @@ In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bo
 
 * Basic Classes
 
-** Nenvir
-
 ** Player
+#+BEGIN_SRC javascript
+\test.player;  // Obtain the player stored under name \test.
+#+END_SRC
 
-** Notification
+The =Player= class plays Synths and Patterns in /sc-hacks/.  Its features are:
 
-** Registry
+- Players are accessible per name using the message player (=name.player=)
+- Players can play either synths or patterns
+- A synth can be created in Players either from a Function or from the name of a SynthDef.
+- A pattern can be created from an Event, whose values may contain patterns.
+- A pattern playing be modified while playing in a player by adding key-value pairs from any other event.
+- Creating a new synth in a Player releases any previously running synth or pattern, replacing it with the new synth.
+- Sending an event to a player to be played will replace any previous synth with a pattern made from the event.  If a pattern is already playing in that player, then the event's patterns are merged to those of the pattern playing.
+- Changes between subsequent synths or patterns happen with a cross-fade envelope.
+- A player always plays in an EnvironmentRedirect which informs it about changes done to its values.  Setting environment variables (keys) in that environment will update the values of control parameters in the corresponding synth played by the player.
+- One can play control-rate synths and map them to the inputs of a player synth via its environment.
 
-* Auxiliary Classes
+** Nevent
 
+** Notification: Dependency Adapter
 
+   Notification: Register a function callback to a message and a pair of objects.
+
+=Notification= is an improved version of the [[http://doc.sccode.org/Classes/NotificationCenter.html][NotificationCenter class]].  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message =changed= to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.
+
+=Notification= adds the following enhancements:
+- Ability to remove existing notification connections reliably.
+- Several methods for easily adding or modifying connections between objects.
+- Ability to remove all connections from an object with a single message, =objectClosed=, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.
+
+*** Examples
+**** =onObjectClosed=
+
+=Registry= uses =onObjectClosed= to remove objects by sending them that message:
+
+#+BEGIN_SRC javascript
+*new { | ... pathAndFunc |
+          var path, makeFunc, instance;
+          makeFunc = pathAndFunc.last;
+          path = pathAndFunc[0..pathAndFunc.size-2];
+          instance = Library.global.atPath(path);
+          if (instance.isNil) {
+                  instance = makeFunc.value;
+                  Library.global.putAtPath(path, instance);
+                  instance.onObjectClosed(this, {
+                          this.remove(*path)
+                  });
+          };
+          ^instance;
+}
+#+END_SRC
+
+This is in turn used by =oscFunc= and =rout= methods for removing =OSCFunc= and =Routine= objects in order to replace them with new instances.
+**** =addNotifierOneShot=
+
+The =addNotifierOneShot= method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the =onEnd= and =onStart= methods for =Node= make use of the =addNotifierOneShot= method:
+
+#+BEGIN_SRC javascript
+  + Node {
+          onStart { | listener, action |
+                  NodeWatcher.register(this);
+                  listener.addNotifierOneShot(this, \n_go, action);
+          }
+
+          onEnd { | listener, action |
+                  NodeWatcher.register(this);
+                  //              this.isPlaying = true; // dangerous
+                  listener.addNotifierOneShot(this, \n_end, action);
+          }
+  }
+#+END_SRC
+
+Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.
 
 * Functions and Synth Playing
 ** Improving Function:eplay
@@ -1197,102 +1260,6 @@ Window ("window name")
 
 
 ** Buffers
-
-* Basic Classes
-
-** Registry: Hierarchical Namespaces
-
-
-   This class uses the =Library= class to store and  retrieve objects using any array of objects as key.  This extends the way that =Pdef=, =Ndef=, =OSCdef= work, making it possible for any class to store its instances in an arbitrary hierarchical path, without subclassing.  To create this behavior one can then add a method to =Symbol= for accessing the kind of object needed.  For example: =\aSymbol.oscFunc= accesses =OSCFunc= instances. This also allows easier customization of how the object is created if not found.
-
-   #+HTML: <!-- more -->
-
-*** How it works
-
-    Store an object in Library under an array of objects (called a /path/).  When accessing the path, create the object if not already stored, else return the previously stored object.
-
-*** Who uses it
-
-    - =SynthPlayer= registers its instances in the current environment under their names.
-    -
-    - =Function:oscFunc= and =Symbol:removeOsc= registers =OSCFuncs= under their path names in order to remove existing OSCFunc instances when creating a new one under the same path.
-
-*** Example
-
-    This is the code that makes it possible to create or modify an OSCFunc bound to a symbol.  It defines the methods =Function:oscFunc= and =Symbol:removeOsc=.
-
-    #+BEGIN_SRC javascript
-+ Function {
-        oscFunc { | path |
-                path.removeOsc;
-                ^Registry ('oscFuncs', path, { OSCFunc (this, path) });
-        }
-}
-
-+ Symbol {
-        removeOsc {
-                Registry.doIfFound ('oscFuncs', this, { | found |
-                        found.objectClosed;
-                        found.free;
-                });
-        }
-}
-    #+END_SRC
-
-** Notification
-
-
-   Notification: Register a function callback to a message and a pair of objects
-   =Notification= is an improved version of the [[http://doc.sccode.org/Classes/NotificationCenter.html][NotificationCenter class]].  This class enables objects to register a function which is called when another object changes according to some aspect.  The aspect is expressed by a symbol.  To trigger a notification action, one sends the message =changed= to an object together with a symbol expressing the aspect which changed.  The function will only be evaluated for those objects which have registered to listen to the changing object according to the given aspect symbol.  This allows detailed control of callback execution amongst objects of the system.  For example, one can tell a gui object to change its color to green when a synth starts, and to change its color to red when that synth stops.
-
-   =Notification= adds the following enhancements:
-   - Ability to remove existing notification connections reliably.
-   - Several methods for easily adding or modifying connections between objects.
-   - Ability to remove all connections from an object with a single message, =objectClosed=, and also to execute additional actions when that object closes.  Closing here means that the object is freed and will no longer be used by the system.
-
-*** Examples
-**** =onObjectClosed=
-
-     =Registry= uses =onObjectClosed= to remove objects by sending them that message:
-
-     #+BEGIN_SRC javascript
-   *new { | ... pathAndFunc |
-                var path, makeFunc, instance;
-                makeFunc = pathAndFunc.last;
-                path = pathAndFunc[0..pathAndFunc.size-2];
-                instance = Library.global.atPath(path);
-                if (instance.isNil) {
-                        instance = makeFunc.value;
-                        Library.global.putAtPath(path, instance);
-                        instance.onObjectClosed(this, {
-                                this.remove(*path)
-                        });
-                };
-                ^instance;
-  }
-     #+END_SRC
-
-     This is in turn used by =oscFunc= and =rout= methods for removing =OSCFunc= and =Routine= objects in order to replace them with new instances.
-**** =addNotifierOneShot=
-
-     The =addNotifierOneShot= method executes the registered Function just once. This is useful when it is clear that only one call is required. For example, the =onEnd= and =onStart= methods for =Node= make use of the =addNotifierOneShot= method:
-
-     #+BEGIN_SRC javascript
-+ Node {
-        onStart { | listener, action |
-                NodeWatcher.register(this);
-                listener.addNotifierOneShot(this, \n_go, action);
-        }
-
-        onEnd { | listener, action |
-                NodeWatcher.register(this);
-                //              this.isPlaying = true; // dangerous
-                listener.addNotifierOneShot(this, \n_end, action);
-        }
-}
-     #+END_SRC
-
-     Similar extensions can be built for whatever object needs to monitor the closing or end of an object such as closing of a Window or stopping of a Pattern.
 * Use examples
 
 ** Pattern and Synth play scenarios
