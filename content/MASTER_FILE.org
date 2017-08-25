@@ -441,6 +441,9 @@ Decision table:
 |   | PatternPlayer | Symbol   | stop pattern       | new SynthPlayer   |
 |   | PatternPlayer | Event    | merge into pattern | old PatternPlayer |
 |---+---------------+----------+--------------------+-------------------|
+* Auxiliary Classes
+** EventPattern
+** EventStream
 
 * Functions and Synth Playing
 ** Improving Function:eplay
