@@ -443,7 +443,12 @@ Decision table:
 |---+---------------+----------+--------------------+-------------------|
 * Auxiliary Classes
 ** EventPattern
+
+EventPattern plays an Event whose values are treated as Patterns.  It functions in a similar way as a Pbind. Unlike Pbind, a player created by an EventPattern can be changed while playing.  It is possible to store a new Pattern in any key of the original Event of the EventPattern while it is playing, and the playing process will play the new value instead of the old one.
+
 ** EventStream
+
+An EventStream is produced by EventPattern when playing.  EvetnStream instances are played by EventStreamPlayer instances.
 
 * Functions and Synth Playing
 ** Improving Function:eplay
