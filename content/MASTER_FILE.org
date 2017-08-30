@@ -450,6 +450,8 @@ EventPattern plays an Event whose values are treated as Patterns.  It functions 
 
 An EventStream is produced by EventPattern when playing.  EvetnStream instances are played by EventStreamPlayer instances.
 
+* Utility Classes
+
 * Functions and Synth Playing
 ** Improving Function:eplay
 
