@@ -290,13 +290,13 @@ The code examples to the right illustrate the action of different types of objec
 In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.
 ** 15. Symbol =@= Symbol: Bind parameter to bus
 
-Return a player-parameter-bus object that can be linked to another player-parameter-bus.
-
 : \player @.envir \parameter
 
 #+BEGIN_SRC javascript
 \source @.envir \out2 *> (\effect @.fxenvir \in3);
 #+END_SRC
+
+Return a player-parameter-bus object that can be linked to another player-parameter-bus.
 
 * Accessing named objects
 
