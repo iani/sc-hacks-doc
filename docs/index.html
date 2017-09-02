@@ -444,20 +444,22 @@ Examples of 4 operator types in sc-hacks
 <li><code>*&gt;</code> : The <code>*&gt;</code> operator functions like the <code>+&gt;</code> operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: <strong>Functions</strong> get played as routines in the environment of the player.  <strong>Events</strong> get played as patterns, but using a custom type which instead of playing sounds with <code>play</code> event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event. A <strong>Symbol</strong> as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.</li>
 <li><code>&lt;*</code> This operator is used to send the bufnum of buffers to parameters.</li>
 </ol>
-<pre class="example">
-bus binding operator: Store bus in parameter of player. Adverb indicates number of channels
-</pre>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">player</span> <span class="err">@</span><span class="p">.</span><span class="nx">numChannels</span> <span class="err">\</span><span class="nx">parameter</span><span class="p">;</span>
-</code></pre></div>
 
 <h2 id="15-symbol-symbol-bind-parameter-to-bus">15. Symbol <code>@</code> Symbol: Bind parameter to bus</h2>
-
-<p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.</p>
 <pre class="example">
-\player @.envir \parameter
+bus binding operator: Store bus in parameter of player. Adverb indicates number of channels or environment.
 </pre>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">envir</span> <span class="err">\</span><span class="nx">out2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">effect</span> <span class="err">@</span><span class="p">.</span><span class="nx">fxenvir</span> <span class="err">\</span><span class="nx">in3</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>
 </code></pre></div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// create 2-channel bus for parameter \in of player \source:</span>
+<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="mi">2</span> <span class="err">\</span><span class="k">in</span><span class="p">;</span>
+<span class="c1">// create 1-channel bus for parameter \in of player \source1 in environment \sourceEnvir:</span>
+<span class="err">\</span><span class="nx">source1</span> <span class="err">@</span><span class="p">.</span><span class="mi">2</span> <span class="err">\</span><span class="nx">sourceEnvir</span><span class="p">;</span>
+<span class="c1">// Chain @ operator expressions to customize linked bus assignment:</span>
+<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">envir</span> <span class="err">\</span><span class="nx">out2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">effect</span> <span class="err">@</span><span class="p">.</span><span class="nx">fxenvir</span> <span class="err">\</span><span class="nx">in3</span><span class="p">);</span>
+</code></pre></div>
+
+<p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.  Note the tricky semantics: If a</p>
 
 <p>Return a player-parameter-bus object that can be linked to another player-parameter-bus.</p>
 

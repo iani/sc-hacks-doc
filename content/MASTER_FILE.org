@@ -282,19 +282,27 @@ The code examples to the right illustrate the action of different types of objec
 3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event. A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.
 4. =<*= This operator is used to send the bufnum of buffers to parameters.
 
-: bus binding operator: Store bus in parameter of player. Adverb indicates number of channels
-#+BEGIN_SRC javascript
-\player @.numChannels \parameter;
-#+END_SRC
-
-In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.
 ** 15. Symbol =@= Symbol: Bind parameter to bus
 
-: \player @.envir \parameter
+: bus binding operator: Store bus in parameter of player. Adverb indicates number of channels or environment.
 
 #+BEGIN_SRC javascript
+
+#+END_SRC
+
+#+BEGIN_SRC javascript
+// create 2-channel bus for parameter \in of player \source:
+\source @.2 \in;
+// create 1-channel bus for parameter \in of player \source1 in environment \sourceEnvir:
+\source1 @.2 \sourceEnvir;
+// Chain @ operator expressions to customize linked bus assignment:
 \source @.envir \out2 *> (\effect @.fxenvir \in3);
 #+END_SRC
+
+
+In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.  Note the tricky semantics: If a
+
+
 
 Return a player-parameter-bus object that can be linked to another player-parameter-bus.
 
