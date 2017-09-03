@@ -268,12 +268,12 @@ Examples of 4 operator types in sc-hacks
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// type 1: +&gt;</span>
 <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// 1. function +&gt;player</span>
 <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pwhite</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// 2. event +&gt; player</span>
-<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// 3. SynthDef name +&gt; player</span>
+<span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">test</span><span class="p">;</span> <span class="c1">// SynthDef name +&gt; player</span>
 <span class="c1">// type 2: &lt;+</span>
 <span class="err">\</span><span class="nx">freq</span> <span class="o">&lt;+</span> <span class="p">{</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">)</span> <span class="p">};</span> <span class="c1">// 1. parameter &lt;+ Function</span>
-<span class="err">\</span><span class="nx">amp</span> <span class="o">&lt;+</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">perc</span><span class="p">;</span> <span class="c1">// 1. parameter &lt;+ Envelope</span>
+<span class="err">\</span><span class="nx">amp</span> <span class="o">&lt;+</span> <span class="nx">Env</span><span class="p">.</span><span class="nx">perc</span><span class="p">;</span> <span class="c1">// parameter &lt;+ Envelope</span>
 <span class="c1">// type 3: *&gt;</span>
-<span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// 1. source player *&gt; effect player</span>
+<span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// source player *&gt; effect player</span>
 <span class="p">(</span><span class="nx">freq</span><span class="o">:</span> <span class="nx">Pbrown</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="nx">dur</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// 2. event *&gt; player&#39;s environment</span>
 <span class="c1">// type 4: &lt;*</span>
 <span class="err">\</span><span class="nx">test</span> <span class="o">&lt;*</span> <span class="err">\</span><span class="nx">hihat</span><span class="p">;</span> <span class="c1">// 1. parameter &lt;* buffer name</span>
@@ -291,6 +291,7 @@ Examples of 4 operator types in sc-hacks
 <table>
 <tbody>
 <tr>
+<td><strong>no</strong></td>
 <td><strong>receiver</strong></td>
 <td><strong>operator</strong></td>
 <td><strong>argument</strong></td>
@@ -298,6 +299,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>1</td>
 <td>Symbol</td>
 <td><code>+&gt;</code></td>
 <td>Symbol</td>
@@ -305,6 +307,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>2</td>
 <td>Symbol</td>
 <td><code>*&gt;</code></td>
 <td>Symbol</td>
@@ -312,6 +315,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>3</td>
 <td>Symbol</td>
 <td><code>&lt;+</code></td>
 <td>Number</td>
@@ -319,6 +323,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>4</td>
 <td>Symbol</td>
 <td><code>&lt;+</code></td>
 <td>Function</td>
@@ -326,6 +331,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>5</td>
 <td>Symbol</td>
 <td><code>&lt;+</code></td>
 <td>Env</td>
@@ -333,6 +339,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>6</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>Symbol</td>
@@ -340,6 +347,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>7</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>MIDI</td>
@@ -347,6 +355,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>8</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>OSC</td>
@@ -354,6 +363,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>9</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>Widget</td>
@@ -361,6 +371,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>10</td>
 <td>Function</td>
 <td><code>+&gt;</code></td>
 <td>Symbol</td>
@@ -368,6 +379,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>11</td>
 <td>Function</td>
 <td><code>*&gt;</code></td>
 <td>Symbol</td>
@@ -375,6 +387,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>12</td>
 <td>Event</td>
 <td><code>+&gt;</code></td>
 <td>Symbol</td>
@@ -382,6 +395,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>13</td>
 <td>Event</td>
 <td><code>*&gt;</code></td>
 <td>Symbol</td>
@@ -389,10 +403,19 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
+<td>14</td>
 <td>UGen</td>
 <td><code>&lt;+</code></td>
 <td>Symbol</td>
 <td>Read input from Player's Output</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td>Symbol</td>
+<td><code>@</code></td>
+<td>Symbol</td>
+<td>Store Bus in player parameter</td>
 </tr>
 </tbody>
 </table>
@@ -447,21 +470,18 @@ Examples of 4 operator types in sc-hacks
 
 <h2 id="15-symbol-symbol-bind-parameter-to-bus">15. Symbol <code>@</code> Symbol: Bind parameter to bus</h2>
 <pre class="example">
-bus binding operator: Store bus in parameter of player. Adverb indicates number of channels or environment.
+Bus binding operator: Store bus in parameter of player.
+Adverb indicates number of channels or environment.
 </pre>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>
-</code></pre></div>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// create 2-channel bus for parameter \in of player \source:</span>
 <span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="mi">2</span> <span class="err">\</span><span class="k">in</span><span class="p">;</span>
 <span class="c1">// create 1-channel bus for parameter \in of player \source1 in environment \sourceEnvir:</span>
-<span class="err">\</span><span class="nx">source1</span> <span class="err">@</span><span class="p">.</span><span class="mi">2</span> <span class="err">\</span><span class="nx">sourceEnvir</span><span class="p">;</span>
+<span class="err">\</span><span class="nx">source1</span> <span class="err">@</span><span class="p">.</span><span class="nx">sourceEnvir</span> <span class="err">\</span><span class="k">in</span><span class="p">;</span>
 <span class="c1">// Chain @ operator expressions to customize linked bus assignment:</span>
 <span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">envir</span> <span class="err">\</span><span class="nx">out2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">effect</span> <span class="err">@</span><span class="p">.</span><span class="nx">fxenvir</span> <span class="err">\</span><span class="nx">in3</span><span class="p">);</span>
 </code></pre></div>
 
-<p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.  Note the tricky semantics: If a</p>
-
-<p>Return a player-parameter-bus object that can be linked to another player-parameter-bus.</p>
+<p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.  The <code>@</code> operator returns a player-parameter-bus object that can be linked to another player-parameter-bus.</p>
 
 <h1 id="accessing-named-objects">Accessing named objects</h1>
 
@@ -696,6 +716,16 @@ bus binding operator: Store bus in parameter of player. Adverb indicates number 
 </table>
 
 <p>EventPattern plays an Event whose values are treated as Patterns.  It functions in a similar way as a Pbind. Unlike Pbind, a player created by an EventPattern can be changed while playing.  It is possible to store a new Pattern in any key of the original Event of the EventPattern while it is playing, and the playing process will play the new value instead of the old one.</p>
+<pre class="example">
+An EventPattern is created from an Event.
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">~</span><span class="nx">eventPattern</span> <span class="o">=</span> <span class="nx">EventPattern</span><span class="p">(());</span>
+</code></pre></div>
+
+<p><code>EventPattern</code> instances can be played directly by sending the message <code>play</code>.  To play, an <code>EventPattern</code> instance creates an <code>EventStream</code> instance, and then plays that instance.</p>
+<pre class="example">
+The p
+</pre>
 
 <h2 id="eventstream">EventStream</h2>
 

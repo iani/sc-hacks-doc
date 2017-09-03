@@ -207,12 +207,12 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 // type 1: +>
 { WhiteNoise.ar(0.1) } +> \test; // 1. function +>player
 (dur: 0.1, degree: Pwhite(1, 10)) +> \test; // 2. event +> player
-\default +> \test; // 3. SynthDef name +> player
+\default +> \test; // SynthDef name +> player
 // type 2: <+
 \freq <+ { LFNoise0.kr(5).range(500, 1500) }; // 1. parameter <+ Function
-\amp <+ Env.perc; // 1. parameter <+ Envelope
+\amp <+ Env.perc; // parameter <+ Envelope
 // type 3: *>
-\source *> \effect // 1. source player *> effect player
+\source *> \effect // source player *> effect player
 (freq: Pbrown(50, 90, 5), dur: 0.1) *> \effect; // 2. event *> player's environment
 // type 4: <*
 \test <* \hihat; // 1. parameter <* buffer name
@@ -225,23 +225,25 @@ As basic operators, /sc-hacks/ uses four combinations built from + and * with > 
 
 Here is a tabular overview of operator actions associated to different types of receiver and argument:
 
-|------------+------------+------------+--------------------------------------|
-| *receiver* | *operator* | *argument* | *action*                             |
-|------------+------------+------------+--------------------------------------|
-| Symbol     | =+>=       | Symbol     | Play Synthdef                        |
-| Symbol     | =*>=       | Symbol     | Link Players                         |
-| Symbol     | =<+=       | Number     | Set parameter                        |
-| Symbol     | =<+=       | Function   | Map parameter                        |
-| Symbol     | =<+=       | Env        | Map parameter                        |
-| Symbol     | =<*=       | Symbol     | Set bufnum                           |
-| Symbol     | =<*=       | MIDI       | Bind MIDIFunc                        |
-| Symbol     | =<*=       | OSC        | Bind OSCFunc                         |
-| Symbol     | =<*=       | Widget     | Bind GUI Widget                      |
-| Function   | =+>=       | Symbol     | Play Synth                           |
-| Function   | =*>=       | Symbol     | Play Routine                         |
-| Event      | =+>=       | Symbol     | Play Pattern in Player               |
-| Event      | =*>=       | Symbol     | Play Pattern in Player's Environment |
-| UGen       | =<+=       | Symbol     | Read input from Player's Output      |
+|------+------------+------------+------------+--------------------------------------|
+| *no* | *receiver* | *operator* | *argument* | *action*                             |
+|------+------------+------------+------------+--------------------------------------|
+|    1 | Symbol     | =+>=       | Symbol     | Play Synthdef                        |
+|    2 | Symbol     | =*>=       | Symbol     | Link Players                         |
+|    3 | Symbol     | =<+=       | Number     | Set parameter                        |
+|    4 | Symbol     | =<+=       | Function   | Map parameter                        |
+|    5 | Symbol     | =<+=       | Env        | Map parameter                        |
+|    6 | Symbol     | =<*=       | Symbol     | Set bufnum                           |
+|    7 | Symbol     | =<*=       | MIDI       | Bind MIDIFunc                        |
+|    8 | Symbol     | =<*=       | OSC        | Bind OSCFunc                         |
+|    9 | Symbol     | =<*=       | Widget     | Bind GUI Widget                      |
+|   10 | Function   | =+>=       | Symbol     | Play Synth                           |
+|   11 | Function   | =*>=       | Symbol     | Play Routine                         |
+|   12 | Event      | =+>=       | Symbol     | Play Pattern in Player               |
+|   13 | Event      | =*>=       | Symbol     | Play Pattern in Player's Environment |
+|   14 | UGen       | =<+=       | Symbol     | Read input from Player's Output      |
+|   15 | Symbol     | =@=        | Symbol     | Store Bus in player parameter |
+#+TBLFM: $1=@-1 + 1::@2$1=1
 
 ** 1. Symbol =+>= Symbol: Play Synthdef
 
@@ -284,27 +286,19 @@ The code examples to the right illustrate the action of different types of objec
 
 ** 15. Symbol =@= Symbol: Bind parameter to bus
 
-: bus binding operator: Store bus in parameter of player. Adverb indicates number of channels or environment.
-
-#+BEGIN_SRC javascript
-
-#+END_SRC
+: Bus binding operator: Store bus in parameter of player.
+: Adverb indicates number of channels or environment.
 
 #+BEGIN_SRC javascript
 // create 2-channel bus for parameter \in of player \source:
 \source @.2 \in;
 // create 1-channel bus for parameter \in of player \source1 in environment \sourceEnvir:
-\source1 @.2 \sourceEnvir;
+\source1 @.sourceEnvir \in;
 // Chain @ operator expressions to customize linked bus assignment:
 \source @.envir \out2 *> (\effect @.fxenvir \in3);
 #+END_SRC
 
-
-In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.  Note the tricky semantics: If a
-
-
-
-Return a player-parameter-bus object that can be linked to another player-parameter-bus.
+In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.  The =@= operator returns a player-parameter-bus object that can be linked to another player-parameter-bus.
 
 * Accessing named objects
 
@@ -462,6 +456,18 @@ Decision table:
 ** EventPattern
 
 EventPattern plays an Event whose values are treated as Patterns.  It functions in a similar way as a Pbind. Unlike Pbind, a player created by an EventPattern can be changed while playing.  It is possible to store a new Pattern in any key of the original Event of the EventPattern while it is playing, and the playing process will play the new value instead of the old one.
+
+: An EventPattern is created from an Event.
+
+#+BEGIN_SRC javascript;
+~eventPattern = EventPattern(());
+#+END_SRC
+
+=EventPattern= instances can be played directly by sending the message =play=.  To play, an =EventPattern= instance creates an =EventStream= instance, and then plays that instance.
+
+
+
+: The p
 
 ** EventStream
 
