@@ -16,9 +16,10 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://iani.github.io/sc-hacks-doc/master_file/</guid>
-      <description>Introduction Anti-Mythology As of August 2017, sc-hacks is being re-done from scratch. Both the library and its API will change in the near future.
+      <description>Demo for Kensho Miyoshi Some content.
+Introduction Anti-Mythology As of August 2017, sc-hacks is being re-done from scratch. Both the library and its API will change in the near future.
 The purpose of the sc-hacks library is to make experimentation and music making in SuperCollider easier, by offering simpler and shorter coding options for tasks that usually require complex and careful coding. Such are:
- Replace one synth with another seamlessly while playing. Freely change the contents of patterns while playing.</description>
+ Replace one synth with another seamlessly while playing.</description>
     </item>
     
   </channel>
