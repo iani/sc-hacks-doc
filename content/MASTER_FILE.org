@@ -1,9 +1,5 @@
 #+COLUMNS: %40ITEM %25foldername %25filename
 
-* Demo for Kensho Miyoshi
-
-Some content.
-
 * Introduction
 
 ** Anti-Mythology
