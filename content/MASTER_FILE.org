@@ -452,6 +452,7 @@ Decision table:
 | PatternPlayer | Symbol     | stop pattern       | new SynthPlayer   |
 | PatternPlayer | Event      | merge into pattern | old PatternPlayer |
 |---------------+------------+--------------------+-------------------|
+
 * Auxiliary Classes
 ** EventPattern: Modify patterns while playing
 
