@@ -418,6 +418,7 @@ Similar extensions can be built for whatever object needs to monitor the closing
 
 ** Nevent
 ** Player
+
 #+BEGIN_SRC javascript
 \test.player;  // Obtain the player stored under name \test.
 #+END_SRC
@@ -437,7 +438,7 @@ The =Player= class plays Synths and Patterns in /sc-hacks/.  Its features are:
 
 *** Player : play method
 
-Decision table:
+Player creates either a SynthPlayer or a PatternPlayer depending on the kind of argument that is to be played.
 
 |---------------+------------+--------------------+-------------------|
 | *receiver*    | *argument* | *method / action*  | *result returned* |
@@ -452,6 +453,8 @@ Decision table:
 | PatternPlayer | Symbol     | stop pattern       | new SynthPlayer   |
 | PatternPlayer | Event      | merge into pattern | old PatternPlayer |
 |---------------+------------+--------------------+-------------------|
+
+The decision table above shows the kinds of SourcePlayer that are generated in response to different types of receiver and argument pairs.
 
 * Auxiliary Classes
 ** EventPattern: Modify patterns while playing
