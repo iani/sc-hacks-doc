@@ -453,21 +453,24 @@ Decision table:
 |   | PatternPlayer | Event    | merge into pattern | old PatternPlayer |
 |---+---------------+----------+--------------------+-------------------|
 * Auxiliary Classes
-** EventPattern
+** EventPattern: Modify patterns while playing
 
-EventPattern plays an Event whose values are treated as Patterns.  It functions in a similar way as a Pbind. Unlike Pbind, a player created by an EventPattern can be changed while playing.  It is possible to store a new Pattern in any key of the original Event of the EventPattern while it is playing, and the playing process will play the new value instead of the old one.
+=EventPattern= is a subclass of =Pattern= that can play =Events=.  It plays in a manner similar to =Pbind=, with the difference that it uses an =Event= instead of an =Array= to store its key-value pairs of streams.  To play, =EventPattern= creates a new kind of stream called =EventStream=.  =EventStream= stores the event, so that it is accessible from the =EventStreamPlayer= that playes the =EventPattern= stream.  This means that one can modify the streams in the pattern while it is playing.  For example:
 
-: An EventPattern is created from an Event.
-
-#+BEGIN_SRC javascript;
-~eventPattern = EventPattern(());
+#+BEGIN_SRC javascript
+~pattern = EventPattern(()); // create an EventPattern from an empty Event
+~player = ~pattern.play; // play the pattern and store streamplayer in player
+// modify the stream while it is playing
+~player.originalStream.event[\degree] = Pwhite(0, 7).asStream;
+~player.originalStream.event[\dur] = 0.1;
 #+END_SRC
 
-=EventPattern= instances can be played directly by sending the message =play=.  To play, an =EventPattern= instance creates an =EventStream= instance, and then plays that instance.
+The methods =p= and =addEvent= work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:
 
-
-
-: The p
+#+BEGIN_SRC javascript
+  ~player = ().p;
+  ~player addEvent: (dur: 0.25, degree: Pbrown(-10, 10, 3));
+#+END_SRC
 
 ** EventStream
 
