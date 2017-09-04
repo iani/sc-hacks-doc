@@ -714,8 +714,6 @@ Adverb indicates number of channels or environment.
 </tr>
 </tbody>
 </table>
-
-<p><code>EventPattern</code> is a subclass of <code>Pattern</code> that can play <code>Events</code>.  It plays in a manner similar to <code>Pbind</code>, with the difference that it uses an <code>Event</code> instead of an <code>Array</code> to store its key-value pairs of streams.  To play, <code>EventPattern</code> creates a new kind of stream called <code>EventStream</code>.  <code>EventStream</code> stores the event, so that it is accessible from the <code>EventStreamPlayer</code> that playes the <code>EventPattern</code> stream.  This means that one can modify the streams in the pattern while it is playing.  For example:</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">~</span><span class="nx">pattern</span> <span class="o">=</span> <span class="nx">EventPattern</span><span class="p">(());</span> <span class="c1">// create an EventPattern from an empty Event</span>
 <span class="o">~</span><span class="nx">player</span> <span class="o">=</span> <span class="o">~</span><span class="nx">pattern</span><span class="p">.</span><span class="nx">play</span><span class="p">;</span> <span class="c1">// play the pattern and store streamplayer in player</span>
 <span class="c1">// modify the stream while it is playing</span>
@@ -723,10 +721,12 @@ Adverb indicates number of channels or environment.
 <span class="o">~</span><span class="nx">player</span><span class="p">.</span><span class="nx">originalStream</span><span class="p">.</span><span class="nx">event</span><span class="p">[</span><span class="err">\</span><span class="nx">dur</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
 </code></pre></div>
 
-<p>The methods <code>p</code> and <code>addEvent</code> work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:</p>
+<p><code>EventPattern</code> is a subclass of <code>Pattern</code> that can play <code>Events</code>.  It plays in a manner similar to <code>Pbind</code>, with the difference that it uses an <code>Event</code> instead of an <code>Array</code> to store its key-value pairs of streams.  To play, <code>EventPattern</code> creates a new kind of stream called <code>EventStream</code>.  <code>EventStream</code> stores the event, so that it is accessible from the <code>EventStreamPlayer</code> that playes the <code>EventPattern</code> stream.  This means that one can modify the streams in the pattern while it is playing.  For example:</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="o">~</span><span class="nx">player</span> <span class="o">=</span> <span class="p">().</span><span class="nx">p</span><span class="p">;</span>
   <span class="o">~</span><span class="nx">player</span> <span class="nx">addEvent</span><span class="o">:</span> <span class="p">(</span><span class="nx">dur</span><span class="o">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="nx">degree</span><span class="o">:</span> <span class="nx">Pbrown</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
 </code></pre></div>
+
+<p>The methods <code>p</code> and <code>addEvent</code> work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:</p>
 
 <h2 id="eventstream">EventStream</h2>
 

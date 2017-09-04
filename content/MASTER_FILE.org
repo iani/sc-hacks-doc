@@ -455,8 +455,6 @@ Decision table:
 * Auxiliary Classes
 ** EventPattern: Modify patterns while playing
 
-=EventPattern= is a subclass of =Pattern= that can play =Events=.  It plays in a manner similar to =Pbind=, with the difference that it uses an =Event= instead of an =Array= to store its key-value pairs of streams.  To play, =EventPattern= creates a new kind of stream called =EventStream=.  =EventStream= stores the event, so that it is accessible from the =EventStreamPlayer= that playes the =EventPattern= stream.  This means that one can modify the streams in the pattern while it is playing.  For example:
-
 #+BEGIN_SRC javascript
 ~pattern = EventPattern(()); // create an EventPattern from an empty Event
 ~player = ~pattern.play; // play the pattern and store streamplayer in player
@@ -465,12 +463,14 @@ Decision table:
 ~player.originalStream.event[\dur] = 0.1;
 #+END_SRC
 
-The methods =p= and =addEvent= work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:
+=EventPattern= is a subclass of =Pattern= that can play =Events=.  It plays in a manner similar to =Pbind=, with the difference that it uses an =Event= instead of an =Array= to store its key-value pairs of streams.  To play, =EventPattern= creates a new kind of stream called =EventStream=.  =EventStream= stores the event, so that it is accessible from the =EventStreamPlayer= that playes the =EventPattern= stream.  This means that one can modify the streams in the pattern while it is playing.  For example:
 
 #+BEGIN_SRC javascript
   ~player = ().p;
   ~player addEvent: (dur: 0.25, degree: Pbrown(-10, 10, 3));
 #+END_SRC
+
+The methods =p= and =addEvent= work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:
 
 ** EventStream
 
