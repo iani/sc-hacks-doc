@@ -439,19 +439,19 @@ The =Player= class plays Synths and Patterns in /sc-hacks/.  Its features are:
 
 Decision table:
 
-|---+---------------+----------+--------------------+-------------------|
-| ! | receiver      | argument | method / action    | result returned   |
-|---+---------------+----------+--------------------+-------------------|
-|   | Nil           | Function | makeSource         | new SythPlayer    |
-|   | Nil           | Symbol   | makeSource         | new SynthPlayer   |
-|   | Nil           | Event    | makeSource         | new PatternPlayer |
-|   | SynthPlayer   | Function | clearPreviousSynth | old SynthPlayer   |
-|   | SynthPlayer   | Symbol   | clearPreviousSynth | old SynthPlayer   |
-|   | SynthPlayer   | Event    | clearPreviousSynth | new PatternPlayer |
-|   | PatternPlayer | Function | stop pattern       | new SynthPlayer   |
-|   | PatternPlayer | Symbol   | stop pattern       | new SynthPlayer   |
-|   | PatternPlayer | Event    | merge into pattern | old PatternPlayer |
-|---+---------------+----------+--------------------+-------------------|
+|---------------+------------+--------------------+-------------------|
+| *receiver*    | *argument* | *method / action*  | *result returned* |
+|---------------+------------+--------------------+-------------------|
+| Nil           | Function   | makeSource         | new SythPlayer    |
+| Nil           | Symbol     | makeSource         | new SynthPlayer   |
+| Nil           | Event      | makeSource         | new PatternPlayer |
+| SynthPlayer   | Function   | clearPreviousSynth | old SynthPlayer   |
+| SynthPlayer   | Symbol     | clearPreviousSynth | old SynthPlayer   |
+| SynthPlayer   | Event      | clearPreviousSynth | new PatternPlayer |
+| PatternPlayer | Function   | stop pattern       | new SynthPlayer   |
+| PatternPlayer | Symbol     | stop pattern       | new SynthPlayer   |
+| PatternPlayer | Event      | merge into pattern | old PatternPlayer |
+|---------------+------------+--------------------+-------------------|
 * Auxiliary Classes
 ** EventPattern: Modify patterns while playing
 
