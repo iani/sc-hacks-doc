@@ -433,25 +433,38 @@ Examples of 4 operator types in sc-hacks
 </code></pre></div>
 
 <h2 id="2-symbol-symbol-link-players">2. Symbol <code>*&gt;</code> / <code>*&lt;</code> Symbol: Link Players</h2>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">//:</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">Out</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="err">\</span><span class="nx">out</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nx">Dust</span><span class="p">.</span><span class="nx">kr</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])))</span> <span class="p">}.</span><span class="nx">play</span><span class="p">;</span>
+<span class="nx">b</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(</span><span class="err">\</span><span class="k">in</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="nx">LFNoise1</span><span class="p">.</span><span class="nx">kr</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]).</span><span class="nx">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="mf">0.25</span><span class="p">)</span> <span class="p">}.</span><span class="nx">play</span><span class="p">;</span> <span class="c1">// Fin = InFeedback.ar</span>
+<span class="c1">//:</span>
+<span class="nx">a</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="err">\</span><span class="nx">out</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nx">b</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="err">\</span><span class="k">in</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</code></pre></div>
 
-<p>The operators <code>*&gt;</code> and <code>&lt;*</code> create audio links between the players of 2 environments by setting the parameters of input and output controls to shared input and output busses.</p>
+<p>The operators <code>*&gt;</code> and <code>&lt;*</code> create audio links between the players of 2 environments by setting the parameters of input and output controls to shared input and output busses.  Following example illustrates what is meant by sharing busses.  The output bus of synth <code>a</code> is set to the same bus as the input of synth <code>b</code>.</p>
 <pre class="example">
 order of execution in bus allocation
 </pre>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// resolves to: \source@out *&gt; (\effect@in)</span>
 </code></pre></div>
 
-<p>Since the SC compiler evaluates SC expressions from left to right, it allocates the bus for the left argument player first (receiver), and then sets the parameter in the environment of the right argument to that same bus. Therefore, the expression <code>\source *&gt; \effect</code> will first obtain the bus in the default parameter <code>\in</code> the receiver environment <code>\source</code> and then store this bus in the default parameter <code>\out</code> in the (right) argument environment <code>\effect</code>.</p>
+<p>Since the SC compiler evaluates SC expressions from left to right, it allocates the bus for the left argument player first (receiver), and then sets the parameter in the environment of the right argument to that same bus. Therefore, the expression <code>\source *&gt; \effect</code> will first obtain the bus in the default parameter <code>\in</code> the receiver environment <code>\source</code> and then store this bus in the default parameter <code>\out</code> in the (right) argument environment <code>\effect</code>.  This means that the input of the second (right) argument's environment will always be overwritten by the output bus of the first (left) argument.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">effect</span><span class="err">@</span><span class="k">in</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">source</span><span class="err">@</span><span class="nx">out</span><span class="p">)</span> <span class="c1">// overwrite default parameters for reverse order</span>
+</code></pre></div>
+
+<p>One may reverse this by writing the arguments in reverse order, but one would have to overwrite the default arguments. The operator <code>@</code> is used here As a shortcut for specifying the parameters.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">effect</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">source</span> <span class="c1">// resolves to: \effect@in *&gt; (\source@out)</span>
+</code></pre></div>
+
+<p>Since the reverse argument order is useful in many situations, the operator <code>*&lt;</code> provides a shortcut for it.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// use default i/o parameters (\out, \in)</span>
-<span class="err">\</span><span class="nx">source</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// use default i/o parameters in reverse order (\in, \out)</span>
+<span class="err">\</span><span class="nx">effect</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">source</span><span class="p">;</span> <span class="c1">// use default i/o parameters in reverse order (\in, \out)</span>
 <span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span><span class="p">.</span><span class="nx">input2</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// specify custom input parameter</span>
 <span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">output2</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// specify custom output parameter</span>
 <span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">output2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="nx">effect</span><span class="err">@\</span><span class="nx">input2</span><span class="p">);</span> <span class="c1">// specify custom input and output parameter</span>
 </code></pre></div>
 
-<p>Note: One can specify a custom output parameter for the reader player, with the <code>@</code> operator.</p>
-
-<p>The adverb specifies custom input parameter for the argument player.</p>
+<p>Adverbs to <code>@</code> and <code>*&gt;</code> can be used to specify parameters.</p>
 
 <h2 id="3-symbol-number-set-parameter">3. Symbol <code>&lt;+</code> Number: Set parameter</h2>
 
