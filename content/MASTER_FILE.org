@@ -102,7 +102,7 @@
 
 /sc-hacks/ uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, / -, <, >, =, |, %, &, @.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  /sc-hacks/ makes use of this feature.
 
-While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: =+>=, =<+=, =*>=, =<*= and =@=.  The action performed by each operator varies according to the Classes of the receiver and the argument. /sc-hacks/ defines 14 different types of actions in all.
+While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 6 custom operators: =+>=, =<+=, =*>=, =*<=, =<*= and =@=.  The action performed by each operator varies according to the Classes of the receiver and the argument. /sc-hacks/ defines 16 different kinds of actions in all.
 
 ** A word (or 2) about EMACS
 
@@ -222,7 +222,7 @@ Thanks again for spelling things out nicely. Will try to check back and dig the 
 As basic operators, /sc-hacks/ uses four combinations built from + and * with > and <.  They are in two groups (=+=-Group and =*=-Group):
 
 1. *+-Group* : =+>=, =<+=.  *+>* plays the receiver (left argument) object in the player whose name is named by the left argument.  *<+* plays the left argument object in the parameter whose name is named by the receiver.
-2. **-Group* : =*>, =<*=. The operators of the =*= group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
+2. **-Group* : =*>=, =*<=, =<*=. The operators of the =*= group have parallel usage principles as that of the =+= group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.
 
 Here is a tabular overview of operator actions associated to different types of receiver and argument:
 
@@ -231,19 +231,20 @@ Here is a tabular overview of operator actions associated to different types of 
 |------+------------+------------+------------+--------------------------------------|
 |    1 | Symbol     | =+>=       | Symbol     | Play Synthdef                        |
 |    2 | Symbol     | =*>=       | Symbol     | Link Players                         |
-|    3 | Symbol     | =<+=       | Number     | Set parameter                        |
-|    4 | Symbol     | =<+=       | Function   | Map parameter                        |
-|    5 | Symbol     | =<+=       | Env        | Map parameter                        |
-|    6 | Symbol     | =<*=       | Symbol     | Set bufnum                           |
-|    7 | Symbol     | =<*=       | MIDI       | Bind MIDIFunc                        |
-|    8 | Symbol     | =<*=       | OSC        | Bind OSCFunc                         |
-|    9 | Symbol     | =<*=       | Widget     | Bind GUI Widget                      |
-|   10 | Function   | =+>=       | Symbol     | Play Synth                           |
-|   11 | Function   | =*>=       | Symbol     | Play Routine                         |
-|   12 | Event      | =+>=       | Symbol     | Play Pattern in Player               |
-|   13 | Event      | =*>=       | Symbol     | Play Pattern in Player's Environment |
-|   14 | UGen       | =<+=       | Symbol     | Read input from Player's Output      |
-|   15 | Symbol     | =@=        | Symbol     | Store Bus in player parameter |
+|    3 | Symbol     | =*<=       | Symbol     | Link Players                         |
+|    4 | Symbol     | =<+=       | Number     | Set parameter                        |
+|    5 | Symbol     | =<+=       | Function   | Map parameter                        |
+|    6 | Symbol     | =<+=       | Env        | Map parameter                        |
+|    7 | Symbol     | =<*=       | Symbol     | Set bufnum                           |
+|    8 | Symbol     | =<*=       | MIDI       | Bind MIDIFunc                        |
+|    9 | Symbol     | =<*=       | OSC        | Bind OSCFunc                         |
+|   10 | Symbol     | =<*=       | Widget     | Bind GUI Widget                      |
+|   11 | Function   | =+>=       | Symbol     | Play Synth                           |
+|   12 | Function   | =*>=       | Symbol     | Play Routine                         |
+|   13 | Event      | =+>=       | Symbol     | Play Pattern in Player               |
+|   14 | Event      | =*>=       | Symbol     | Play Pattern in Player's Environment |
+|   15 | UGen       | =<+=       | Symbol     | Read input from Player's Output      |
+|   16 | Symbol     | =@=        | Symbol     | Store Bus in player parameter        |
 #+TBLFM: $1=@-1 + 1::@2$1=1
 
 ** 1. Symbol =+>= Symbol: Play Synthdef
@@ -252,18 +253,34 @@ Here is a tabular overview of operator actions associated to different types of 
 \default +> \player1; // play SynthDef named default in player named player1
 #+END_SRC
 
-** 2. Symbol =*>= Symbol: Link Players
+** 2. Symbol =*>= / =*<= Symbol: Link Players
+
+The operators =*>= and =<*= create audio links between the players of 2 environments by setting the parameters of input and output controls to shared input and output busses.
+
+: order of execution in bus allocation
+
+#+BEGIN_SRC javascript
+\source *> \effect // resolves to: \source@out *> (\effect@in)
+#+END_SRC
+
+Since the SC compiler evaluates SC expressions from left to right, it allocates the bus for the left argument player first (receiver), and then sets the parameter in the environment of the right argument to that same bus. Therefore, the expression =\source *> \effect= will first obtain the bus in the default parameter =\in= the receiver environment =\source= and then store this bus in the default parameter =\out= in the (right) argument environment =\effect=.
 
 #+BEGIN_SRC javascript
 \source *> \effect; // use default i/o parameters (\out, \in)
+\source *< \effect; // use default i/o parameters in reverse order (\in, \out)
 \source *>.input2 \effect; // specify custom input parameter
 \source @.output2 *> \effect // specify custom output parameter
-\source @.output2 *>.input2 \effect; // specify custom input and output parameter
+\source @.output2 *> (effect@\input2); // specify custom input and output parameter
 #+END_SRC
 
-Adverb specifies custom input parameter for the argument player.
 
-To specify a custom output parameter for the reader player, use the =@= operator:
+Note: One can specify a custom output parameter for the reader player, with the =@= operator.
+
+The adverb specifies custom input parameter for the argument player.
+
+
+
+
 
 ** 3. Symbol =<+= Number: Set parameter
 ** 4. Symbol =<+= Function: Map parameter
@@ -458,6 +475,22 @@ Player creates either a SynthPlayer or a PatternPlayer depending on the kind of 
 The decision table above shows the kinds of SourcePlayer that are generated in response to different types of receiver and argument pairs.
 
 * Auxiliary Classes
+
+** SourcePlayer
+** SynthPlayer
+*** Release and SynthDef clean up on synth end
+
+When the synth ends:
+
+1. Set process to nil if it is not identical with the synth that just ended
+2. Remove the SynthDef from the server if:
+   1. It is not identical to the source stored in source.
+   2. It is temporary.
+
+The only fine point in this process is 2.2: Checking for temporary.
+
+** PatternPlayer
+
 ** EventPattern: Modify patterns while playing
 
 #+BEGIN_SRC javascript
@@ -476,10 +509,6 @@ The decision table above shows the kinds of SourcePlayer that are generated in r
 #+END_SRC
 
 The methods =p= and =addEvent= work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:
-
-** EventStream
-
-An EventStream is produced by EventPattern when playing.  EvetnStream instances are played by EventStreamPlayer instances.
 
 * Utility Classes
 

@@ -171,7 +171,7 @@ Full syntax of a binary operator in SuperCollider. Up to 4 items are involved:
 
 <p><em>sc-hacks</em> uses binary operators to shorten and help classify the coding of common operations such as playing a synth or a pattern.  Binary operators in SuperCollider are methods whose name is composed entirely from combinations of a selected number of symbols such as: +, *, / -, <, >, =, |, %, &, @.  These operators are called binary operators, because in their syntax by convention they combine two object, a left argument (the receiver of the method) and a right argument (the argument).  SuperCollider additionally implements an interesting but not so widely used extension of this syntax: It permits one to add a second argument by appending it directly after the operator using a dot = . = as separator.  <em>sc-hacks</em> makes use of this feature.</p>
 
-<p>While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 5 custom operators: <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>&lt;*</code> and <code>@</code>.  The action performed by each operator varies according to the Classes of the receiver and the argument. <em>sc-hacks</em> defines 14 different types of actions in all.</p>
+<p>While operators can shorten the amount of code needed - which is why they are used here - they also have the disadvantage of being not as easy to familiarize and understand as the usual names which describe the action of a method.  It takes some extra effort to understand code using many unfamiliar operators.  Therefore, in designing this library, the goal has been to avoid undue proliferation of operators.  Currently, this library proposes 6 custom operators: <code>+&gt;</code>, <code>&lt;+</code>, <code>*&gt;</code>, <code>*&lt;</code>, <code>&lt;*</code> and <code>@</code>.  The action performed by each operator varies according to the Classes of the receiver and the argument. <em>sc-hacks</em> defines 16 different kinds of actions in all.</p>
 
 <h2 id="a-word-or-2-about-emacs">A word (or 2) about EMACS</h2>
 
@@ -283,7 +283,7 @@ Examples of 4 operator types in sc-hacks
 
 <ol>
 <li><strong>+-Group</strong> : <code>+&gt;</code>, <code>&lt;+</code>.  <strong>+></strong> plays the receiver (left argument) object in the player whose name is named by the left argument.  <strong><+</strong> plays the left argument object in the parameter whose name is named by the receiver.</li>
-<li><strong>*-Group</strong> : <code>*&gt;, =&lt;*</code>. The operators of the <code>*</code> group have parallel usage principles as that of the <code>+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</li>
+<li><strong>*-Group</strong> : <code>*&gt;</code>, <code>*&lt;</code>, <code>&lt;*</code>. The operators of the <code>*</code> group have parallel usage principles as that of the <code>+</code> group, but they interpret the same kinds of receiver in different ways, to provide additional functionality.</li>
 </ol>
 
 <p>Here is a tabular overview of operator actions associated to different types of receiver and argument:</p>
@@ -317,13 +317,21 @@ Examples of 4 operator types in sc-hacks
 <tr>
 <td>3</td>
 <td>Symbol</td>
+<td><code>*&lt;</code></td>
+<td>Symbol</td>
+<td>Link Players</td>
+</tr>
+
+<tr>
+<td>4</td>
+<td>Symbol</td>
 <td><code>&lt;+</code></td>
 <td>Number</td>
 <td>Set parameter</td>
 </tr>
 
 <tr>
-<td>4</td>
+<td>5</td>
 <td>Symbol</td>
 <td><code>&lt;+</code></td>
 <td>Function</td>
@@ -331,7 +339,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>5</td>
+<td>6</td>
 <td>Symbol</td>
 <td><code>&lt;+</code></td>
 <td>Env</td>
@@ -339,7 +347,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>6</td>
+<td>7</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>Symbol</td>
@@ -347,7 +355,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>7</td>
+<td>8</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>MIDI</td>
@@ -355,7 +363,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>8</td>
+<td>9</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>OSC</td>
@@ -363,7 +371,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>9</td>
+<td>10</td>
 <td>Symbol</td>
 <td><code>&lt;*</code></td>
 <td>Widget</td>
@@ -371,7 +379,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>10</td>
+<td>11</td>
 <td>Function</td>
 <td><code>+&gt;</code></td>
 <td>Symbol</td>
@@ -379,7 +387,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>11</td>
+<td>12</td>
 <td>Function</td>
 <td><code>*&gt;</code></td>
 <td>Symbol</td>
@@ -387,7 +395,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>12</td>
+<td>13</td>
 <td>Event</td>
 <td><code>+&gt;</code></td>
 <td>Symbol</td>
@@ -395,7 +403,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>13</td>
+<td>14</td>
 <td>Event</td>
 <td><code>*&gt;</code></td>
 <td>Symbol</td>
@@ -403,7 +411,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>14</td>
+<td>15</td>
 <td>UGen</td>
 <td><code>&lt;+</code></td>
 <td>Symbol</td>
@@ -411,7 +419,7 @@ Examples of 4 operator types in sc-hacks
 </tr>
 
 <tr>
-<td>15</td>
+<td>16</td>
 <td>Symbol</td>
 <td><code>@</code></td>
 <td>Symbol</td>
@@ -424,16 +432,26 @@ Examples of 4 operator types in sc-hacks
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="k">default</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">player1</span><span class="p">;</span> <span class="c1">// play SynthDef named default in player named player1</span>
 </code></pre></div>
 
-<h2 id="2-symbol-symbol-link-players">2. Symbol <code>*&gt;</code> Symbol: Link Players</h2>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// use default i/o parameters (\out, \in)</span>
-<span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span><span class="p">.</span><span class="nx">input2</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// specify custom input parameter</span>
-<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">output2</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// specify custom output parameter</span>
-<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">output2</span> <span class="o">*&gt;</span><span class="p">.</span><span class="nx">input2</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// specify custom input and output parameter</span>
+<h2 id="2-symbol-symbol-link-players">2. Symbol <code>*&gt;</code> / <code>*&lt;</code> Symbol: Link Players</h2>
+
+<p>The operators <code>*&gt;</code> and <code>&lt;*</code> create audio links between the players of 2 environments by setting the parameters of input and output controls to shared input and output busses.</p>
+<pre class="example">
+order of execution in bus allocation
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// resolves to: \source@out *&gt; (\effect@in)</span>
 </code></pre></div>
 
-<p>Adverb specifies custom input parameter for the argument player.</p>
+<p>Since the SC compiler evaluates SC expressions from left to right, it allocates the bus for the left argument player first (receiver), and then sets the parameter in the environment of the right argument to that same bus. Therefore, the expression <code>\source *&gt; \effect</code> will first obtain the bus in the default parameter <code>\in</code> the receiver environment <code>\source</code> and then store this bus in the default parameter <code>\out</code> in the (right) argument environment <code>\effect</code>.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// use default i/o parameters (\out, \in)</span>
+<span class="err">\</span><span class="nx">source</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// use default i/o parameters in reverse order (\in, \out)</span>
+<span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span><span class="p">.</span><span class="nx">input2</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// specify custom input parameter</span>
+<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">output2</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span> <span class="c1">// specify custom output parameter</span>
+<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">output2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="nx">effect</span><span class="err">@\</span><span class="nx">input2</span><span class="p">);</span> <span class="c1">// specify custom input and output parameter</span>
+</code></pre></div>
 
-<p>To specify a custom output parameter for the reader player, use the <code>@</code> operator:</p>
+<p>Note: One can specify a custom output parameter for the reader player, with the <code>@</code> operator.</p>
+
+<p>The adverb specifies custom input parameter for the argument player.</p>
 
 <h2 id="3-symbol-number-set-parameter">3. Symbol <code>&lt;+</code> Number: Set parameter</h2>
 
@@ -705,6 +723,25 @@ Adverb indicates number of channels or environment.
 
 <h1 id="auxiliary-classes">Auxiliary Classes</h1>
 
+<h2 id="sourceplayer">SourcePlayer</h2>
+
+<h2 id="synthplayer">SynthPlayer</h2>
+
+<h3 id="release-and-synthdef-clean-up-on-synth-end">Release and SynthDef clean up on synth end</h3>
+
+<p>When the synth ends:</p>
+
+<ol>
+<li>Set process to nil if it is not identical with the synth that just ended</li>
+<li>Remove the SynthDef from the server if:</li>
+<li>It is not identical to the source stored in source.</li>
+<li>It is temporary.</li>
+</ol>
+
+<p>The only fine point in this process is 2.2: Checking for temporary.</p>
+
+<h2 id="patternplayer">PatternPlayer</h2>
+
 <h2 id="eventpattern-modify-patterns-while-playing">EventPattern: Modify patterns while playing</h2>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">~</span><span class="nx">pattern</span> <span class="o">=</span> <span class="nx">EventPattern</span><span class="p">(());</span> <span class="c1">// create an EventPattern from an empty Event</span>
 <span class="o">~</span><span class="nx">player</span> <span class="o">=</span> <span class="o">~</span><span class="nx">pattern</span><span class="p">.</span><span class="nx">play</span><span class="p">;</span> <span class="c1">// play the pattern and store streamplayer in player</span>
@@ -719,10 +756,6 @@ Adverb indicates number of channels or environment.
 </code></pre></div>
 
 <p>The methods <code>p</code> and <code>addEvent</code> work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:</p>
-
-<h2 id="eventstream">EventStream</h2>
-
-<p>An EventStream is produced by EventPattern when playing.  EvetnStream instances are played by EventStreamPlayer instances.</p>
 
 <h1 id="utility-classes">Utility Classes</h1>
 
