@@ -254,23 +254,24 @@ Here is a tabular overview of operator actions associated to different types of 
 #+END_SRC
 
 ** 2. Symbol =*>= / =*<= Symbol: Link Players
-
 #+BEGIN_SRC javascript
-//:
 a = { Out.ar(\out.kr(0), WhiteNoise.ar(0.1) * (Dust.kr([10, 10]))) }.play;
 b = { Ringz.ar(Fin(\in, 10), LFNoise1.kr([5, 6]).range(100, 1000), 0.25) }.play; // Fin = InFeedback.ar
 //:
 a.set(\out, 4);
 b.set(\in, 4);
+\source *> \effect // resolves to: \source@out *> (\effect@in)
+// operations equivalent to the expression \source *> \effect:
+~bus = Bus.audio(Server.default, 1);
+~sourcee.set(\out, ~bus.index);
+~effect.set(\in, ~bus.index);
 #+END_SRC
 
 The operators =*>= and =<*= create audio links between the players of 2 environments by setting the parameters of input and output controls to shared input and output busses.  Following example illustrates what is meant by sharing busses.  The output bus of synth =a= is set to the same bus as the input of synth =b=.
 
-: order of execution in bus allocation
+This statement =\source *> \effect= can be understood as a shortcut for the following operations:
 
-#+BEGIN_SRC javascript
-\source *> \effect // resolves to: \source@out *> (\effect@in)
-#+END_SRC
+The names of the parameters =\out= and =\in= are provided by default.  One can override these defaults through adverbs to the operator or by using the operator =@= as shown in the next examples.
 
 Since the SC compiler evaluates SC expressions from left to right, it allocates the bus for the left argument player first (receiver), and then sets the parameter in the environment of the right argument to that same bus. Therefore, the expression =\source *> \effect= will first obtain the bus in the default parameter =\in= the receiver environment =\source= and then store this bus in the default parameter =\out= in the (right) argument environment =\effect=.  This means that the input of the second (right) argument's environment will always be overwritten by the output bus of the first (left) argument.
 
