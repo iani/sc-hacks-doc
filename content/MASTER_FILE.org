@@ -277,13 +277,11 @@ Since the SC compiler evaluates SC expressions from left to right, it allocates 
 
 #+BEGIN_SRC javascript
 \effect@in *> (\source@out) // overwrite default parameters for reverse order
+// corresponding shortcut:
+\effect *< \source // resolves to: \effect@in *> (\source@out)
 #+END_SRC
 
 One may reverse this by writing the arguments in reverse order, but one would have to overwrite the default arguments. The operator =@= is used here As a shortcut for specifying the parameters.
-
-#+BEGIN_SRC javascript
-\effect *< \source // resolves to: \effect@in *> (\source@out)
-#+END_SRC
 
 Since the reverse argument order is useful in many situations, the operator =*<= provides a shortcut for it.
 

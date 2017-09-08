@@ -453,11 +453,11 @@ Examples of 4 operator types in sc-hacks
 
 <p>Since the SC compiler evaluates SC expressions from left to right, it allocates the bus for the left argument player first (receiver), and then sets the parameter in the environment of the right argument to that same bus. Therefore, the expression <code>\source *&gt; \effect</code> will first obtain the bus in the default parameter <code>\in</code> the receiver environment <code>\source</code> and then store this bus in the default parameter <code>\out</code> in the (right) argument environment <code>\effect</code>.  This means that the input of the second (right) argument's environment will always be overwritten by the output bus of the first (left) argument.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">effect</span><span class="err">@</span><span class="k">in</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">source</span><span class="err">@</span><span class="nx">out</span><span class="p">)</span> <span class="c1">// overwrite default parameters for reverse order</span>
+<span class="c1">// corresponding shortcut:</span>
+<span class="err">\</span><span class="nx">effect</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">source</span> <span class="c1">// resolves to: \effect@in *&gt; (\source@out)</span>
 </code></pre></div>
 
 <p>One may reverse this by writing the arguments in reverse order, but one would have to overwrite the default arguments. The operator <code>@</code> is used here As a shortcut for specifying the parameters.</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">effect</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">source</span> <span class="c1">// resolves to: \effect@in *&gt; (\source@out)</span>
-</code></pre></div>
 
 <p>Since the reverse argument order is useful in many situations, the operator <code>*&lt;</code> provides a shortcut for it.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span> <span class="c1">// use default i/o parameters (\out, \in)</span>
