@@ -35,12 +35,16 @@
 
 ** Roadmap
 
-*** Work in progress - August 2017
+*** Under development September 2017
+
+- Test Linking with =InFeedback=, using own shortcut class =Fin=.
+
+*** Work done August 2017
 
 - Dispatch class for use in Nevent
 - Rework of Group allocation scheme
 - New class: Player for playing Synths and Patterns in the same instance.
-- Linking with InFeedback. A particularly interesting case is when an Ndef reads and processes its own output.  An implementation of this feature, using [[http://doc.sccode.org/Classes/InFeedback.html][InFeedback]] is being tested.
+- Linking with InFeedback.
 
 *** Future plans
 
