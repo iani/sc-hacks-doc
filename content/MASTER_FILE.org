@@ -230,25 +230,25 @@ As basic operators, /sc-hacks/ uses four combinations built from + and * with > 
 
 Here is a tabular overview of operator actions associated to different types of receiver and argument:
 
-|------+------------+------------+------------+--------------------------------------|
-| *no* | *receiver* | *operator* | *argument* | *action*                             |
-|------+------------+------------+------------+--------------------------------------|
-|    1 | Symbol     | =+>=       | Symbol     | Play Synthdef                        |
-|    2 | Symbol     | =*>=       | Symbol     | Link Players                         |
-|    3 | Symbol     | =*<=       | Symbol     | Link Players                         |
-|    4 | Symbol     | =<+=       | Number     | Set parameter                        |
-|    5 | Symbol     | =<+=       | Function   | Map parameter                        |
-|    6 | Symbol     | =<+=       | Env        | Map parameter                        |
-|    7 | Symbol     | =<*=       | Symbol     | Set bufnum                           |
-|    8 | Symbol     | =<*=       | MIDI       | Bind MIDIFunc                        |
-|    9 | Symbol     | =<*=       | OSC        | Bind OSCFunc                         |
-|   10 | Symbol     | =<*=       | Widget     | Bind GUI Widget                      |
-|   11 | Function   | =+>=       | Symbol     | Play Synth                           |
-|   12 | Function   | =*>=       | Symbol     | Play Routine                         |
-|   13 | Event      | =+>=       | Symbol     | Play Pattern in Player               |
-|   14 | Event      | =*>=       | Symbol     | Play Pattern in Player's Environment |
-|   15 | UGen       | =<+=       | Symbol     | Read input from Player's Output      |
-|   16 | Symbol     | =@=        | Symbol     | Store Bus in player parameter        |
+|------+------------+------------+------------+----------------------------------------------|
+| *no* | *receiver* | *operator* | *argument* | *action*                                     |
+|------+------------+------------+------------+----------------------------------------------|
+|    1 | Symbol     | =+>=       | Symbol     | Play Synthdef                                |
+|    2 | Symbol     | =*>=       | Symbol     | Link Players                                 |
+|    3 | Symbol     | =*<=       | Symbol     | Link Players                                 |
+|    4 | Symbol     | =<+=       | Number     | Set parameter                                |
+|    5 | Symbol     | =<+=       | Function   | Map parameter                                |
+|    6 | Symbol     | =<+=       | Env        | Map parameter                                |
+|    7 | Symbol     | =<*=       | Symbol     | Set bufnum                                   |
+|    8 | Symbol     | =<*=       | MIDI       | Bind MIDIFunc                                |
+|    9 | Symbol     | =<*=       | OSC        | Bind OSCFunc                                 |
+|   10 | Symbol     | =<*=       | Widget     | Bind GUI Widget                              |
+|   11 | Function   | =+>=       | Symbol     | Play Synth                                   |
+|   12 | Function   | =*>=       | Symbol     | Play Routine                                 |
+|   13 | Event      | =+>=       | Symbol     | Play Pattern in Player                       |
+|   14 | Event      | =*>=       | Symbol     | Play Pattern in Player's Environment         |
+|   15 | UGen       | =<+=       | Symbol     | Read input from Player's Output              |
+|   16 | Symbol     | =@=        | Symbol     | Make Player/Param/Chan proxy for bus linking |
 #+TBLFM: $1=@-1 + 1::@2$1=1
 
 ** 1. Symbol =+>= Symbol: Play Synthdef
@@ -319,18 +319,18 @@ The code examples to the right illustrate the action of different types of objec
 3. =*>= : The =*>= operator functions like the =+>= operator in that it plays the receiver in the player named by the argument, but it interprets the types of the receiver in a different way: *Functions* get played as routines in the environment of the player.  *Events* get played as patterns, but using a custom type which instead of playing sounds with =play= event type, just set the environment variables of the environment of the player named by the receiver, with the values produced by each key in the event. A *Symbol* as receiver indicates to connect the output of the player named by the receiver to the input of the player named by the argument.
 4. =<*= This operator is used to send the bufnum of buffers to parameters.
 
-** 15. Symbol =@= Symbol: Bind parameter to bus
+** 15. Symbol =@= Symbol: Envir/Parameter/numChannels
 
 : Bus binding operator: Store bus in parameter of player.
-: Adverb indicates number of channels or environment.
+: Adverb indicates number of channels.
 
 #+BEGIN_SRC javascript
-// create 2-channel bus for parameter \in of player \source:
+// create 2-channel bus for parameter \in of envir \source:
 \source @.2 \in;
-// create 1-channel bus for parameter \in of player \source1 in environment \sourceEnvir:
-\source1 @.sourceEnvir \in;
+// create 1-channel bus for parameter \in of environment \source1.
+\source1 @ \in;
 // Chain @ operator expressions to customize linked bus assignment:
-\source @.envir \out2 *> (\effect @.fxenvir \in3);
+\source @.4 \out2 *> (\effect @ \in3);
 #+END_SRC
 
 In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.  The =@= operator returns a player-parameter-bus object that can be linked to another player-parameter-bus.
@@ -526,6 +526,13 @@ The only fine point in this process is 2.2: Checking for temporary.
 #+END_SRC
 
 The methods =p= and =addEvent= work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:
+
+** PersistentBus
+
+** PersistentBusProxy
+
+reated by =symbol @.adverb symbol=.
+Helps player bus links with extra specs provided by =@=, when using =*>=, =*<= operators.
 
 * Utility Classes
 

@@ -429,7 +429,7 @@ Examples of 4 operator types in sc-hacks
 <td>Symbol</td>
 <td><code>@</code></td>
 <td>Symbol</td>
-<td>Store Bus in player parameter</td>
+<td>Make Player/Param/Chan proxy for bus linking</td>
 </tr>
 </tbody>
 </table>
@@ -508,17 +508,17 @@ Examples of 4 operator types in sc-hacks
 <li><code>&lt;*</code> This operator is used to send the bufnum of buffers to parameters.</li>
 </ol>
 
-<h2 id="15-symbol-symbol-bind-parameter-to-bus">15. Symbol <code>@</code> Symbol: Bind parameter to bus</h2>
+<h2 id="15-symbol-symbol-envir-parameter-numchannels">15. Symbol <code>@</code> Symbol: Envir/Parameter/numChannels</h2>
 <pre class="example">
 Bus binding operator: Store bus in parameter of player.
-Adverb indicates number of channels or environment.
+Adverb indicates number of channels.
 </pre>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// create 2-channel bus for parameter \in of player \source:</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="c1">// create 2-channel bus for parameter \in of envir \source:</span>
 <span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="mi">2</span> <span class="err">\</span><span class="k">in</span><span class="p">;</span>
-<span class="c1">// create 1-channel bus for parameter \in of player \source1 in environment \sourceEnvir:</span>
-<span class="err">\</span><span class="nx">source1</span> <span class="err">@</span><span class="p">.</span><span class="nx">sourceEnvir</span> <span class="err">\</span><span class="k">in</span><span class="p">;</span>
+<span class="c1">// create 1-channel bus for parameter \in of environment \source1.</span>
+<span class="err">\</span><span class="nx">source1</span> <span class="err">@</span> <span class="err">\</span><span class="k">in</span><span class="p">;</span>
 <span class="c1">// Chain @ operator expressions to customize linked bus assignment:</span>
-<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="nx">envir</span> <span class="err">\</span><span class="nx">out2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">effect</span> <span class="err">@</span><span class="p">.</span><span class="nx">fxenvir</span> <span class="err">\</span><span class="nx">in3</span><span class="p">);</span>
+<span class="err">\</span><span class="nx">source</span> <span class="err">@</span><span class="p">.</span><span class="mi">4</span> <span class="err">\</span><span class="nx">out2</span> <span class="o">*&gt;</span> <span class="p">(</span><span class="err">\</span><span class="nx">effect</span> <span class="err">@</span> <span class="err">\</span><span class="nx">in3</span><span class="p">);</span>
 </code></pre></div>
 
 <p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.  The <code>@</code> operator returns a player-parameter-bus object that can be linked to another player-parameter-bus.</p>
@@ -778,6 +778,13 @@ Adverb indicates number of channels or environment.
 </code></pre></div>
 
 <p>The methods <code>p</code> and <code>addEvent</code> work as shortcuts for playing events as EventPatterns and modifying the resulting EventStreamPlayer:</p>
+
+<h2 id="persistentbus">PersistentBus</h2>
+
+<h2 id="persistentbusproxy">PersistentBusProxy</h2>
+
+<p>reated by <code>symbol @.adverb symbol</code>.
+Helps player bus links with extra specs provided by <code>@</code>, when using <code>*&gt;</code>, <code>*&lt;</code> operators.</p>
 
 <h1 id="utility-classes">Utility Classes</h1>
 
