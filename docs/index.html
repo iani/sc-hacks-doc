@@ -523,6 +523,94 @@ Adverb indicates number of channels.
 
 <p>In addition to the 4 operators above, <em>sc-hacks</em> uses <code>@</code> to configure busses bound to parameters of player.  The <code>@</code> operator returns a player-parameter-bus object that can be linked to another player-parameter-bus.</p>
 
+<h1 id="playing-synths">Playing Synths</h1>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>
+</code></pre></div>
+
+<h1 id="playing-patterns">Playing Patterns</h1>
+
+<h1 id="linking-i-o">Linking I/O</h1>
+
+<h2 id="using-the-fin-pseudo-ugen">Using the Fin pseudo-UGen</h2>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">{</span> <span class="nx">Fin</span><span class="p">()</span> <span class="p">}</span>
+  <span class="c1">//: Is equivalent to:</span>
+<span class="p">{</span> <span class="nx">InFeedback</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="err">\</span><span class="k">in</span><span class="p">.</span><span class="nx">kr</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">}</span>
+<span class="c1">// The control name and number of channels can be given as arguments.</span>
+<span class="c1">//: For example:</span>
+<span class="p">{</span>   <span class="c1">// use \input2 as control and input 4 channels of audio:</span>
+    <span class="nx">Fin</span><span class="p">(</span><span class="err">\</span><span class="nx">input2</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><em>sc-hacks</em> defines the pseuedo-UGen <code>Fin</code> as a shortcut for =InFeedback=:</p>
+
+<p><code>InFeedback.ar(&lt;controlname&gt;, &lt;numChannels&gt;)</code>.</p>
+
+<p><code>InFeedback</code> acts as audio input UGen similar to <code>In.ar</code>, but can also read output from Synths that are placed after the current synth in the order of nodes in the Server.  It is necessary to use <code>InFeedback</code> or <code>Fin</code> if one wants to read audio from other synths independently of their order in the Server. (See <a href="http://doc.sccode.org/Guides/Order-of-execution.html" title="http://doc.sccode.org/Guides/Order-of-execution.html" target="_blank">http://doc.sccode.org/Guides/Order-of-execution.html</a> on the order of execution of nodes in the Server.)</p>
+
+<h2 id="use-to-route-i-o-through-private-busses">Use *> to route I/O through private busses</h2>
+<pre class="example">
+FEEDBACK (wrong)
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source</span><span class="p">;</span>
+<span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span>
+</code></pre></div>
+<pre class="example">
+No feedback (correct)
+</pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="err">\</span><span class="nx">source</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span>
+<span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source</span><span class="p">;</span>
+<span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">effect</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Using the default bus values for function.play and <code>Fin()</code> results in feedback because the synth of <code>\effect</code> writes its output to bus 0 and also reads that output from bus 0.</p>
+
+<p>In order to set the outputs and inputs of two synths to a separate bus, use the <code>*&gt;</code> operator to link their environments: <code>\source *&gt; \effect</code>.</p>
+
+<h2 id="multiple-sources-with-one-effect">Multiple sources with one effect</h2>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span> <span class="err">\</span><span class="nx">source1</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+ <span class="err">\</span><span class="nx">source2</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+ <span class="c1">// OK: start order: effect, source1, source2</span>
+ <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+ <span class="p">{</span> <span class="nx">Impulse</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source1</span><span class="p">;</span>
+ <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Decay2</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="nx">Impulse</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source2</span><span class="p">;</span>
+ <span class="c1">//: OK: start order: source 1, source2, effect</span>
+ <span class="p">{</span> <span class="nx">Impulse</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source1</span><span class="p">;</span>
+ <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Decay2</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="nx">Impulse</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source2</span><span class="p">;</span>
+ <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+ <span class="c1">//: start order: source 1, effect, source2</span>
+ <span class="c1">// PROBLEM: source2 overwrites source1</span>
+ <span class="p">{</span> <span class="nx">Impulse</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source1</span><span class="p">;</span>
+ <span class="p">{</span> <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+ <span class="p">{</span> <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Decay2</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="nx">Impulse</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span> <span class="p">}</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source2</span><span class="p">;</span>
+</code></pre></div>
+
+<p>To add a second source to the same effect, use the <code>*&lt;</code> operator to set the output bus to the input bus of an already existing effect.</p>
+
+<p>If the effect synth is started between the first and the second source, then the first source is overwritten.  Therefore it will be necessary to devise a mechanism for ordering synths automatically to prevent this from happening.  Here is a study with named synthdefs to show the order of synths using <code>Server.default.plotTree</code></p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="nx">Server</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="nx">plotTree</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="nx">SynthDef</span><span class="p">(</span><span class="s2">&quot;impulse&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">out</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+          <span class="nx">Out</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">Impulse</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+  <span class="p">}).</span><span class="nx">add</span><span class="p">;</span>
+  <span class="nx">SynthDef</span><span class="p">(</span><span class="s2">&quot;decay&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="o">|</span> <span class="nx">out</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">|</span>
+          <span class="nx">Out</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span>
+                  <span class="nx">WhiteNoise</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span>
+                          <span class="nx">Decay2</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="nx">Impulse</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+                  <span class="p">)</span>
+          <span class="p">)</span>
+  <span class="p">}).</span><span class="nx">add</span><span class="p">;</span>
+  <span class="nx">SynthDef</span><span class="p">(</span><span class="s2">&quot;ring&quot;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">Ringz</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="nx">Fin</span><span class="p">(),</span> <span class="nx">LFNoise0</span><span class="p">.</span><span class="nx">kr</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">range</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span>
+  <span class="p">}).</span><span class="nx">add</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="err">\</span><span class="nx">source1</span> <span class="o">*&gt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+  <span class="err">\</span><span class="nx">source2</span> <span class="o">*&lt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+  <span class="c1">//:</span>
+  <span class="err">\</span><span class="nx">ring</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">effect1</span><span class="p">;</span>
+  <span class="err">\</span><span class="nx">impulse</span> <span class="o">+&gt;</span> <span class="err">\</span><span class="nx">source1</span><span class="p">;</span>
+</code></pre></div>
+
 <h1 id="accessing-named-objects">Accessing named objects</h1>
 
 <p>(SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows)</p>

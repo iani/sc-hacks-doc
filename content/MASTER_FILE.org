@@ -335,6 +335,100 @@ The code examples to the right illustrate the action of different types of objec
 
 In addition to the 4 operators above, /sc-hacks/ uses =@= to configure busses bound to parameters of player.  The =@= operator returns a player-parameter-bus object that can be linked to another player-parameter-bus.
 
+* Playing Synths
+
+#+BEGIN_SRC javascript
+
+#+END_SRC
+* Playing Patterns
+* Linking I/O
+** Using the Fin pseudo-UGen
+
+#+BEGIN_SRC javascript
+{ Fin() }
+  //: Is equivalent to:
+{ InFeedback.ar(\in.kr, 1) }
+// The control name and number of channels can be given as arguments.
+//: For example:
+{   // use \input2 as control and input 4 channels of audio:
+    Fin(\input2, 4);
+}
+#+END_SRC
+
+/sc-hacks/ defines the pseuedo-UGen =Fin= as a shortcut for =InFeedback=:
+
+=InFeedback.ar(<controlname>, <numChannels>)=.
+
+=InFeedback= acts as audio input UGen similar to =In.ar=, but can also read output from Synths that are placed after the current synth in the order of nodes in the Server.  It is necessary to use =InFeedback= or =Fin= if one wants to read audio from other synths independently of their order in the Server. (See [[http://doc.sccode.org/Guides/Order-of-execution.html]] on the order of execution of nodes in the Server.)
+
+** Use *> to route I/O through private busses
+
+: FEEDBACK (wrong)
+#+BEGIN_SRC javascript
+{ WhiteNoise.ar(0.01) } +> \source;
+{ Ringz.ar(Fin(), LFNoise0.kr(10).range(150, 1000), 0.1) } +> \effect;
+#+END_SRC
+
+: No feedback (correct)
+#+BEGIN_SRC javascript
+\source *> \effect;
+{ WhiteNoise.ar(0.01) } +> \source;
+{ Ringz.ar(Fin(), LFNoise0.kr(10).range(150, 1000), 0.1) } +> \effect;
+#+END_SRC
+
+Using the default bus values for function.play and =Fin()= results in feedback because the synth of =\effect= writes its output to bus 0 and also reads that output from bus 0.
+
+In order to set the outputs and inputs of two synths to a separate bus, use the =*>= operator to link their environments: =\source *> \effect=.
+
+** Multiple sources with one effect
+
+#+BEGIN_SRC javascript
+ \source1 *> \effect1;
+ \source2 *< \effect1;
+ // OK: start order: effect, source1, source2
+ { Ringz.ar(Fin(), LFNoise0.kr(1).range(150, 1000), 0.1) } +> \effect1;
+ { Impulse.ar(4, 0, 0.1) } +> \source1;
+ { WhiteNoise.ar(Decay2.kr(Impulse.kr(0.5, 0, 0.1), 0.3, 1, 0.1)) } +> \source2;
+ //: OK: start order: source 1, source2, effect
+ { Impulse.ar(4, 0, 0.1) } +> \source1;
+ { WhiteNoise.ar(Decay2.kr(Impulse.kr(0.5, 0, 0.1), 0.3, 1, 0.1)) } +> \source2;
+ { Ringz.ar(Fin(), LFNoise0.kr(1).range(150, 1000), 0.1) } +> \effect1;
+ //: start order: source 1, effect, source2
+ // PROBLEM: source2 overwrites source1
+ { Impulse.ar(4, 0, 0.1) } +> \source1;
+ { Ringz.ar(Fin(), LFNoise0.kr(1).range(150, 1000), 0.1) } +> \effect1;
+ { WhiteNoise.ar(Decay2.kr(Impulse.kr(0.5, 0, 0.1), 0.3, 1, 0.1)) } +> \source2;
+#+END_SRC
+
+To add a second source to the same effect, use the =*<= operator to set the output bus to the input bus of an already existing effect.
+
+If the effect synth is started between the first and the second source, then the first source is overwritten.  Therefore it will be necessary to devise a mechanism for ordering synths automatically to prevent this from happening.  Here is a study with named synthdefs to show the order of synths using =Server.default.plotTree=
+
+#+BEGIN_SRC javascript
+  Server.default.plotTree;
+  //:
+  SynthDef("impulse", { | out = 0 |
+          Out.ar(out, Impulse.ar(4, 0, 0.1))
+  }).add;
+  SynthDef("decay", { | out = 0 |
+          Out.ar(out,
+                  WhiteNoise.ar(
+                          Decay2.kr(Impulse.kr(1), 0.3, 0.4, 0.1)
+                  )
+          )
+  }).add;
+  SynthDef("ring", {
+          Ringz.ar(Fin(), LFNoise0.kr(1).range(150, 500))
+  }).add;
+  //:
+  \source1 *> \effect1;
+  \source2 *< \effect1;
+  //:
+  \ring +> \effect1;
+  \impulse +> \source1;
+#+END_SRC
+
+
 * Accessing named objects
 
 (SynthPlayers, EventPatterns/EventStreamPlayers, Routines and Windows)
