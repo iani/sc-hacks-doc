@@ -204,7 +204,8 @@ Two notes that may be helpful to others, or may simply be the result of mistakes
 
 Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!
 
-*END
+*END QUOTE*
+
 * Operators
 
 ** Operator Overview
