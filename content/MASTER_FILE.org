@@ -199,6 +199,12 @@ Two notes that may be helpful to others, or may simply be the result of mistakes
 Thanks again for spelling things out nicely. Will try to check back and dig the other things on your blog!
 
 *END
+** ΤΑΝΙΑ
+*** ΥΠΟΚΕΦΑΛΑΙΟ
+
+γινεται΄
+
+  Γεια σου Τάνια
 
 
 
@@ -309,6 +315,7 @@ Adverbs to =@= and =*>= can be used to specify parameters.
 ** 10. Function =+>= Symbol: Play Synth
 ** 11. Function =*>= Symbol: Play Routine
 ** 12. Event =+>= Symbol: Play Pattern in Player
+** 13. Event =+>= Function: Play function as instrument in Pattern
 ** 13. Event =*>= Symbol: Play Pattern in Player's Environment
 ** 14. UGen =<+= Symbol: Read input from Player's Output
 
