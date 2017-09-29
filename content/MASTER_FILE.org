@@ -35,6 +35,10 @@
 
 ** Roadmap
 
+For a breakdown of the most recent changes and progress report of the project, see the ROADMAP.org file in raw format here:
+
+[[https://raw.githubusercontent.com/iani/sc-hacks/master/Notes/ROADMAP.org]]
+
 *** Under development September 2017
 
 - Test Linking with =InFeedback=, using own shortcut class =Fin=.
