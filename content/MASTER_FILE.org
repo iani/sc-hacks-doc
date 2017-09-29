@@ -35,9 +35,11 @@
 
 ** Roadmap
 
-For a breakdown of the most recent changes and progress report of the project, see the ROADMAP.org file in raw format here:
 
-[[https://raw.githubusercontent.com/iani/sc-hacks/master/Notes/ROADMAP.org]]
+: https://github.com/iani/sc-hacks/blob/master/Notes/ROADMAP.org
+: https://raw.githubusercontent.com/iani/sc-hacks/master/Notes/ROADMAP.org
+
+For a breakdown of the most recent changes and progress report of the project, see the ROADMAP.org file in raw format here: (See right pane for raw link).
 
 *** Under development September 2017
 
